@@ -68,11 +68,15 @@ export default function Input({
       {
         true: "pr-8",
       },
+      {
+        true: "pl-[26px]",
+      },
     ],
     selectedClasses: [
       rounded == true ? true : false,
       textarea,
       passwordVisibility,
+      icon ? true : false,
     ],
   });
 

@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import {
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  EmailAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  User,
+} from "firebase/auth";
 
 import Button from "@/components/Button";
 import LoadingOverlay from "@/components/LoadingOverlay";
@@ -8,10 +17,24 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
 import { Log } from "@/utils";
+import { signin } from "@/stores/authStore";
 
 export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
   const router = useRouter();
   const [error, setError] = useState("");
+
+  function onLoginPlatform(provider: GithubAuthProvider | GoogleAuthProvider) {
+    const auth = getAuth();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user as User;
+        signin(user);
+        Log.debug("User", user);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
 
   return (
     <>
@@ -25,7 +48,9 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
           <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
         </div>
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            onLoginPlatform(new GoogleAuthProvider());
+          }}
           size="md"
           light="bg-blue-600 text-white"
           fullWidth
@@ -34,7 +59,9 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
           <span className="ml-2">Google</span>
         </Button>
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            onLoginPlatform(new GithubAuthProvider());
+          }}
           size="md"
           light="bg-neutral-700 text-white"
           fullWidth

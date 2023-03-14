@@ -4,7 +4,8 @@ import { useState } from "react";
 import Container from "@/components/Container";
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
-import { Signin as _Signin } from "@/components/auth/Signin";
+import { Signin as SigninForm } from "@/components/auth/Signin";
+import { Email as EmailSignin } from "@/components/auth/Signin";
 import type { NexysComponentProps } from "@/types";
 
 export default function Signin(props: NexysComponentProps) {
@@ -20,7 +21,10 @@ export default function Signin(props: NexysComponentProps) {
         <Navbar hideAuth />
         <Container className="flex justify-center h-full items-center">
           <div className="p-4 flex flex-col gap-6 w-[300px]">
-            <_Signin />
+            {!usingEmail && (
+              <SigninForm onEmailLogin={() => setUsingEmail(true)} />
+            )}
+            {usingEmail && <EmailSignin onBack={() => setUsingEmail(false)} />}
           </div>
         </Container>
       </main>

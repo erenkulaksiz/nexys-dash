@@ -1,12 +1,6 @@
 import { ObjectId } from "mongodb";
 import type { PropsWithChildren } from "react";
 
-export interface PlatformLogins {
-  google: () => void;
-  github: () => void;
-  email: () => void;
-}
-
 export interface ProjectTypes {
   _id?: ObjectId;
   publicKey?: string;
@@ -21,19 +15,15 @@ export interface ProjectTypes {
 export interface NexysComponentProps extends PropsWithChildren {
   validate?: {
     success: boolean;
-    data: {
-      avatar: string;
-      email: string;
-      fullname?: string;
-      uid: string;
-      username: string;
-    };
+    data: UserTypes;
     error?: string | object;
   };
-  route?: string | {
-    id: string;
-    batchId: string;
-  };
+  route?:
+    | string
+    | {
+        id: string;
+        batchId: string;
+      };
 }
 
 export interface UserTypes {

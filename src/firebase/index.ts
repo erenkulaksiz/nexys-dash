@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { isClient } from "@/utils";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,7 +14,7 @@ const firebaseConfig = {
 
 if (!getApps.length) {
   const app = initializeApp(firebaseConfig);
-  if (typeof window != "undefined") {
+  if (isClient()) {
     if ("measurementId" in firebaseConfig) {
       const analytics = getAnalytics(app);
     }

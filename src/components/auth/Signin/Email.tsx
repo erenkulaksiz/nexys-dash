@@ -10,7 +10,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { LIMITS } from "@/constants";
 import type { FormEvent } from "react";
 
-export function Email({ onGoBack }: { onGoBack?: () => void }) {
+export function Email({ onBack }: { onBack?: () => void }) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<{
@@ -30,7 +30,7 @@ export function Email({ onGoBack }: { onGoBack?: () => void }) {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-4">
           <button
-            onClick={onGoBack}
+            onClick={onBack}
             className="w-full flex flex-row items-center gap-1 text-xs font-semibold text-neutral-500"
           >
             <IoMdArrowBack

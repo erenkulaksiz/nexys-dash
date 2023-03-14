@@ -8,9 +8,9 @@ import Button from "@/components/Button";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
+import { signout } from "@/stores/authStore";
 
-export function Dropdown() {
-  const [open, setOpen] = useState(false);
+export default function Dropdown() {
   const { resolvedTheme, setTheme } = useTheme();
 
   function onThemeChange() {
@@ -64,12 +64,9 @@ export function Dropdown() {
               </Button>
             </Tooltip>
           </div>
-          <Button title="log out" fullWidth>
+          <Button title="log out" fullWidth onClick={signout}>
             <MdLogout />
             <span className="ml-1">log out</span>
-          </Button>
-          <Button title="modal" fullWidth onClick={() => setOpen(true)}>
-            <span className="ml-1">modal</span>
           </Button>
         </div>
       </details>

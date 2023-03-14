@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
-import { Dropdown } from "./components";
+import Dropdown from "./components/Dropdown";
 import Button from "@/components/Button";
 import Tooltip from "@/components/Tooltip";
 import Loading from "@/components/Loading";
@@ -11,10 +11,13 @@ import LogoWhite from "@/public/images/logo_white.png";
 import LogoBlack from "@/public/images/logo_black.png";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const loading = useAuthStore((state) => state.authLoading);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     setMounted(true);
@@ -43,8 +46,9 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
           <div className="w-40 h-10 dark:bg-neutral-800 bg-neutral-200 animate-pulse" />
         )}
       </Link>
-      {true && <Dropdown />}
-      {false && (
+      {loading && <Loading size="lg" />}
+      {!loading && user && <Dropdown />}
+      {!loading && !user && (
         <div className="flex flex-row gap-1">
           <div className="flex flex-row gap-1">
             <Tooltip content="Nexys Docs" direction="bottom" outline>
@@ -72,9 +76,9 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
           </div>
           {!hideAuth && (
             <>
-              <Link href="/auth/login">
+              <Link href="/auth/signin">
                 <Button light className="px-2 hidden sm:flex">
-                  Login
+                  Sign in
                 </Button>
               </Link>
               <Link href="/auth/signup">
