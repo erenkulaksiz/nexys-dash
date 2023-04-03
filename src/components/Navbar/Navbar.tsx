@@ -12,12 +12,13 @@ import LogoBlack from "@/public/images/logo_black.png";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
 import { useAuthStore } from "@/stores/authStore";
+import { Log } from "@/utils/logger";
 
 export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const loading = useAuthStore((state) => state.authLoading);
-  const user = useAuthStore((state) => state.user);
+  const authLoading = useAuthStore((state) => state.authLoading);
+  const authUser = useAuthStore((state) => state.user);
 
   useEffect(() => {
     setMounted(true);
@@ -30,7 +31,10 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
   return (
     <nav className="flex items-center justify-between sticky top-0 pl-4 pr-4 py-4 w-full z-50 border-b-[1px] border-neutral-200 dark:border-neutral-900">
       <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-md -z-10"></div>
-      <Link href={"/"} title={"Home"}>
+      <Link
+        href={authUser ? "/" : "/auth/signin"}
+        title={authUser ? "Home" : "Sign in"}
+      >
         {mounted ? (
           <div className="flex gap-2">
             <Image
@@ -46,9 +50,9 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
           <div className="w-40 h-10 dark:bg-neutral-800 bg-neutral-200 animate-pulse" />
         )}
       </Link>
-      {loading && <Loading size="lg" />}
-      {!loading && user && <Dropdown />}
-      {!loading && !user && (
+      {authLoading && <Loading size="lg" />}
+      {!authLoading && authUser && <Dropdown />}
+      {!authLoading && !authUser && (
         <div className="flex flex-row gap-1">
           <div className="flex flex-row gap-1">
             <Tooltip content="Nexys Docs" direction="bottom" outline>
@@ -77,7 +81,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
           {!hideAuth && (
             <>
               <Link href="/auth/signin">
-                <Button light className="px-2 hidden sm:flex">
+                <Button light className="px-2">
                   Sign in
                 </Button>
               </Link>

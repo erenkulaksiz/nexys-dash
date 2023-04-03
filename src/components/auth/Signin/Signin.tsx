@@ -38,7 +38,7 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
 
   return (
     <>
-      <h1 className="font-semibold text-2xl">Log in to Nexys</h1>
+      <h1 className="font-semibold text-2xl">Sign in to Nexys</h1>
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-row items-center gap-2">
           <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>

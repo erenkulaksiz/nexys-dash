@@ -15,13 +15,14 @@ interface AuthState {
     setValidatedUser: (user: UserTypes) => void;
     setUser: (user: any) => void;
     setLoading: (loading: boolean) => void;
+    refreshToken: (force: boolean) => void;
   };
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   validatedUser: null,
-  authLoading: false,
+  authLoading: true,
   actions: {
     signin: function (user: any) {
       Cookies.set("auth", user.accessToken);
@@ -35,17 +36,25 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, authLoading: false });
     },
     setValidatedUser: function (user: UserTypes) {
-      Log.debug("setValidatedUser:", user);
       set({ validatedUser: user });
     },
     setUser: function (user: any) {
-      Log.debug("setUser:", user);
       set({ user });
     },
     setLoading: function (loading: boolean) {
-      Log.debug("setLoading:", loading);
       set({ authLoading: loading });
     },
+    refreshToken: async function (force: boolean) {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await user.getIdToken(force);
+        } catch (error) {
+          Log.error(error);
+        }
+      }
+    }
   },
 }));
 
@@ -55,3 +64,4 @@ export const setUser = useAuthStore.getState().actions.setUser;
 export const setValidatedUser =
   useAuthStore.getState().actions.setValidatedUser;
 export const setLoading = useAuthStore.getState().actions.setLoading;
+export const refreshToken = useAuthStore.getState().actions.refreshToken;

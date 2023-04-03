@@ -8,9 +8,14 @@ import { IoMdArrowBack } from "react-icons/io";
 import { MdOutlineLogin, MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { LIMITS } from "@/constants";
+import { signin } from "@/utils/signin";
+import { useAuthStore } from "@/stores/authStore";
+import { Log } from "@/utils";
 import type { FormEvent } from "react";
 
 export function Email({ onBack }: { onBack?: () => void }) {
+  const authUser = useAuthStore((state) => state.user);
+  const authLoading = useAuthStore((state) => state.authLoading);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<{
@@ -24,9 +29,48 @@ export function Email({ onBack }: { onBack?: () => void }) {
   });
   const router = useRouter();
 
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!email.trim() || !password.trim())
+      return setErrors({
+        email: !email.trim() ? "Email is required" : "",
+        password: !password.trim() ? "Password is required" : "",
+      });
+
+    const signinResult = await signin({ email, password });
+
+    if (!signinResult?.success) {
+      if (
+        signinResult.error.errorCode == "auth/user-not-found" ||
+        signinResult.error.errorCode == "auth/wrong-password"
+      ) {
+        setErrors({ login: "Incorrect email or password" });
+      }
+      if (signinResult.error.errorCode == "auth/too-many-requests") {
+        setErrors({ login: "Too many requests, try again later" });
+      }
+      if (signinResult.error.errorCode == "auth/user-disabled") {
+        setErrors({ login: "This account has been disabled" });
+      }
+      if (signinResult.error.errorCode == "auth/network-request-failed") {
+        setErrors({
+          login:
+            "Error with communicating auth service, please check your internet connection",
+        });
+      }
+      Log.debug(signinResult.error);
+      return;
+    }
+
+    setErrors({});
+  }
+
+  if (authUser || authLoading) return <LoadingOverlay />;
+
   return (
     <>
-      <h1 className="font-semibold text-2xl">Log in to Nexys</h1>
+      <h1 className="font-semibold text-2xl">Sign in to Nexys</h1>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-4">
           <button
@@ -40,7 +84,7 @@ export function Email({ onBack }: { onBack?: () => void }) {
             <span className="uppercase">back</span>
             <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
           </button>
-          <form className="flex flex-col gap-1" onSubmit={() => {}}>
+          <form className="flex flex-col gap-1" onSubmit={onSubmit}>
             <div className="flex flex-col gap-1">
               <label htmlFor="email" className="font-semibold">
                 E-mail

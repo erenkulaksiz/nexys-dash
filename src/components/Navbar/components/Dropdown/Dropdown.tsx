@@ -9,9 +9,11 @@ import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function Dropdown() {
   const { resolvedTheme, setTheme } = useTheme();
+  const validatedUser = useAuthStore((state) => state.validatedUser);
 
   function onThemeChange() {
     setTheme(resolvedTheme == "dark" ? "light" : "dark");
@@ -38,7 +40,7 @@ export default function Dropdown() {
           className="flex flex-col gap-1 w-36 items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black/80 filter backdrop-blur-md bg-white/80 border-2 border-neutral-300/30 dark:border-neutral-900/50 shadow-lg shadow-neutral-200/50 dark:shadow-neutral-900/20"
           style={{ zIndex: 999 }}
         >
-          <div className="text-xs font-semibold w-full flex justify-end">{`@username`}</div>
+          <div className="text-xs font-semibold w-full flex justify-end">{`@${validatedUser?.username}`}</div>
           <div className="flex flex-row w-full justify-end gap-1 items-center">
             <span className="text-xs text-neutral-400">{`v${version}`}</span>
             <Tooltip content="Nexys Docs" direction="left" outline>
