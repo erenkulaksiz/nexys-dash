@@ -1,8 +1,14 @@
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import { onIdTokenChanged, onAuthStateChanged, getAuth } from "firebase/auth";
 
-import { setValidatedUser, setUser, setLoading } from "@/stores/authStore";
+import {
+  setValidatedUser,
+  setUser,
+  setLoading,
+  refreshToken,
+} from "@/stores/authStore";
 import type { NexysComponentProps } from "@/types";
 
 interface LayoutProps extends NexysComponentProps {
@@ -11,10 +17,20 @@ interface LayoutProps extends NexysComponentProps {
 
 export default function Layout(props: LayoutProps) {
   const auth = getAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (props.validate && Cookies.get("auth")) {
       if (props.validate.success) setValidatedUser(props.validate.data);
+
+      if (props.validate.success == false) {
+        if (props.validate.error === "auth/id-token-expired") {
+          (async () => {
+            await refreshToken(true);
+            router.replace(router.asPath);
+          })();
+        }
+      }
     }
   }, [props.validate]);
 

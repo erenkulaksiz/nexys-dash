@@ -6,16 +6,17 @@ import { useRouter } from "next/router";
 import Container from "@/components/Container";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
+import Navbar from "@/components/Navbar";
 import { WithAuth } from "@/hocs";
-import { MdRefresh, MdLogout } from "react-icons/md";
+import { MdRefresh } from "react-icons/md";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { Log } from "@/utils";
-import { useAuthStore, signout, refreshToken } from "@/stores/authStore";
+import { useAuthStore, refreshToken } from "@/stores/authStore";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
 
-export default function EmailVerify(props: NexysComponentProps) {
+export default function VerifyPage(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
 
@@ -26,7 +27,6 @@ export default function EmailVerify(props: NexysComponentProps) {
   useEffect(() => {
     const interval = setInterval(async () => {
       const token = await refreshToken(true);
-      Log.debug("Checking if email is verified...", authUser?.emailVerified);
 
       if (authUser?.emailVerified) {
         Log.debug("Email is verified!");
@@ -54,10 +54,6 @@ export default function EmailVerify(props: NexysComponentProps) {
     setSent(true);
   }
 
-  async function onLogout() {
-    await signout();
-  }
-
   return (
     <Layout withoutLayout {...props}>
       <WithAuth {...props}>
@@ -66,6 +62,7 @@ export default function EmailVerify(props: NexysComponentProps) {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <main className="h-full">
+          <Navbar hideAuth />
           <Container className="flex justify-center h-full items-center">
             <div className="flex flex-col h-full items-start justify-center w-[400px] gap-2">
               <h1 className="text-2xl font-bold">Email Verification</h1>
@@ -92,10 +89,6 @@ export default function EmailVerify(props: NexysComponentProps) {
                     <span className="ml-1">Send again</span>
                   </Button>
                 )}
-                <Button className="px-2" onClick={onLogout}>
-                  <MdLogout size={18} />
-                  <span className="ml-1">Log out</span>
-                </Button>
               </div>
               {sent && (
                 <p className="text-neutral-500 text-sm">

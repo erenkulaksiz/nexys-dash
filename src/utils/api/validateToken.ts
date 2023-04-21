@@ -106,8 +106,6 @@ export async function ValidateToken({
     }
   }
 
-  Log.debug(user?.emailVerified, validateUser?.decodedToken?.email_verified)
-
   return {
     success: true,
     data: {

@@ -34,12 +34,12 @@ export function BuildPortal({
 
 export function BuildArrow({ direction = "top", outline }: TooltipProps) {
   const ArrowDirectionStyles = {
-    top: "border-r-2 border-r-neutral-600/20 border-b-2 border-b-neutral-600/20",
+    top: "border-r-[1px] border-r-neutral-600/20 border-b-[1px] border-b-neutral-600/20",
     right:
-      "border-l-2 border-l-neutral-600/20 border-b-2 border-b-neutral-600/20",
-    left: "border-t-2 border-t-neutral-600/20 border-r-2 border-r-neutral-600/20",
+      "border-l-[1px] border-l-neutral-600/20 border-b-[1px] border-b-neutral-600/20",
+    left: "border-t-[1px] border-t-neutral-600/20 border-r-[1px] border-r-neutral-600/20",
     bottom:
-      "border-t-2 border-t-neutral-600/20 border-l-2 border-l-neutral-600/20",
+      "border-t-[1px] border-t-neutral-600/20 border-l-[1px] border-l-neutral-600/20",
   };
 
   return BuildComponent({

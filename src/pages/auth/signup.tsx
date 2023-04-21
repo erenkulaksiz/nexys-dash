@@ -7,7 +7,7 @@ import Container from "@/components/Container";
 import { Signup as SignupForm } from "@/components/auth/Signup";
 import type { NexysComponentProps } from "@/types";
 
-export default function Signup(props: NexysComponentProps) {
+export default function SignupPage(props: NexysComponentProps) {
   return (
     <Layout withoutLayout {...props}>
       <WithoutAuth>

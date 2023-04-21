@@ -64,7 +64,7 @@ export default function Button({
       {
         default: light,
         false:
-          "hover:bg-neutral-100/50 hover:dark:bg-neutral-800 outline-none border-2 border-neutral-300/30 dark:border-neutral-900/50", //also remove ring
+          "hover:bg-neutral-100/50 hover:dark:bg-neutral-800 outline-none border-[1px] border-neutral-200 dark:border-neutral-900", //also remove ring
         true: "bg-transparent hover:bg-transparent active:dark:bg-neutral-700/30 active:bg-neutral-200/50",
       },
       {

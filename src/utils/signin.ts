@@ -18,7 +18,8 @@ export interface signinParams {
 
 export interface signinReturnTypes {
   success: boolean;
-  data?: any;
+  user?: any;
+  token?: string;
   error?: any;
 }
 
@@ -61,5 +62,4 @@ export async function signin({email, password}: signinParams): Promise<signinRet
     });
 
   return userCredential;
-    
 }

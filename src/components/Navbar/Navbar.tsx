@@ -51,7 +51,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
         )}
       </Link>
       {authLoading && <Loading size="lg" />}
-      {!authLoading && authUser && <Dropdown />}
+      {!authLoading && !hideAuth && authUser && <Dropdown />}
       {!authLoading && !authUser && (
         <div className="flex flex-row gap-1">
           <div className="flex flex-row gap-1">

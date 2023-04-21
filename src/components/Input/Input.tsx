@@ -55,7 +55,7 @@ export default function Input({
   const BuildInput = BuildComponent({
     name: "Input",
     defaultClasses:
-      "outline-none focus:outline-2 focus:outline-blue-500/50 w-full h-full px-2 border-2 border-neutral-300/30 dark:border-neutral-900/50 dark:bg-black placeholder:text-neutral-400 placeholder:text-sm",
+      "outline-none focus:outline-2 focus:outline-blue-500/50 w-full h-full px-2 border-[1px] border-neutral-200 dark:border-neutral-900 dark:bg-black placeholder:text-neutral-400 placeholder:text-sm",
     extraClasses: className,
     conditionalClasses: [
       {

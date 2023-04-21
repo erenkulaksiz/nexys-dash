@@ -74,6 +74,7 @@ export async function checkUserAuth({
   const bearer = getTokenFromHeader(req);
   if (!bearer) return reject({ res, reason: "no-auth" });
   const validateUser = await ValidateUser({ token: bearer });
+  Log.debug("validateUser: ", validateUser);
   if (validateUser && !validateUser.decodedToken)
     return reject({ reason: validateUser.errorCode, res });
   if (validateUser.decodedToken.uid !== uid)

@@ -18,12 +18,6 @@ export interface NexysComponentProps extends PropsWithChildren {
     data: UserTypes;
     error?: string | object;
   };
-  route?:
-    | string
-    | {
-        id: string;
-        batchId: string;
-      };
 }
 
 export interface UserTypes {

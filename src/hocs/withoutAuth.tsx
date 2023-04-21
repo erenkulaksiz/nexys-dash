@@ -10,7 +10,6 @@ export function WithoutAuth(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
   const authLoading = useAuthStore((state) => state.authLoading);
-  const validatedUser = useAuthStore((state) => state.validatedUser);
 
   //if (auth?.authLoading) return <LoadingOverlay />;
 

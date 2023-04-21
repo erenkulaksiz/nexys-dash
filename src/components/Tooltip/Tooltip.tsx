@@ -75,7 +75,7 @@ export default function Tooltip({
           false: "px-3 py-1",
         },
         {
-          true: "border-2 border-neutral-600/20",
+          true: "border-[1px] border-neutral-600/20",
           default: outline,
         },
       ],

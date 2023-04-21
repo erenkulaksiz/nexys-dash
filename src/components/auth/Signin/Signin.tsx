@@ -1,27 +1,23 @@
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import {
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
-  EmailAuthProvider,
   signInWithPopup,
-  signInWithEmailAndPassword,
   User,
 } from "firebase/auth";
 
 import Button from "@/components/Button";
-import LoadingOverlay from "@/components/LoadingOverlay";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
 import { Log } from "@/utils";
-import { signin } from "@/stores/authStore";
+import { signin, useAuthStore } from "@/stores/authStore";
 
 export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
-  const router = useRouter();
   const [error, setError] = useState("");
+  const authLoading = useAuthStore((state) => state.authLoading);
 
   function onLoginPlatform(provider: GithubAuthProvider | GoogleAuthProvider) {
     const auth = getAuth();
@@ -32,7 +28,13 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
         Log.debug("User", user);
       })
       .catch((error) => {
-        setError(error.message);
+        if (error.code === "auth/account-exists-with-different-credential") {
+          setError("This account is already registered with another platform.");
+        } else if (error.code === "auth/popup-blocked") {
+          setError("Please enable popups to continue.");
+        } else {
+          setError(error.message);
+        }
       });
   }
 
@@ -49,22 +51,26 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
         </div>
         <Button
           onClick={() => {
+            if (authLoading) return;
             onLoginPlatform(new GoogleAuthProvider());
           }}
           size="md"
           light="bg-blue-600 text-white"
           fullWidth
+          loading={authLoading}
         >
           <FaGoogle size={16} />
           <span className="ml-2">Google</span>
         </Button>
         <Button
           onClick={() => {
+            if (authLoading) return;
             onLoginPlatform(new GithubAuthProvider());
           }}
           size="md"
           light="bg-neutral-700 text-white"
           fullWidth
+          loading={authLoading}
         >
           <FaGithub size={16} />
           <span className="ml-2">GitHub</span>

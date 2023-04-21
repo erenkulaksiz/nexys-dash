@@ -6,25 +6,23 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
 import { Log, server } from "@/utils";
-import Button from "@/components/Button";
 import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
+import Container from "@/components/Container";
 import Loading from "@/components/Loading";
+import { AddProjectCard } from "@/components/home/AddProjectCard";
 import { ProjectCard } from "@/components/home/ProjectCard";
 import { useAuthStore, refreshToken } from "@/stores/authStore";
 import { ValidateToken } from "@/utils/api/validateToken";
-import Container from "@/components/Container";
-import { MdAdd, MdSpaceDashboard, MdOutlineWarning } from "react-icons/md";
+import { MdSpaceDashboard } from "react-icons/md";
 import { WithAuth } from "@/hocs";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps, ProjectTypes } from "@/types";
 import type { GetServerSidePropsContext } from "next";
 
-export default function Home(props: NexysComponentProps) {
+export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
-  const validatedUser = useAuthStore((state) => state.validatedUser);
-
   const [loading, setLoading] = useState(true);
 
   const uid = props?.validate?.data?.uid || authUser?.uid;
@@ -58,19 +56,25 @@ export default function Home(props: NexysComponentProps) {
 
   useEffect(() => {
     if (_projects?.data?.success == false) {
-      Log.error(_projects?.data?.error);
-      if (_projects?.data?.error == "auth/id-token-expired") {
+      Log.error("Loading of projects failed", _projects?.data?.error);
+      if (
+        _projects?.data?.error == "auth/id-token-expired" ||
+        _projects?.data?.error == "auth-uid-error"
+      ) {
         (async () => {
           await refreshToken(true);
-          router.reload();
+          //router.reload();
         })();
       }
       return;
-    }
-    if (_projects?.data) {
+    } else {
       setLoading(false);
     }
   }, [_projects.data]);
+
+  useEffect(() => {
+    setLoading(_projects.isValidating);
+  }, [_projects.isValidating]);
 
   return (
     <Layout {...props} withoutLayout>
@@ -81,51 +85,42 @@ export default function Home(props: NexysComponentProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navbar />
-        <Container>
-          <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
-            <MdSpaceDashboard size={18} />
-            <h1 className="text-xl font-semibold">Projects</h1>
-            <Link href="/new">
-              <Button className="px-2">
-                <MdAdd size={18} />
-                <span className="ml-1">New Project</span>
-              </Button>
-            </Link>
+        {loading ? (
+          <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
+            <Loading size="xl" />
+            <span>Loading projects...</span>
           </div>
-        </Container>
-        <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a">
-          {loading && (
-            <div className="flex w-full justify-center">
-              <Loading size="xl" />
-            </div>
-          )}
-          {!loading &&
-            Array.isArray(_projects?.data?.data) &&
-            _projects?.data?.data.length != 0 && (
+        ) : (
+          <>
+            <Container>
+              <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
+                <MdSpaceDashboard size={20} />
+                <h1 className="text-xl font-semibold">Projects</h1>
+              </div>
+            </Container>
+            <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a">
               <Container>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
-                  {_projects?.data?.data.map((project: ProjectTypes) => (
-                    <Link
-                      key={project._id?.toString()}
-                      href={{
-                        pathname: "/project/[id]",
-                        query: { id: project._id?.toString() },
-                      }}
-                    >
-                      <ProjectCard project={project} />
-                    </Link>
-                  ))}
+                  {!loading &&
+                    Array.isArray(_projects?.data?.data) &&
+                    _projects?.data?.data.length != 0 &&
+                    _projects?.data?.data.map((project: ProjectTypes) => (
+                      <Link
+                        key={project._id?.toString()}
+                        href={{
+                          pathname: "/project/[id]",
+                          query: { id: project.name?.toString() },
+                        }}
+                      >
+                        <ProjectCard project={project} />
+                      </Link>
+                    ))}
+                  {!loading && <AddProjectCard />}
                 </div>
               </Container>
-            )}
-          {!loading &&
-            Array.isArray(_projects?.data?.data) &&
-            _projects?.data?.data?.length == 0 && (
-              <Container className="w-full flex justify-center">
-                <div>You do not have any projects.</div>
-              </Container>
-            )}
-        </div>
+            </div>
+          </>
+        )}
       </WithAuth>
     </Layout>
   );

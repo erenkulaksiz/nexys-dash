@@ -10,7 +10,6 @@ export function WithAuth(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
   const authLoading = useAuthStore((state) => state.authLoading);
-  const validatedUser = useAuthStore((state) => state.validatedUser);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +29,7 @@ export function WithAuth(props: NexysComponentProps) {
       }
       return setLoading(false);
     }
-  }, [authLoading, validatedUser]);
+  }, [authLoading]);
 
   if (loading) return <LoadingState />;
 

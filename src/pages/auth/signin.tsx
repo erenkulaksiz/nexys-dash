@@ -11,7 +11,7 @@ import {
 import { WithoutAuth } from "@/hocs";
 import type { NexysComponentProps } from "@/types";
 
-export default function Signin(props: NexysComponentProps) {
+export default function SigninPage(props: NexysComponentProps) {
   const [usingEmail, setUsingEmail] = useState<boolean>(false);
 
   return (

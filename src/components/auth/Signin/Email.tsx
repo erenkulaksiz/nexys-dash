@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -27,7 +26,6 @@ export function Email({ onBack }: { onBack?: () => void }) {
     password: "",
     login: "",
   });
-  const router = useRouter();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -129,7 +127,12 @@ export function Email({ onBack }: { onBack?: () => void }) {
                 </label>
               )}
             </div>
-            <Button className="mt-4" fullWidth type="submit">
+            <Button
+              className="mt-4"
+              fullWidth
+              type="submit"
+              loading={authLoading}
+            >
               <MdOutlineLogin />
               <span className="ml-2">Sign in</span>
             </Button>

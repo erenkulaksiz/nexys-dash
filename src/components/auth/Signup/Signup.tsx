@@ -1,5 +1,4 @@
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { sendEmailVerification } from "firebase/auth";
 
@@ -34,7 +33,6 @@ export function Signup() {
     password: "",
     signup: "",
   });
-  const router = useRouter();
   const [signupLoading, setSignupLoading] = useState<boolean>(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -121,7 +119,7 @@ export function Signup() {
 
       if (signinResult?.success) {
         if (authUser) {
-          await sendEmailVerification(authUser);
+          await sendEmailVerification(signinResult?.user);
         }
       }
 
@@ -232,7 +230,12 @@ export function Signup() {
                 icon={<RiLockPasswordLine />}
               />
             </div>
-            <Button className="mt-3" fullWidth type="submit">
+            <Button
+              className="mt-3"
+              fullWidth
+              type="submit"
+              loading={authLoading}
+            >
               <MdOutlineLogin />
               <span className="ml-2">Sign up</span>
             </Button>
@@ -242,7 +245,7 @@ export function Signup() {
               </label>
             )}
           </form>
-          <div className="w-full flex flex-row items-center">
+          <div className="w-full flex flex-row items-center gap-2">
             <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
             <span className="uppercase text-xs font-semibold text-neutral-500">
               {"have an account?"}
