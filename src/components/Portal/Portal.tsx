@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 
 import { isClient } from "@/utils";
 import type { PortalProps } from "./Portal.types";
@@ -31,5 +31,5 @@ export default function Portal({
     };
   }, [el]);
 
-  return ReactDOM.createPortal(children, el);
+  return createPortal(children, el);
 }

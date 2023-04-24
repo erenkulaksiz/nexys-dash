@@ -1,15 +1,10 @@
-import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
-
 import { connectToDatabase } from "@/mongodb";
 import { accept, reject } from "@/api/utils";
 import { LIMITS } from "@/constants";
 import * as admin from "firebase-admin";
 import { Log, formatString } from "@/utils";
-import { generateRandomUsername } from "@/api/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { UserTypes } from "@/types";
-
-import { sendEmailVerification } from "firebase/auth";
 
 const googleService = JSON.parse(process.env.GOOGLE_SERVICE || "");
 

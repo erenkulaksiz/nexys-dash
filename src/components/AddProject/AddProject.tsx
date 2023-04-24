@@ -13,7 +13,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { createProject } from "@/utils/createProject";
 import type { ProjectTypes } from "@/types";
 
-export function AddProject() {
+export default function AddProject() {
   const router = useRouter();
   const validatedUser = useAuthStore((state) => state.validatedUser);
 
@@ -39,7 +39,7 @@ export function AddProject() {
     });
 
     if (res.success) {
-      router.push("/");
+      router.push({ pathname: "/", query: { newProject: true } }, "/");
       return;
     }
 
@@ -124,6 +124,7 @@ export function AddProject() {
             type="text"
             value={state.name}
             id="projectName"
+            height="h-10"
             onChange={(e) =>
               dispatch({
                 type: AddProjectActionType.SET_NAME,
@@ -145,6 +146,7 @@ export function AddProject() {
             type="text"
             value={state.domain}
             className="pl-[54px]"
+            height="h-10"
             id="domain"
             icon={<span className="text-neutral-500">https://</span>}
             onChange={(e) =>

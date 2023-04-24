@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { accept, checkUserAuth } from "@/api/utils";
 import { projects } from "./projects";
 import { signup } from "./auth/signup";
-import { create } from "./project/create";
+import { create, data, deleteproject } from "./project";
 
 type APIReturnType = (req: NextApiRequest, res: NextApiResponse) => void;
 
@@ -12,10 +12,12 @@ export interface ControllerReturnType {
   projects: APIReturnType;
   auth: {
     signup: APIReturnType;
-  },
+  };
   project: {
     create: APIReturnType;
-  }
+    data: APIReturnType;
+    delete: APIReturnType;
+  };
 }
 
 export function Controller(): ControllerReturnType {
@@ -31,6 +33,10 @@ export function Controller(): ControllerReturnType {
     project: {
       create: (req: NextApiRequest, res: NextApiResponse) =>
         checkUserAuth({ req, res, func: create }),
-    }
-  }
+      data: (req: NextApiRequest, res: NextApiResponse) =>
+        checkUserAuth({ req, res, func: data }),
+      delete: (req: NextApiRequest, res: NextApiResponse) =>
+        checkUserAuth({ req, res, func: deleteproject }),
+    },
+  };
 }

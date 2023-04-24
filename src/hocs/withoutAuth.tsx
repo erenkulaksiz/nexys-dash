@@ -6,7 +6,7 @@ import { LoadingState } from "@/hocs";
 import { useAuthStore } from "@/stores/authStore";
 import type { NexysComponentProps } from "@/types";
 
-export function WithoutAuth(props: NexysComponentProps) {
+export default function WithoutAuth(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
   const authLoading = useAuthStore((state) => state.authLoading);

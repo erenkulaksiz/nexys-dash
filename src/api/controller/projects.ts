@@ -1,7 +1,3 @@
-import { ObjectId } from "mongodb";
-import { randomUUID } from "crypto";
-
-import { Log } from "@/utils/logger";
 import { accept, reject } from "@/api/utils";
 import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -35,6 +31,8 @@ export async function projects(
       publicKey: project.publicKey,
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
+      verified: project.verified,
+      verifiedAt: project.verifiedAt,
     };
   });
 

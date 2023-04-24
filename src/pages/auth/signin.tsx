@@ -8,7 +8,7 @@ import {
   Signin as SigninForm,
   Email as EmailSignin,
 } from "@/components/auth/Signin";
-import { WithoutAuth } from "@/hocs";
+import WithoutAuth from "@/hocs/withoutAuth";
 import type { NexysComponentProps } from "@/types";
 
 export default function SigninPage(props: NexysComponentProps) {

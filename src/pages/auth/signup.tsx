@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 import Layout from "@/components/Layout";
-import { WithoutAuth } from "@/hocs";
+import WithoutAuth from "@/hocs/withoutAuth";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import { Signup as SignupForm } from "@/components/auth/Signup";

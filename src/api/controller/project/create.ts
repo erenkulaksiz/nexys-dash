@@ -34,7 +34,7 @@ export async function create(
     .count();
 
   // Check if user has reached the limit of projects
-  if(projects >= LIMITS.MAX.RPOJECT_LENGTH){
+  if (projects >= LIMITS.MAX.RPOJECT_LENGTH) {
     return reject({ res, reason: "max-projects" });
   }
 
@@ -61,6 +61,7 @@ export async function create(
     updatedAt: Date.now(),
     publicKey: generatedApiKey,
     _id: new ObjectId(),
+    verified: false,
   };
 
   await projectsCollection.insertOne(project);

@@ -1,6 +1,14 @@
 import { ObjectId } from "mongodb";
 import type { PropsWithChildren } from "react";
 
+export interface LogTypes {
+  API_KEY: string;
+  APP_NAME: string;
+  project: string;
+  _id: string;
+  data: any;
+}
+
 export interface ProjectTypes {
   _id?: ObjectId;
   publicKey?: string;
@@ -9,7 +17,9 @@ export interface ProjectTypes {
   owner?: string;
   createdAt?: number;
   updatedAt?: number;
-  logs?: any;
+  logs?: LogTypes[];
+  verified?: boolean;
+  verifiedAt?: number;
 }
 
 export interface NexysComponentProps extends PropsWithChildren {

@@ -12,6 +12,3 @@ export function LoadingState() {
     </>
   );
 }
-
-export { WithAuth } from "./withAuth";
-export { WithoutAuth } from "./withoutAuth";

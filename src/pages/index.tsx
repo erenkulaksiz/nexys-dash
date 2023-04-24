@@ -4,18 +4,19 @@ import { useState, useEffect } from "react";
 import useSWR from "swr";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import ConfettiExplosion from "react-confetti-explosion";
 
 import { Log, server } from "@/utils";
 import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import Loading from "@/components/Loading";
-import { AddProjectCard } from "@/components/home/AddProjectCard";
-import { ProjectCard } from "@/components/home/ProjectCard";
+import AddProjectCard from "@/components/home/AddProjectCard";
+import ProjectCard from "@/components/home/ProjectCard";
 import { useAuthStore, refreshToken } from "@/stores/authStore";
 import { ValidateToken } from "@/utils/api/validateToken";
-import { MdSpaceDashboard } from "react-icons/md";
-import { WithAuth } from "@/hocs";
+import { RiDashboardFill } from "react-icons/ri";
+import WithAuth from "@/hocs/withAuth";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps, ProjectTypes } from "@/types";
 import type { GetServerSidePropsContext } from "next";
@@ -24,6 +25,7 @@ export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
   const authUser = useAuthStore((state) => state.user);
   const [loading, setLoading] = useState(true);
+  const newProject = router.query.newProject == "true" ? true : false;
 
   const uid = props?.validate?.data?.uid || authUser?.uid;
 
@@ -63,7 +65,8 @@ export default function HomePage(props: NexysComponentProps) {
       ) {
         (async () => {
           await refreshToken(true);
-          //router.reload();
+          await _projects.mutate();
+          router.reload();
         })();
       }
       return;
@@ -73,7 +76,12 @@ export default function HomePage(props: NexysComponentProps) {
   }, [_projects.data]);
 
   useEffect(() => {
-    setLoading(_projects.isValidating);
+    if (_projects.isValidating) {
+      setLoading(true);
+    } else {
+      if (_projects?.data?.success == false) return;
+      setLoading(false);
+    }
   }, [_projects.isValidating]);
 
   return (
@@ -94,7 +102,7 @@ export default function HomePage(props: NexysComponentProps) {
           <>
             <Container>
               <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
-                <MdSpaceDashboard size={20} />
+                <RiDashboardFill size={20} />
                 <h1 className="text-xl font-semibold">Projects</h1>
               </div>
             </Container>
@@ -104,17 +112,28 @@ export default function HomePage(props: NexysComponentProps) {
                   {!loading &&
                     Array.isArray(_projects?.data?.data) &&
                     _projects?.data?.data.length != 0 &&
-                    _projects?.data?.data.map((project: ProjectTypes) => (
-                      <Link
-                        key={project._id?.toString()}
-                        href={{
-                          pathname: "/project/[id]",
-                          query: { id: project.name?.toString() },
-                        }}
-                      >
-                        <ProjectCard project={project} />
-                      </Link>
-                    ))}
+                    _projects?.data?.data.map(
+                      (project: ProjectTypes, index) => (
+                        <Link
+                          key={project._id?.toString()}
+                          href={{
+                            pathname: "/project/[id]",
+                            query: { id: project.name?.toString() },
+                          }}
+                        >
+                          <ProjectCard project={project} />
+                          {_projects?.data?.data.length - 1 == index &&
+                            newProject && (
+                              <ConfettiExplosion
+                                force={0.4}
+                                duration={2000}
+                                particleCount={100}
+                                width={1920}
+                              />
+                            )}
+                        </Link>
+                      )
+                    )}
                   {!loading && <AddProjectCard />}
                 </div>
               </Container>

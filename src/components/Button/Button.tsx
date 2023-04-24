@@ -48,6 +48,7 @@ export default function Button({
       },
       {
         default: rounded,
+        "not-rounded": "rounded-none",
         false: "rounded-lg",
         true: "rounded-full",
       },

@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 
 import Navbar from "@/components/Navbar";

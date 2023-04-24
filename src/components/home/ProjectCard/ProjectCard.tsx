@@ -1,15 +1,30 @@
 import { CiShare1 } from "react-icons/ci";
+import { MdError } from "react-icons/md";
+import { HiCheckCircle } from "react-icons/hi";
 
+import Tooltip from "@/components/Tooltip";
 import Avatar from "@/components/Avatar";
 import type { ProjectCardProps } from "./ProjectCard.types";
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="relative group dark:bg-black bg-white rounded-lg p-4 h-32 cursor-pointer border-[1px] border-neutral-200 dark:border-neutral-900 hover:dark:border-neutral-300 hover:border-neutral-400">
       <div className="flex flex-row gap-2">
         <Avatar size="2xl" src="/images/avatar.png" />
         <div className="flex flex-col">
-          <span className="font-semibold text-lg">{project?.name}</span>
+          <div className="flex items-center flex-row gap-1">
+            <span className="font-semibold text-lg">{project?.name}</span>
+            <Tooltip
+              outline
+              content={project.verified ? "Verified" : "Unverified"}
+            >
+              <div
+                className={project.verified ? "text-green-600" : "text-red-600"}
+              >
+                {project.verified ? <HiCheckCircle /> : <MdError />}
+              </div>
+            </Tooltip>
+          </div>
           <span className="text-neutral-500">{project?.domain}</span>
         </div>
       </div>

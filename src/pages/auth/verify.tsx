@@ -7,11 +7,11 @@ import Container from "@/components/Container";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
 import Navbar from "@/components/Navbar";
-import { WithAuth } from "@/hocs";
-import { MdRefresh } from "react-icons/md";
+import WithAuth from "@/hocs/withAuth";
+import { MdLogout, MdRefresh } from "react-icons/md";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { Log } from "@/utils";
-import { useAuthStore, refreshToken } from "@/stores/authStore";
+import { useAuthStore, refreshToken, signout } from "@/stores/authStore";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
@@ -89,6 +89,10 @@ export default function VerifyPage(props: NexysComponentProps) {
                     <span className="ml-1">Send again</span>
                   </Button>
                 )}
+                <Button className="px-2" onClick={signout}>
+                  <MdLogout size={18} />
+                  <span className="ml-1">Sign out</span>
+                </Button>
               </div>
               {sent && (
                 <p className="text-neutral-500 text-sm">
