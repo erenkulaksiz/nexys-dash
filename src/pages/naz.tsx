@@ -38,7 +38,7 @@ export default function Naz(props: NexysComponentProps) {
           <div className="flex flex-col py-2 pb-2 pt-2 text-xl justify-center">
             <span>
               Seni sana, seni ne kadar sevdiğimi falan anlatamam. Öyle böyle bir
-              güzellik değil tarif edilemez. Çok seviyorum sevgilim.
+              güzellik değil tarif edilemez. Çok seviyorum sevgilim. {"<3"}
             </span>
           </div>
         </Container>
