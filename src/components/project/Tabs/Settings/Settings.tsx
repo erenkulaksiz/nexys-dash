@@ -6,6 +6,7 @@ import {
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
 import { MdRefresh } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { useRouter } from "next/router";
 
 import { deleteProject } from "@/utils/deleteProject";
@@ -95,10 +96,13 @@ export default function Settings() {
             <Tooltip content="This action cannot be undone!">
               <Button
                 light="dark:bg-red-700 bg-red-600"
-                className="px-4  text-white"
+                className="px-2 text-white"
                 onClick={onDelete}
               >
-                Delete Project
+                <span className="mr-1">
+                  <MdDelete size={18} />
+                </span>
+                <span>Delete Project</span>
               </Button>
             </Tooltip>
           </div>
@@ -158,30 +162,30 @@ export default function Settings() {
               output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
             })}`}</div>
           ) : (
-            <div className="w-full">
+            <div className="w-full flex flex-col gap-2 items-start">
               <div>
                 In order to get started with your project, you must verify your
                 domain with this project.
               </div>
-              <div className="mt-2">
+              <div>
                 Call this function in your client library to verify your domain.
               </div>
-              <div className="mt-2">
+              <div className="w-full">
                 <Codeblock>{`nexys.verify();`}</Codeblock>
               </div>
-              <div className="mt-2">
+              <div>
                 {
-                  "Make sure you are on your domain (not localhost), and you have added your project's public API key to your project. We check if request is made from your domain."
+                  "Make sure you are on your domain (not localhost), and you have added your project's public API key to your client library. We check if request is made from your domain."
                 }
               </div>
-              <div className="mt-2">
+              <div>
                 After calling the function, just press the button below.
               </div>
               <Button
-                className="px-4 mt-4 text-white"
+                className="px-2 dark:text-white"
                 onClick={() => router.reload()}
               >
-                <span className="mr-2">
+                <span className="mr-1">
                   <MdRefresh size={18} />
                 </span>
                 <span>Refresh</span>

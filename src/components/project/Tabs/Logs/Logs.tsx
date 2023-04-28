@@ -7,8 +7,6 @@ import { Log } from "@/utils";
 export default function Logs() {
   const project = useProjectStore((state) => state.currentProject);
 
-  Log.debug("project", project);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
       <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">

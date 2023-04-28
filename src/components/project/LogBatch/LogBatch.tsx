@@ -38,7 +38,7 @@ export default function LogBatch({ batch, type }: any) {
   return (
     <>
       {filtered.map((log: any, index: number) => {
-        return <LogCard log={log} key={log._id} data={data} />;
+        return <LogCard log={log} key={log?._id ?? log?.guid} data={data} />;
       })}
     </>
   );

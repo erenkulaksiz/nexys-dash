@@ -2,6 +2,7 @@ import Settings from "./Tabs/Settings";
 import Logs from "./Tabs/Logs";
 import Overview from "./Tabs/Overview/Overview";
 import Batches from "./Tabs/Batches/Batches";
+import { MdOutlineErrorOutline, MdOutlineError } from "react-icons/md";
 import {
   VscDebugBreakpointLogUnverified,
   VscDebugBreakpointLog,
@@ -34,12 +35,23 @@ export default [
     id: "overview",
     children: <Overview />,
   },
-  /*{
-    title: "Exceptions",
+  {
+    activeTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <MdOutlineError />
+        <span>Exceptions</span>
+      </div>
+    ),
+    nonActiveTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <MdOutlineErrorOutline />
+        <span>Exceptions</span>
+      </div>
+    ),
     id: "exceptions",
-    children: <ProjectTabs.Exceptions />,
+    children: <div>bekle</div>,
+    disabled: true,
   },
-  */
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">

@@ -1,7 +1,13 @@
 import { BuildComponent } from "@/utils/style";
 import type { ContainerProps } from "./Container.types";
 
-export default function Container({ children, className }: ContainerProps) {
+export default function Container({
+  children,
+  className,
+  hidden,
+}: ContainerProps) {
+  if (hidden) return null;
+
   return (
     <div
       className={

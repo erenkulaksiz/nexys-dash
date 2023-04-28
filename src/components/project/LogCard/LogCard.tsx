@@ -1,12 +1,9 @@
 import Link from "next/link";
-import {
-  MdOutlineError,
-  MdOutlineAccessTime,
-  MdContentCopy,
-} from "react-icons/md";
+import { MdOutlineError, MdOutlineAccessTime } from "react-icons/md";
 import { RiStackLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import JSONPretty from "react-json-pretty";
+import { FaDotCircle } from "react-icons/fa";
 
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
@@ -15,7 +12,12 @@ import { formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { useProjectStore } from "@/stores/projectStore";
 
-export default function LogCard({ log, data, viewingBatch }: any) {
+export default function LogCard({
+  log,
+  data,
+  viewingBatch,
+  logSelected = false,
+}: any) {
   const project = useProjectStore((state) => state.currentProject);
 
   const isTypeError =
@@ -29,7 +31,7 @@ export default function LogCard({ log, data, viewingBatch }: any) {
     <div
       className={
         BuildComponent({
-          defaultClasses: "flex flex-col border-[1px] rounded-lg p-3",
+          defaultClasses: "relative flex flex-col border-[1px] rounded-lg p-3",
           conditionalClasses: [
             {
               true: "border-red-400 dark:border-red-700",
@@ -40,6 +42,14 @@ export default function LogCard({ log, data, viewingBatch }: any) {
         }).classes
       }
     >
+      {/*<div className="absolute -right-2 -top-2 text-black dark:text-white">
+        <Tooltip content="Unread">
+          <FaDotCircle size={24} />
+        </Tooltip>
+    </div>*/}
+      {logSelected && (
+        <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl"></div>
+      )}
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-row justify-between items-center">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">

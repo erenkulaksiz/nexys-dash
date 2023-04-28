@@ -1,6 +1,7 @@
 import { RiDashboard3Line } from "react-icons/ri";
 import { RxActivityLog } from "react-icons/rx";
 import { IoFlagOutline } from "react-icons/io5";
+import CountUp from "react-countup";
 
 import LogBatch from "../../LogBatch";
 import { useProjectStore } from "@/stores/projectStore";
@@ -18,7 +19,7 @@ export default function Overview() {
           </div>
           <div className="p-4 flex flex-col items-center gap-2">
             <div className="w-24 h-24 font-semibold text-2xl flex items-center justify-center border-4 border-green-600 text-green-600 rounded-full">
-              94
+              <CountUp end={98} duration={2} />
             </div>
             <span className="text-lg">Nearly bug free</span>
           </div>

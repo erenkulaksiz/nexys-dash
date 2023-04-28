@@ -29,7 +29,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
   }
 
   return (
-    <nav className="sticky top-0 pl-4 pr-4 py-4 w-full z-50 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+    <nav className="sticky top-0  py-4 w-full z-50 border-b-[1px] border-neutral-200 dark:border-neutral-900">
       <Container className="flex justify-between ">
         <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-md -z-10"></div>
         <Link

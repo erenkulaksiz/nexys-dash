@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useMemo } from "react";
 
 import { MdOutlineAccessTime } from "react-icons/md";
 import { Log, formatDateToHuman } from "@/utils";
@@ -10,19 +11,28 @@ import Button from "@/components/Button";
 export default function BatchCard({ batch }: { batch: any }) {
   const project = useProjectStore((state) => state.currentProject);
 
-  const batches = batch?.data?.logs?.reduce((acc: any, log: any) => {
-    if (!acc[log?.options?.type]) {
-      acc[log?.options?.type] = [];
-    }
-    acc[log?.options?.type].push(log);
-    return acc;
-  }, {});
-  const batchTypeLengths = Object.keys(batches).map((key) => {
-    return {
-      type: key,
-      length: batches[key].length,
-    };
-  });
+  const batches = useMemo(
+    () =>
+      batch?.data?.logs?.reduce((acc: any, log: any) => {
+        if (!acc[log?.options?.type]) {
+          acc[log?.options?.type] = [];
+        }
+        acc[log?.options?.type].push(log);
+        return acc;
+      }, {}),
+    [batch?.data?.logs]
+  );
+
+  const batchTypeLengths = useMemo(
+    () =>
+      Object.keys(batches).map((key) => {
+        return {
+          type: key,
+          length: batches[key].length,
+        };
+      }),
+    [batches]
+  );
 
   return (
     <div className="flex flex-col border-[1px] rounded-lg p-3 border-neutral-200 dark:border-neutral-900">

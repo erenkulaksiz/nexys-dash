@@ -8,9 +8,13 @@ function Tab({ children, id, className }: TabProps) {
 
   const BuildTab = BuildComponent({
     name: "Tab",
-    defaultClasses: "w-full h-8 min-h-8 flex flex-row relative",
+    defaultClasses:
+      "w-full pb-[4px] flex flex-row overflow-x-auto overflow-y-hidden relative",
     extraClasses: className,
   });
+
+  if (!Array.isArray(children) || children.length < 2)
+    throw new Error("Tab component must have multiple children");
 
   return (
     <>
@@ -22,7 +26,7 @@ function Tab({ children, id, className }: TabProps) {
             return (
               <label
                 htmlFor={props.id}
-                className="group h-full flex items-center justify-center relative px-2 cursor-pointer"
+                className="group h-8 flex items-center justify-center relative px-2 cursor-pointer"
                 key={props.id}
               >
                 <input
@@ -50,12 +54,7 @@ function Tab({ children, id, className }: TabProps) {
   );
 }
 
-Tab.TabView = function TabView({
-  children,
-  activeTitle,
-  nonActiveTitle,
-  id,
-}: TabViewProps) {
+Tab.TabView = function TabView({ children }: TabViewProps) {
   return <>{children}</>;
 };
 

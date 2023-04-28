@@ -28,12 +28,12 @@ export default function Codeblock({
   }, [copied]);
 
   return (
-    <div className="group border-2 p-2 w-full relative rounded-lg border-neutral-300/30 dark:border-neutral-900/50">
+    <div className="group border-[1px] p-2 w-full relative rounded-lg border-neutral-200 dark:border-neutral-900">
       {children ? children : "Empty"}
       <div className="group-hover:flex hidden absolute right-2 top-[6px] items-center">
         <Tooltip outline content={copied ? "Copied!" : "Copy"}>
           <button
-            className="p-1 rounded-lg border-2 border-neutral-300/30 dark:border-neutral-900/50"
+            className="p-1 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900"
             onClick={onCopy}
           >
             {copied ? <MdCheck /> : <MdContentCopy />}
