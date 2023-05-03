@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 
-import { MdOutlineAccessTime } from "react-icons/md";
+import { MdOutlineAccessTime, MdPerson } from "react-icons/md";
 import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { TbListDetails } from "react-icons/tb";
@@ -43,13 +43,13 @@ export default function BatchCard({ batch }: { batch: any }) {
               <MdOutlineAccessTime />
             </div>
             <span>
-              {batch
-                ? "-"
-                : formatDateToHuman({
+              {batch?.ts
+                ? formatDateToHuman({
                     date: batch?.ts,
                     output:
                       "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
-                  })}
+                  })
+                : "-"}
             </span>
           </div>
           <Link
@@ -64,6 +64,12 @@ export default function BatchCard({ batch }: { batch: any }) {
             </Button>
           </Link>
         </div>
+        {batch?.data?.config?.user && (
+          <div className="flex flex-row gap-1 text-sm text-neutral-500 items-center">
+            <MdPerson />
+            <span>{`User: ${batch?.data?.config?.user}`}</span>
+          </div>
+        )}
         <div className="flex flex-row items-center gap-2">
           <ul className="flex flex-row gap-2 items-center">
             {batchTypeLengths

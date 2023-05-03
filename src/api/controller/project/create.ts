@@ -1,9 +1,11 @@
 import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 
+import { SendTelegramMessage } from "@/utils/telegram";
 import { accept, reject } from "@/api/utils";
 import { connectToDatabase } from "@/mongodb";
 import { LIMITS } from "@/constants";
+import { formatDateToHuman, version, server } from "@/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
@@ -34,7 +36,7 @@ export async function create(
     .count();
 
   // Check if user has reached the limit of projects
-  if (projects >= LIMITS.MAX.RPOJECT_LENGTH) {
+  if (projects >= LIMITS.MAX.PROJECT_LENGTH) {
     return reject({ res, reason: "max-projects" });
   }
 
@@ -62,9 +64,32 @@ export async function create(
     publicKey: generatedApiKey,
     _id: new ObjectId(),
     verified: false,
+    verifiedAt: 0,
+    localhostAccess: false,
+    logUsage: 0,
+    logUsageLimit: LIMITS.MAX.LOG_USAGE_LIMIT,
   };
 
   await projectsCollection.insertOne(project);
+
+  await SendTelegramMessage({
+    message: `PROJECT CREATED
+NAME: ${project.name}
+DOMAIN: ${project.domain}
+USERNAME: @${user?.username}
+EMAIL: ${validateUser.decodedToken.email}
+UID: ${validateUser.decodedToken.user_id}
+TIME: ${formatDateToHuman({
+      date: Date.now(),
+      output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+    })}
+TS: ${Date.now()}
+URL: ${server}
+ENV: ${process.env.NODE_ENV}
+VER: ${version}
+PROVIDER: ${validateUser.decodedToken.firebase.sign_in_provider}
+PLATFORM: web`,
+  });
 
   return accept({ res });
 }

@@ -1,11 +1,7 @@
 import {
   getAuth,
-  GithubAuthProvider,
-  GoogleAuthProvider,
   EmailAuthProvider,
-  signInWithPopup,
   signInWithEmailAndPassword,
-  User,
 } from "firebase/auth";
 import { setLoading } from "@/stores/authStore";
 
@@ -23,7 +19,10 @@ export interface signinReturnTypes {
   error?: any;
 }
 
-export async function signin({email, password}: signinParams): Promise<signinReturnTypes> {
+export async function signin({
+  email,
+  password,
+}: signinParams): Promise<signinReturnTypes> {
   const auth = getAuth();
   const provider = new EmailAuthProvider();
 
@@ -38,11 +37,7 @@ export async function signin({email, password}: signinParams): Promise<signinRet
 
   setLoading(true);
 
-  const userCredential = await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  )
+  const userCredential = await signInWithEmailAndPassword(auth, email, password)
     .then(async (result) => {
       const { user } = result;
       const token = await user?.getIdToken();
@@ -58,7 +53,7 @@ export async function signin({email, password}: signinParams): Promise<signinRet
 
       setLoading(false);
 
-      return { success: false,  error: { errorCode, errorMessage } };
+      return { success: false, error: { errorCode, errorMessage } };
     });
 
   return userCredential;

@@ -2,6 +2,7 @@ export interface TabProps {
   children: React.ReactNode | React.ReactNode[];
   id: string;
   className?: string;
+  onTabChange?: ({ index, id }: { index: number; id: string }) => void;
 }
 
 export interface TabViewProps {

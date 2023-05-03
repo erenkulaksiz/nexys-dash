@@ -58,7 +58,7 @@ export default function VerifyPage(props: NexysComponentProps) {
     <Layout withoutLayout {...props}>
       <WithAuth {...props}>
         <Head>
-          <title>Verify</title>
+          <title>Nex · Verify</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <main className="h-full">
@@ -85,12 +85,12 @@ export default function VerifyPage(props: NexysComponentProps) {
                     onClick={onSendAgain}
                     loading={sending}
                   >
-                    <MdRefresh size={18} />
+                    <MdRefresh />
                     <span className="ml-1">Send again</span>
                   </Button>
                 )}
                 <Button className="px-2" onClick={signout}>
-                  <MdLogout size={18} />
+                  <MdLogout />
                   <span className="ml-1">Sign out</span>
                 </Button>
               </div>

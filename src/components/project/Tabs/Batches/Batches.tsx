@@ -1,9 +1,8 @@
-import { RxActivityLog } from "react-icons/rx";
+import { RiFilePaperFill } from "react-icons/ri";
 
-import Tooltip from "@/components/Tooltip/Tooltip";
-import Button from "@/components/Button/Button";
 import BatchCard from "../../BatchCard/BatchCard";
 import { useProjectStore } from "@/stores/projectStore";
+import { Log } from "@/utils";
 
 export default function Batches() {
   const project = useProjectStore((state) => state.currentProject);
@@ -14,7 +13,7 @@ export default function Batches() {
         <div className="flex flex-col w-full h-full">
           <div className="flex flex-row justify-between items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <div className="flex flex-row gap-2 items-center">
-              <RxActivityLog size={14} />
+              <RiFilePaperFill />
               <span>Batches</span>
             </div>
           </div>
@@ -26,9 +25,11 @@ export default function Batches() {
               Array.isArray(project.logs) &&
               project.logs &&
               project.logs.length > 0 &&
-              project.logs.map((batch) => {
-                return <BatchCard key={batch._id} batch={batch} />;
-              })}
+              project.logs
+                .sort((a, b) => b.ts - a.ts)
+                .map((batch) => {
+                  return <BatchCard key={batch._id} batch={batch} />;
+                })}
           </div>
         </div>
       </div>

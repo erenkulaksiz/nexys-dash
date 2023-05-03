@@ -1,5 +1,10 @@
+import { ObjectId } from "mongodb";
+
 import { connectToDatabase } from "@/mongodb";
 import { accept, reject } from "@/api/utils";
+import { Log } from "@/utils";
+import { ProjectTypes } from "@/types";
+import { LIMITS } from "@/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type NextApiRequestWithQuery = NextApiRequest & {
@@ -33,12 +38,56 @@ export default async function handler(
 
   const data = req.body;
 
-  const project = await projectsCollection.findOne({
+  const project = (await projectsCollection.findOne({
     publicKey: API_KEY,
     _deleted: { $in: [null, false] },
-  });
+  })) as ProjectTypes;
 
   if (!project) return reject({ res, reason: "api-key" });
+
+  if (project.name !== APP_NAME) return reject({ res, reason: "app-name" });
+  //if (project.verified !== true) return reject({ res, reason: "not-verified" });
+
+  const isDomainHostSame = project.domain === req.headers.host;
+
+  Log.debug(
+    "isDomainHostSame",
+    isDomainHostSame,
+    " project?.localhostAccess",
+    project?.localhostAccess,
+    " project?.domain",
+    project?.domain,
+    " req.headers.host",
+    req.headers.host
+  );
+
+  if (project?.localhostAccess !== true && !isDomainHostSame)
+    return reject({ res, reason: "domain" });
+
+  const logUsage = project.logUsage || 0;
+  const logUsageLimit = project.logUsageLimit || LIMITS.MAX.LOG_USAGE_LIMIT;
+  const logUsageLimitReached = logUsage >= logUsageLimit;
+
+  if (logUsageLimitReached) {
+    return reject({
+      res,
+      reason: `log-usage-limit-${logUsage}-${logUsageLimit}`,
+    });
+  }
+
+  await projectsCollection.updateOne(
+    { _id: new ObjectId(project._id) },
+    {
+      $set: {
+        updatedAt: new Date().getTime(),
+        verified: isDomainHostSame ? true : false,
+        verifiedAt: isDomainHostSame ? new Date().getTime() : 0,
+      },
+      $inc: {
+        logUsage: 1,
+      },
+    }
+  );
 
   const logsCollection = await db.collection("logs");
   await logsCollection.insertOne({
@@ -46,11 +95,8 @@ export default async function handler(
     API_KEY,
     APP_NAME,
     project: project._id,
-    ts: new Date().getTime(),
+    createdAt: new Date().getTime(),
   });
-
-  console.log("slug", API_KEY, APP_NAME);
-  console.log("body", req.body);
 
   return accept({
     res,
@@ -64,6 +110,8 @@ export default async function handler(
         version: "1.0.0",
         dashboard: "1.0.0",
       },
+      logUsage: logUsage + 1,
+      logUsageLimit,
     },
   });
 }

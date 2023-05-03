@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { MdPerson, MdPersonOutline } from "react-icons/md";
 import {
   RiFilePaperLine,
@@ -15,7 +16,7 @@ import JSONPretty from "react-json-pretty";
 
 import Container from "@/components/Container";
 import Tab from "@/components/Tab";
-import Codeblock from "@/components/Codeblock/Codeblock";
+import Codeblock from "@/components/Codeblock";
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
 import LogCard from "@/components/project/LogCard";
@@ -40,11 +41,10 @@ export default function BatchPage(props: NexysComponentProps) {
 
   const { batchId, logGuid } = router.query;
 
-  const currentBatch = project?.data?.data?.logs?.find(
-    (batch: any) => batch._id == batchId
+  const currentBatch = useMemo(
+    () => project?.data?.data?.logs?.find((batch: any) => batch._id == batchId),
+    [project?.data?.data?.logs, batchId]
   );
-
-  Log.debug("LogGuid", logGuid);
 
   return (
     <Layout {...props} withoutLayout>
@@ -55,7 +55,7 @@ export default function BatchPage(props: NexysComponentProps) {
               ? "Loading..."
               : notFound
               ? "Not Found"
-              : `${project?.data?.data?.name} - Nexys`}
+              : `Nex · ${project?.data?.data?.name}`}
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
@@ -248,7 +248,7 @@ export default function BatchPage(props: NexysComponentProps) {
                     <div className="flex flex-col gap-2 w-full">
                       <label htmlFor="isClient">Is Client</label>
                       <Codeblock data={currentBatch?.data?.env?.isClient}>
-                        {currentBatch?.data?.env?.isClient}
+                        {currentBatch?.data?.env?.isClient ? "true" : "false"}
                       </Codeblock>
                     </div>
                   </div>
@@ -292,13 +292,13 @@ export default function BatchPage(props: NexysComponentProps) {
                 activeTitle={
                   <div className="flex flex-row items-center gap-1">
                     <IoMdSettings />
-                    <span>Settings</span>
+                    <span>Options</span>
                   </div>
                 }
                 nonActiveTitle={
                   <div className="flex flex-row items-center gap-1">
                     <IoSettingsOutline />
-                    <span>Settings</span>
+                    <span>Options</span>
                   </div>
                 }
                 id="options"

@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 
 import { accept, reject } from "@/api/utils";
+import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
 
-export async function data(
+export async function setting(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType
@@ -14,12 +15,17 @@ export async function data(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { id: string };
-  if (!body || !body.id) return reject({ res });
-  const { id: name } = body;
+  const body = req.body as { id: string; localhostAccess: boolean };
+  if (!body || !body.id || body.localhostAccess == null) return reject({ res });
+
+  const { id, localhostAccess } = body;
+
+  if (!ObjectId.isValid(id) || !id) {
+    return reject({ res, reason: "no-id" });
+  }
 
   const _project = (await projectsCollection.findOne({
-    name: name,
+    _id: new ObjectId(id),
     _deleted: { $in: [null, false] },
   })) as ProjectTypes | null;
 
@@ -29,27 +35,16 @@ export async function data(
 
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
-  const logsCollection = await db.collection("logs");
-  const logs = await logsCollection
-    .find({
-      project: new ObjectId(_project._id),
-    })
-    .toArray();
+  await projectsCollection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        localhostAccess: localhostAccess ? true : false,
+      },
+    }
+  );
 
-  const project = {
-    name: _project.name,
-    domain: _project.domain,
-    _id: _project._id,
-    createdAt: _project.createdAt,
-    updatedAt: _project.updatedAt,
-    publicKey: _project.publicKey,
-    logs,
-    verified: _project.verified ? true : false,
-    verifiedAt: _project.verifiedAt,
-    localhostAccess: _project.localhostAccess ? true : false,
-    logUsage: _project?.logUsage,
-    logUsageLimit: _project?.logUsageLimit,
-  };
+  Log.debug("Project setting", _project, localhostAccess);
 
-  return accept({ res, data: project });
+  return accept({ res });
 }

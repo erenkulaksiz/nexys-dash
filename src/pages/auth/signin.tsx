@@ -9,16 +9,15 @@ import {
   Email as EmailSignin,
 } from "@/components/auth/Signin";
 import WithoutAuth from "@/hocs/withoutAuth";
-import type { NexysComponentProps } from "@/types";
 
-export default function SigninPage(props: NexysComponentProps) {
+export default function SigninPage() {
   const [usingEmail, setUsingEmail] = useState<boolean>(false);
 
   return (
     <Layout withoutLayout>
       <WithoutAuth>
         <Head>
-          <title>Sign in</title>
+          <title>Nex · Sign in</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <main className="h-full">

@@ -3,8 +3,13 @@ import { BuildComponent } from "@/utils/style";
 
 import type { TabProps, TabViewProps } from "./Tab.types";
 
-function Tab({ children, id, className }: TabProps) {
+function Tab({ children, id, className, onTabChange }: TabProps) {
   const [activeTab, setActiveTab] = useState<number>(0); // index of active tab
+
+  function handleTabChange({ index, id }: { index: number; id: string }) {
+    setActiveTab(index);
+    typeof onTabChange == "function" && onTabChange({ id, index });
+  }
 
   const BuildTab = BuildComponent({
     name: "Tab",
@@ -36,7 +41,7 @@ function Tab({ children, id, className }: TabProps) {
                   value={props.id}
                   className="hidden peer"
                   checked={activeTab === index}
-                  onChange={() => setActiveTab(index)}
+                  onChange={() => handleTabChange({ index, id: props.id })}
                   disabled={props?.disabled}
                 />
                 <div className="z-20 peer-checked:text-black dark:peer-checked:text-white dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-neutral-800 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400 break-keep">

@@ -6,11 +6,12 @@ import { MdClose, MdAdd } from "react-icons/md";
 import { reducer } from "./reducer";
 import Button from "../Button";
 import Input from "../Input";
-import { AddProjectActionType, AddProjectProps } from "./AddProject.types";
+import { AddProjectActionType } from "./AddProject.types";
 import { formatString, Log } from "@/utils";
 import { LIMITS } from "@/constants";
 import { useAuthStore } from "@/stores/authStore";
-import { createProject } from "@/utils/createProject";
+import isValidURL from "@/utils/isValidUrl";
+import { createProject } from "@/utils/service/project/create";
 import type { ProjectTypes } from "@/types";
 
 export default function AddProject() {
@@ -46,7 +47,7 @@ export default function AddProject() {
     if (res.error == "max-projects") {
       dispatch({
         type: AddProjectActionType.SET_PROJECT_ERROR,
-        payload: `You can create maximum of ${LIMITS.MAX.RPOJECT_LENGTH} projects.`,
+        payload: `You can create maximum of ${LIMITS.MAX.PROJECT_LENGTH} projects.`,
       });
     } else if (res.error == "domain-exists") {
       dispatch({
@@ -71,13 +72,6 @@ export default function AddProject() {
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    function isValidURL(str: string) {
-      var res = str.match(
-        /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
-      );
-      return res !== null;
-    }
 
     if (
       state.domain.trim().length === 0 &&
@@ -106,6 +100,20 @@ export default function AddProject() {
       });
       return;
     }
+    if (state.domain.split(".").length > 2) {
+      dispatch({
+        type: AddProjectActionType.SET_DOMAIN_ERROR,
+        payload: "Subdomains are not allowed.",
+      });
+      return;
+    }
+    if (state.domain.includes("https://") || state.domain.includes("http://")) {
+      dispatch({
+        type: AddProjectActionType.SET_DOMAIN_ERROR,
+        payload: "Please remove https:// or http:// from the domain.",
+      });
+      return;
+    }
 
     onAddProject({ name: state.name, domain: state.domain });
   }
@@ -114,11 +122,11 @@ export default function AddProject() {
     <div className="flex flex-col justify-between dark:bg-black bg-white pb-4 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <h1 className="text-xl p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
-          Project Information
+          New Project
         </h1>
         <div className="flex flex-col gap-2 px-4">
-          <label htmlFor="projectName" className="text-sm">
-            Name
+          <label htmlFor="projectName" className="font-semibold">
+            App Name
           </label>
           <Input
             type="text"
@@ -134,12 +142,16 @@ export default function AddProject() {
             placeholder="Project Name"
             maxLength={LIMITS.MAX.PROJECT_NAME_CHARACTER_LENGTH}
           />
+          <span className="text-neutral-500 text-sm">
+            This name acts as app name for your project. It must be unique and
+            can only contain letters.
+          </span>
           {state.errors.name && (
             <label className="text-red-600 font-semibold text-xs">
               {state.errors.name}
             </label>
           )}
-          <label htmlFor="domain" className="text-sm">
+          <label htmlFor="domain" className="font-semibold">
             Domain
           </label>
           <Input
@@ -158,12 +170,21 @@ export default function AddProject() {
             placeholder="example.com"
             maxLength={LIMITS.MAX.PROJECT_DOMAIN_CHARACTER_LENGTH}
           />
+          <span className="text-neutral-500 text-sm">
+            Domain is used to identify your project. It must be unique and can
+            only contain letters.
+          </span>
           {state.errors.domain && (
             <label className="text-red-600 font-semibold text-xs">
               {state.errors.domain}
             </label>
           )}
         </div>
+        {state.errors.project && (
+          <label className="text-red-600 font-semibold text-xs px-4">
+            {state.errors.project}
+          </label>
+        )}
         <div className="flex flex-row justify-end gap-2 px-4">
           <Link href="/">
             <Button type="button" className="px-2" loading={loading}>
@@ -178,11 +199,6 @@ export default function AddProject() {
             </Button>
           )}
         </div>
-        {state.errors.project && (
-          <label className="text-red-600 font-semibold text-xs px-4">
-            {state.errors.project}
-          </label>
-        )}
       </form>
     </div>
   );

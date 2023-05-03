@@ -5,14 +5,13 @@ import WithoutAuth from "@/hocs/withoutAuth";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import { Signup as SignupForm } from "@/components/auth/Signup";
-import type { NexysComponentProps } from "@/types";
 
-export default function SignupPage(props: NexysComponentProps) {
+export default function SignupPage() {
   return (
-    <Layout withoutLayout {...props}>
+    <Layout withoutLayout>
       <WithoutAuth>
         <Head>
-          <title>Sign up</title>
+          <title>Nex · Sign up</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <main className="h-full">

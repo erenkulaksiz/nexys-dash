@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <>
       <Head>
-        <title>404</title>
+        <title>Nex · 404</title>
       </Head>
       <div className="flex flex-col items-center justify-center h-full gap-4">
         <h1 className="text-7xl font-semibold">404</h1>

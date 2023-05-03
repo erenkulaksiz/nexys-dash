@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -143,9 +144,11 @@ export function Email({ onBack }: { onBack?: () => void }) {
             )}
             <div className="flex flex-row items-center justify-center gap-2 w-full mt-1">
               <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
-              <div className="flex items-center justify-center text-xs font-semibold text-neutral-500 uppercase">
-                forgot password?
-              </div>
+              <Link href="/auth/forgot-password">
+                <div className="flex items-center justify-center text-xs font-semibold text-neutral-500 uppercase">
+                  forgot password?
+                </div>
+              </Link>
               <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
             </div>
           </form>

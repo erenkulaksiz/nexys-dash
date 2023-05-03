@@ -7,6 +7,7 @@ export interface LogTypes {
   project: string;
   _id: string;
   data: any;
+  ts: number;
 }
 
 export interface ProjectTypes {
@@ -20,6 +21,9 @@ export interface ProjectTypes {
   logs?: LogTypes[];
   verified?: boolean;
   verifiedAt?: number;
+  localhostAccess?: boolean;
+  logUsage?: number;
+  logUsageLimit?: number;
 }
 
 export interface NexysComponentProps extends PropsWithChildren {

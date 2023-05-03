@@ -29,7 +29,7 @@ export default function HomePage(props: NexysComponentProps) {
     <Layout {...props} withoutLayout>
       <WithAuth {...props}>
         <Head>
-          <title>Nexys Dashboard</title>
+          <title>Nex · Dashboard</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>

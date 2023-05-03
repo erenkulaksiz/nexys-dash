@@ -26,8 +26,7 @@ export default function ProjectPage(props: NexysComponentProps) {
   const project = useProject({ uid: uid ?? "" });
 
   const router = useRouter();
-
-  Log.debug(router.query.p);
+  const query = router.query.id?.toString() || "";
 
   return (
     <Layout {...props} withoutLayout>
@@ -38,7 +37,7 @@ export default function ProjectPage(props: NexysComponentProps) {
               ? "Loading..."
               : notFound
               ? "Not Found"
-              : `${project?.data?.data?.name} - Nexys`}
+              : `Nex · ${project?.data?.data?.name}`}
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
@@ -63,7 +62,22 @@ export default function ProjectPage(props: NexysComponentProps) {
             <>
               <Header />
               <Container className="pt-1">
-                <Tab id="dashboard">
+                <Tab
+                  id="dashboard"
+                  onTabChange={({ id, index }) => {
+                    Log.debug("Tab changed", index, id);
+                    /*
+                    router.push(
+                      {
+                        pathname: `/project/[id]`,
+                        query,
+                      },
+                      `/project/${query}?p=${id}`,
+                      { shallow: true }
+                    );
+                    */
+                  }}
+                >
                   {Tabs.map((tab) => (
                     <Tab.TabView
                       activeTitle={tab.activeTitle}

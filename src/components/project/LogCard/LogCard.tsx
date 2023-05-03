@@ -3,11 +3,9 @@ import { MdOutlineError, MdOutlineAccessTime } from "react-icons/md";
 import { RiStackLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import JSONPretty from "react-json-pretty";
-import { FaDotCircle } from "react-icons/fa";
 
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
-import Tooltip from "@/components/Tooltip/Tooltip";
 import { formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { useProjectStore } from "@/stores/projectStore";

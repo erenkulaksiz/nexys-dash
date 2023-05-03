@@ -16,7 +16,7 @@ export default function Naz(props: NexysComponentProps) {
   return (
     <Layout withoutLayout {...props}>
       <Head>
-        <title>{"Naz <3"}</title>
+        <title>{"Nex · Naz <3"}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Navbar />

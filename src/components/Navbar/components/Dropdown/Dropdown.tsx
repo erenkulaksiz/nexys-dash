@@ -51,7 +51,7 @@ export default function Dropdown() {
           </div>
         </summary>
         <div
-          className="flex flex-col gap-1 w-36 items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black/80 filter backdrop-blur-md bg-white/80 border-[1px] border-neutral-200 dark:border-neutral-900 shadow-lg shadow-neutral-200/50 dark:shadow-neutral-900/20"
+          className="flex flex-col gap-1 w-36 items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 shadow-neutral-200/50 dark:shadow-neutral-900/20"
           style={{ zIndex: 999 }}
         >
           <div className="text-xs font-semibold w-full flex justify-end">{`@${validatedUser?.username}`}</div>
