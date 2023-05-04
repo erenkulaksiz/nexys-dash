@@ -157,6 +157,18 @@ export default function LogCard({
             </div>
           </div>
         )}
+        {log?.options?.action && (
+          <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-1 items-center">
+              <div>Action</div>
+            </div>
+            <div>
+              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
+                {log?.options?.action}
+              </span>
+            </div>
+          </div>
+        )}
         {log?.data?.filename && (
           <div className="flex flex-row gap-2 items-center">
             <div className="flex flex-row gap-1 items-center">

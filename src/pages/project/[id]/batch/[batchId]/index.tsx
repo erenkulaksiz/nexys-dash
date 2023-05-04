@@ -33,7 +33,7 @@ import type { NexysComponentProps } from "@/types";
 
 export default function BatchPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
-  const projectLoading = useProjectStore((state) => state.loading);
+  const loading = useProjectStore((state) => state.loading);
   const authUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
@@ -51,7 +51,7 @@ export default function BatchPage(props: NexysComponentProps) {
       <WithAuth {...props}>
         <Head>
           <title>
-            {projectLoading
+            {loading
               ? "Loading..."
               : notFound
               ? "Not Found"
@@ -76,252 +76,284 @@ export default function BatchPage(props: NexysComponentProps) {
             </div>
           )}
           <Container className="pt-1" hidden={currentBatch == null}>
-            <Tab id="batchpage">
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <RiFilePaperFill />
-                    <span>Batch</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <RiFilePaperLine />
-                    <span>Batch</span>
-                  </div>
-                }
-                id="Batch"
-              >
-                <div className="flex flex-col gap-2 py-2">
-                  {currentBatch?.data?.logs
-                    ?.sort((a: any, b: any) => b.ts - a.ts)
-                    .map((log: any) => {
-                      return (
-                        <LogCard
-                          log={log}
-                          data={project?.data?.data}
-                          key={log.guid}
-                          logSelected={logGuid == log.guid}
-                          viewingBatch
-                        />
-                      );
-                    })}
-                </div>
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <MdPerson />
-                    <span>User</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <MdPersonOutline />
-                    <span>User</span>
-                  </div>
-                }
-                id="user"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="configUser">User</label>
-                      <Codeblock data={currentBatch?.data?.config?.user}>
-                        {currentBatch?.data?.config?.user}
-                      </Codeblock>
+            {!loading && (
+              <Tab id="batchpage">
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <RiFilePaperFill />
+                      <span>Batch</span>
                     </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="configClient">Client</label>
-                      <Codeblock data={currentBatch?.data?.config?.client}>
-                        {currentBatch?.data?.config?.client}
-                      </Codeblock>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <RiFilePaperLine />
+                      <span>Batch</span>
                     </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="version">App Version</label>
-                      <Codeblock data={currentBatch?.data?.config?.appVersion}>
-                        {currentBatch?.data?.config?.appVersion}
-                      </Codeblock>
-                    </div>
-                  </div>
-                  <div></div>
-                </div>
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <RiDeviceFill />
-                    <span>Device</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <RiDeviceLine />
-                    <span>Device</span>
-                  </div>
-                }
-                id="device"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="userAgent">User Agent</label>
-                      <Codeblock
-                        data={currentBatch?.data?.deviceData?.userAgent}
-                      >
-                        {currentBatch?.data?.deviceData?.userAgent}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="language">Language</label>
-                      <Codeblock
-                        data={currentBatch?.data?.deviceData?.language}
-                      >
-                        {currentBatch?.data?.deviceData?.language}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="platform">Platform</label>
-                      <Codeblock
-                        data={currentBatch?.data?.deviceData?.platform}
-                      >
-                        {currentBatch?.data?.deviceData?.platform}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="platform">Screen</label>
-                      <Codeblock data={currentBatch?.data?.deviceData?.screen}>
-                        <div className="text-xs">
-                          <JSONPretty
-                            data={currentBatch?.data?.deviceData?.screen}
+                  }
+                  id="Batch"
+                >
+                  <div className="flex flex-col gap-2 py-2">
+                    {currentBatch?.data?.logs
+                      ?.sort((a: any, b: any) => b.ts - a.ts)
+                      .map((log: any) => {
+                        return (
+                          <LogCard
+                            log={log}
+                            data={project?.data?.data}
+                            key={log.guid}
+                            logSelected={logGuid == log.guid}
+                            viewingBatch
                           />
-                        </div>
-                      </Codeblock>
+                        );
+                      })}
+                  </div>
+                </Tab.TabView>
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <MdPerson />
+                      <span>User</span>
                     </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="deviceMemory">Device Memory</label>
-                      <Codeblock
-                        data={currentBatch?.data?.deviceData?.deviceMemory}
-                      >
-                        {currentBatch?.data?.deviceData?.deviceMemory}
-                      </Codeblock>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <MdPersonOutline />
+                      <span>User</span>
                     </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="deviceMemory">Vendor</label>
-                      <Codeblock data={currentBatch?.data?.deviceData?.vendor}>
-                        {currentBatch?.data?.deviceData?.vendor}
-                      </Codeblock>
-                    </div>
-                  </div>
-                  <div></div>
-                </div>
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <HiServer />
-                    <span>Environment</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <HiOutlineServer />
-                    <span>Environment</span>
-                  </div>
-                }
-                id="env"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="type">Type</label>
-                      <Codeblock data={currentBatch?.data?.env?.type}>
-                        {currentBatch?.data?.env?.type}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="p_version">Version</label>
-                      <Codeblock data={currentBatch?.data?.env?.ver}>
-                        {currentBatch?.data?.env?.ver}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="isClient">Is Client</label>
-                      <Codeblock data={currentBatch?.data?.env?.isClient}>
-                        {currentBatch?.data?.env?.isClient ? "true" : "false"}
-                      </Codeblock>
-                    </div>
-                  </div>
-                </div>
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <HiInbox />
-                    <span>Package</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <HiOutlineInbox />
-                    <span>Package</span>
-                  </div>
-                }
-                id="package"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="package">Package</label>
-                      <Codeblock
-                        data={currentBatch?.data?.package?.libraryName}
-                      >
-                        {currentBatch?.data?.package?.libraryName}
-                      </Codeblock>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <label htmlFor="version">Version</label>
-                      <Codeblock data={currentBatch?.data?.package?.version}>
-                        {currentBatch?.data?.package?.version}
-                      </Codeblock>
-                    </div>
-                  </div>
-                </div>
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <IoMdSettings />
-                    <span>Options</span>
-                  </div>
-                }
-                nonActiveTitle={
-                  <div className="flex flex-row items-center gap-1">
-                    <IoSettingsOutline />
-                    <span>Options</span>
-                  </div>
-                }
-                id="options"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2 w-full">
-                      <div className="flex flex-col">
-                        <label htmlFor="poptions">Options</label>
-                        <span className="text-sm text-neutral-400">
-                          Package options.
-                        </span>
+                  }
+                  id="user"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="configUser">User</label>
+                        <Codeblock data={currentBatch?.data?.config?.user}>
+                          {currentBatch?.data?.config?.user}
+                        </Codeblock>
                       </div>
-                      <Codeblock data={currentBatch?.data?.options}>
-                        <div className="text-xs">
-                          <JSONPretty data={currentBatch?.data?.options} />
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="configClient">Client</label>
+                        <Codeblock data={currentBatch?.data?.config?.client}>
+                          {currentBatch?.data?.config?.client}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="version">App Version</label>
+                        <Codeblock
+                          data={currentBatch?.data?.config?.appVersion}
+                        >
+                          {currentBatch?.data?.config?.appVersion}
+                        </Codeblock>
+                      </div>
+                    </div>
+                    <div></div>
+                  </div>
+                </Tab.TabView>
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <RiDeviceFill />
+                      <span>Device</span>
+                    </div>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <RiDeviceLine />
+                      <span>Device</span>
+                    </div>
+                  }
+                  id="device"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="userAgent">User Agent</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.userAgent}
+                        >
+                          {currentBatch?.data?.deviceData?.userAgent}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="language">Language</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.language}
+                        >
+                          {currentBatch?.data?.deviceData?.language}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="platform">Platform</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.platform}
+                        >
+                          {currentBatch?.data?.deviceData?.platform}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="platform">Screen</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.screen}
+                        >
+                          <div className="text-xs">
+                            <JSONPretty
+                              data={currentBatch?.data?.deviceData?.screen}
+                            />
+                          </div>
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="deviceMemory">Device Memory</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.deviceMemory}
+                        >
+                          {currentBatch?.data?.deviceData?.deviceMemory}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="deviceMemory">Vendor</label>
+                        <Codeblock
+                          data={currentBatch?.data?.deviceData?.vendor}
+                        >
+                          {currentBatch?.data?.deviceData?.vendor}
+                        </Codeblock>
+                      </div>
+                    </div>
+                    <div></div>
+                  </div>
+                </Tab.TabView>
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <HiServer />
+                      <span>Environment</span>
+                    </div>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <HiOutlineServer />
+                      <span>Environment</span>
+                    </div>
+                  }
+                  id="env"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="type">Type</label>
+                        <Codeblock data={currentBatch?.data?.env?.type}>
+                          {currentBatch?.data?.env?.type}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="p_version">Version</label>
+                        <Codeblock data={currentBatch?.data?.env?.ver}>
+                          {currentBatch?.data?.env?.ver}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="isClient">Is Client</label>
+                        <Codeblock data={currentBatch?.data?.env?.isClient}>
+                          {currentBatch?.data?.env?.isClient ? "true" : "false"}
+                        </Codeblock>
+                      </div>
+                      {currentBatch?.data?.env?.el && (
+                        <div className="flex flex-col gap-2 w-full">
+                          <label htmlFor="isClient">Body Element Count</label>
+                          <Codeblock data={currentBatch?.data?.env?.el}>
+                            {currentBatch?.data?.env?.el}
+                          </Codeblock>
                         </div>
-                      </Codeblock>
+                      )}
                     </div>
                   </div>
+                </Tab.TabView>
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <HiInbox />
+                      <span>Package</span>
+                    </div>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <HiOutlineInbox />
+                      <span>Package</span>
+                    </div>
+                  }
+                  id="package"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="package">Package</label>
+                        <Codeblock
+                          data={currentBatch?.data?.package?.libraryName}
+                        >
+                          {currentBatch?.data?.package?.libraryName}
+                        </Codeblock>
+                      </div>
+                      <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="version">Version</label>
+                        <Codeblock data={currentBatch?.data?.package?.version}>
+                          {currentBatch?.data?.package?.version}
+                        </Codeblock>
+                      </div>
+                    </div>
+                  </div>
+                </Tab.TabView>
+                <Tab.TabView
+                  activeTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <IoMdSettings />
+                      <span>Options</span>
+                    </div>
+                  }
+                  nonActiveTitle={
+                    <div className="flex flex-row items-center gap-1">
+                      <IoSettingsOutline />
+                      <span>Options</span>
+                    </div>
+                  }
+                  id="options"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 w-full">
+                        <div className="flex flex-col">
+                          <label htmlFor="poptions">Options</label>
+                          <span className="text-sm text-neutral-400">
+                            Package options.
+                          </span>
+                        </div>
+                        <Codeblock data={currentBatch?.data?.options}>
+                          <div className="text-xs">
+                            <JSONPretty data={currentBatch?.data?.options} />
+                          </div>
+                        </Codeblock>
+                      </div>
+                    </div>
+                  </div>
+                </Tab.TabView>
+              </Tab>
+            )}
+            {loading && (
+              <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
+                <div className="flex flex-row gap-2">
+                  {Array.from(Array(6)).map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                    ></div>
+                  ))}
                 </div>
-              </Tab.TabView>
-            </Tab>
+                <div className="flex flex-row gap-2">
+                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                </div>
+              </div>
+            )}
           </Container>
         </main>
       </WithAuth>

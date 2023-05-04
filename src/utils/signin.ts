@@ -6,6 +6,7 @@ import {
 import { setLoading } from "@/stores/authStore";
 
 import { Log } from "./logger";
+import { NotifyLogin } from "./notifyLogin";
 
 export interface signinParams {
   email: string;
@@ -41,8 +42,8 @@ export async function signin({
     .then(async (result) => {
       const { user } = result;
       const token = await user?.getIdToken();
-
       setLoading(false);
+      await NotifyLogin(token);
 
       return { success: true, user, token };
     })
@@ -50,7 +51,6 @@ export async function signin({
       const errorCode = error.code;
       const errorMessage = error.message;
       Log.error("Login auth error, utils/signin");
-
       setLoading(false);
 
       return { success: false, error: { errorCode, errorMessage } };

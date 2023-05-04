@@ -3,10 +3,13 @@ import Cookies from "js-cookie";
 import { getAuth } from "firebase/auth";
 
 import { Log } from "@/utils";
+import { NotifyLogin } from "@/utils/notifyLogin";
+import { nexys } from "@/utils/nexys";
 import type { UserTypes } from "@/types";
+import type { User } from "firebase/auth";
 
 interface AuthState {
-  user: any;
+  user: User | null;
   validatedUser: UserTypes | null;
   authLoading: boolean;
   actions: {
@@ -24,12 +27,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   validatedUser: null,
   authLoading: true,
   actions: {
-    signin: function (user: any) {
-      Cookies.set("auth", user.accessToken);
+    signin: async function (user: User) {
+      const idToken = await user.getIdToken();
+      Cookies.set("auth", idToken);
+      await NotifyLogin(idToken);
+      nexys.log(user, { action: "LOGIN" });
       set({ user });
     },
     signout: async function () {
       set({ authLoading: true });
+      nexys.log(useAuthStore.getState().user, { action: "SIGNOUT" });
       const auth = getAuth();
       await auth.signOut();
       Cookies.remove("auth");
@@ -38,7 +45,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     setValidatedUser: function (user: UserTypes) {
       set({ validatedUser: user });
     },
-    setUser: function (user: any) {
+    setUser: function (user: User) {
+      nexys.configure((config) => config.setUser(user?.email ?? ""));
       set({ user });
     },
     setLoading: function (loading: boolean) {
@@ -54,7 +62,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           Log.error(error);
         }
       }
-    }
+    },
   },
 }));
 

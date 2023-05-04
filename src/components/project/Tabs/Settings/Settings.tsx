@@ -1,24 +1,18 @@
-import Link from "next/link";
 import { RiDashboardFill, RiDashboardLine } from "react-icons/ri";
 import { AiFillApi, AiOutlineApi } from "react-icons/ai";
 import {
   IoCheckmarkCircleOutline,
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
-import { MdRefresh } from "react-icons/md";
-import { useRouter } from "next/router";
+import { RiTelegramLine, RiTelegramFill } from "react-icons/ri";
 
-import Codeblock from "@/components/Codeblock";
 import Tab from "@/components/Tab";
-import Button from "@/components/Button";
 import { formatDateToHuman } from "@/utils";
 import { useProjectStore } from "@/stores/projectStore";
-
 import Project from "./Project";
 import API from "./API";
 
 export default function Settings() {
-  const router = useRouter();
   const project = useProjectStore((state) => state.currentProject);
 
   return (
@@ -90,12 +84,27 @@ export default function Settings() {
                 domain. Nexys will automatically detect hostname and verify your
                 project.
               </div>
-              <div>
-                Verifying your project will enable you to use more features.
-              </div>
             </div>
           )}
         </div>
+      </Tab.TabView>
+      <Tab.TabView
+        activeTitle={
+          <div className="flex flex-row items-center gap-1">
+            <RiTelegramFill />
+            <span>Telegram</span>
+          </div>
+        }
+        nonActiveTitle={
+          <div className="flex flex-row items-center gap-1">
+            <RiTelegramLine />
+            <span>Telegram</span>
+          </div>
+        }
+        id="delete"
+        disabled={true}
+      >
+        <div>Telegram will be enabled soon.</div>
       </Tab.TabView>
     </Tab>
   );

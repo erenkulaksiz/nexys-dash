@@ -9,6 +9,7 @@ import {
   setLoading,
   refreshToken,
 } from "@/stores/authStore";
+import { NotifyLogin } from "@/utils/notifyLogin";
 import type { NexysComponentProps } from "@/types";
 
 interface LayoutProps extends NexysComponentProps {

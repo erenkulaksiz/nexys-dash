@@ -19,6 +19,8 @@ export default function LogBatch({ batch, type }: any) {
             log?.options?.type != "AUTO:UNHANDLEDREJECTION" &&
             log?.options?.type != "METRIC"
           );
+        } else if (!type) {
+          return true;
         }
       }),
     [batch?.data?.logs]

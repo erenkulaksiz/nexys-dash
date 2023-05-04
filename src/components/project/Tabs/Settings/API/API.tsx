@@ -6,6 +6,7 @@ import { Log } from "@/utils";
 import { setCurrentProject, useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import { projectSetting } from "@/utils/service/project/setting";
+import { nexys } from "@/utils/nexys";
 
 export default function API() {
   const validatedUser = useAuthStore((state) => state.validatedUser);
@@ -21,6 +22,10 @@ export default function API() {
       Log.error("Failed to update project settings");
       return;
     }
+    nexys.log(
+      { id: project?._id, localhostAccess: !project?.localhostAccess },
+      { action: "UPDATE_PROJECT_SETTING" }
+    );
     setCurrentProject({
       ...project,
       localhostAccess: !project?.localhostAccess,

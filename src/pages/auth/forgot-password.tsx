@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
         <main className="h-full">
           <Navbar hideAuth />
           <Container className="flex justify-center h-full items-center">
-            <div className="p-4 flex flex-col gap-6 w-[300px]">
+            <div className="p-4 flex flex-col gap-2 w-[300px]">
               <h1 className="font-semibold text-2xl">Forgot Password</h1>
               {sent && (
                 <div className="flex flex-col">
@@ -81,9 +81,9 @@ export default function ForgotPasswordPage() {
                       maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
                     />
                     <Button
-                      className="mt-3"
                       fullWidth
                       type="submit"
+                      className="mt-2"
                       loading={authLoading || loading}
                     >
                       Reset Password

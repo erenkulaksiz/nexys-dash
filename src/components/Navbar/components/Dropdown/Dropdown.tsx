@@ -11,6 +11,7 @@ import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
 import { useAuthStore } from "@/stores/authStore";
+import { nexys } from "@/utils/nexys";
 
 export default function Dropdown() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -21,11 +22,18 @@ export default function Dropdown() {
 
   useEffect(() => {
     if (easterEggClicks >= 10) {
+      nexys.log({}, { action: "EASTER_EGG_1" });
       router.push("/naz");
     }
   }, [easterEggClicks]);
 
   function onThemeChange() {
+    nexys.log(
+      {
+        theme: resolvedTheme == "dark" ? "light" : "dark",
+      },
+      { action: "CHANGE_THEME" }
+    );
     setTheme(resolvedTheme == "dark" ? "light" : "dark");
   }
 
@@ -59,6 +67,7 @@ export default function Dropdown() {
             <span
               className="text-xs text-neutral-400"
               onClick={() => setEasterEggClicks(easterEggClicks + 1)}
+              title="Dashboard Version"
             >{`v${version}`}</span>
             <Tooltip content="Nexys Docs" direction="left" outline>
               <Link href="https://docs.nexys.app" target="_blank">

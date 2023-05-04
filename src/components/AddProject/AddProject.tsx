@@ -12,6 +12,7 @@ import { LIMITS } from "@/constants";
 import { useAuthStore } from "@/stores/authStore";
 import isValidURL from "@/utils/isValidUrl";
 import { createProject } from "@/utils/service/project/create";
+import { nexys } from "@/utils/nexys";
 import type { ProjectTypes } from "@/types";
 
 export default function AddProject() {
@@ -115,6 +116,13 @@ export default function AddProject() {
       return;
     }
 
+    nexys.log(
+      {
+        name: state.name,
+        domain: state.domain,
+      },
+      { action: "CREATE_PROJECT" }
+    );
     onAddProject({ name: state.name, domain: state.domain });
   }
 

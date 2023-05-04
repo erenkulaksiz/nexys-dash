@@ -3,8 +3,25 @@ import { BuildComponent } from "@/utils/style";
 
 import type { TabProps, TabViewProps } from "./Tab.types";
 
-function Tab({ children, id, className, onTabChange }: TabProps) {
-  const [activeTab, setActiveTab] = useState<number>(0); // index of active tab
+function Tab({ children, id, className, onTabChange, defaultTab }: TabProps) {
+  const [activeTab, setActiveTab] = useState<number>(
+    defaultTabStringToIndex(defaultTab)
+  );
+
+  function defaultTabStringToIndex(defaultTab?: string): number {
+    if (!defaultTab) return 0;
+    const index = Array.isArray(children)
+      ? children.findIndex((child) => {
+          if (!child || !isValidElement(child)) return false;
+          const props = child?.props as TabViewProps;
+          return props.id === defaultTab;
+        })
+      : 0;
+    // @ts-ignore
+    if (children[index]?.props && children[index]?.props?.disabled) return 0;
+    if (index === -1) return 0;
+    return index;
+  }
 
   function handleTabChange({ index, id }: { index: number; id: string }) {
     setActiveTab(index);

@@ -43,9 +43,9 @@ export default function BatchCard({ batch }: { batch: any }) {
               <MdOutlineAccessTime />
             </div>
             <span>
-              {batch?.ts
+              {batch?.ts || batch?.createdAt
                 ? formatDateToHuman({
-                    date: batch?.ts,
+                    date: batch?.ts ? batch?.ts : batch?.createdAt,
                     output:
                       "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
                   })

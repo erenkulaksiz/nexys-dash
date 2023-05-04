@@ -1,35 +1,90 @@
 import { RiDashboard3Line } from "react-icons/ri";
-import { RxActivityLog } from "react-icons/rx";
 import { IoFlagOutline } from "react-icons/io5";
-import { MdAccessTime } from "react-icons/md";
+import { MdAccessTime, MdInfo } from "react-icons/md";
 import CountUp from "react-countup";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 
 import LogBatch from "../../LogBatch";
+import Loading from "@/components/Loading";
 import { useProjectStore } from "@/stores/projectStore";
 import { BuildComponent } from "@/utils/style";
+import Tooltip from "@/components/Tooltip";
+import { Log } from "@/utils";
+
+const Statistics = dynamic(() => import("./Statistics"), {
+  loading: () => <Loading />,
+});
 
 export default function Overview() {
   const project = useProjectStore((state) => state.currentProject);
 
-  const projectScore = 90;
+  const allLogs = useMemo(
+    () =>
+      project?.logs
+        ?.map((log) => log.data.logs?.map((log: any) => log?.options?.type))
+        .flat(),
+    [project?.logs]
+  );
+  let logCounts = {
+    "AUTO:ERROR": 0,
+    "AUTO:UNHANDLEDREJECTION": 0,
+    ERROR: 0,
+  } as { [key: string]: number };
+  allLogs?.forEach((x: any) => {
+    logCounts[x as any] = (logCounts[x] || 0) + 1;
+  });
+  const total = Object.values(logCounts).reduce((a, b) => a + b, 0);
+  const errorCount =
+    logCounts["AUTO:ERROR"] +
+    logCounts["AUTO:UNHANDLEDREJECTION"] +
+    logCounts["ERROR"];
   const isProjectNew = project?.logs?.length == 0;
+  const projectScore = isProjectNew
+    ? 100
+    : Math.abs(100 - (errorCount / total) * 100);
+
+  const exceptionTypeExist = useMemo(
+    () =>
+      project?.logs
+        ?.map((log: any) => {
+          const logsArr = log.data.logs.filter((log: any) => {
+            const typeException =
+              log?.options?.type == "AUTO:ERROR" ||
+              log?.options?.type == "ERROR" ||
+              log?.options?.type == "AUTO:UNHANDLEDREJECTION";
+            if (typeException) {
+              return true;
+            }
+            return false;
+          });
+          if (logsArr.length) {
+            return true;
+          }
+          return false;
+        })
+        .includes(true),
+    [project?.logs]
+  );
 
   function getProjectScoreMessage() {
-    if (projectScore >= 90) {
+    if (projectScore == 100) {
+      return "Perfect!";
+    } else if (projectScore >= 80) {
       return "Nearly bug free";
     } else if (projectScore >= 70) {
-      return "Good";
+      return "Nice";
     } else if (projectScore >= 50) {
-      return "Okay";
+      return "Good";
     } else if (projectScore >= 30) {
-      return "Bad";
+      return "Needs improvement";
     } else {
-      return "Very bad";
+      return "Needs improvement";
     }
   }
 
   function getProjectScoreColor() {
-    if (projectScore >= 90) {
+    if (projectScore >= 80) {
       return "border-green-600 text-green-600";
     } else if (projectScore >= 70) {
       return "border-yellow-600 text-yellow-600";
@@ -63,11 +118,27 @@ export default function Overview() {
             >
               <CountUp end={projectScore} duration={2} />
             </div>
-            <span className="text-lg w-1/2 text-center">
-              {isProjectNew
-                ? "Excellent! Probably because you don't have any logs yet."
-                : getProjectScoreMessage()}
-            </span>
+            <div className="flex flex-col items-center w-full">
+              <div className="flex flex-row w-full items-center justify-center gap-1">
+                <Tooltip
+                  outline
+                  content="Project score calculated by (error/total) logs."
+                >
+                  <MdInfo />
+                </Tooltip>
+                <span className="text-xl text-center font-semibold">
+                  {getProjectScoreMessage()}
+                </span>
+              </div>
+              {!isProjectNew && (
+                <span className="text-sm text-neutral-500">
+                  {errorCount} error(s) / {total} log(s)
+                </span>
+              )}
+              {isProjectNew && (
+                <span className="text-sm text-neutral-500">No logs yet.</span>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col w-full h-full">
@@ -76,9 +147,8 @@ export default function Overview() {
             <span>Last exceptions</span>
           </div>
           <div className="flex flex-col gap-2 p-4">
-            {project && project.logs?.length == 0 && (
-              <div>Vola! No exceptions found.</div>
-            )}
+            {((project && project.logs?.length == 0) ||
+              !exceptionTypeExist) && <div>Vola! No exceptions found.</div>}
             {project &&
               Array.isArray(project.logs) &&
               project.logs &&
@@ -96,7 +166,9 @@ export default function Overview() {
           <RiDashboard3Line size={14} />
           <span>Statistics</span>
         </div>
-        <div className="w-full p-4"></div>
+        <div className="w-full p-4">
+          <Statistics />
+        </div>
       </div>
     </div>
   );

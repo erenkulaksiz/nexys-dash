@@ -32,6 +32,10 @@ export interface NexysComponentProps extends PropsWithChildren {
     data: UserTypes;
     error?: string | object;
   };
+  query?: {
+    p: string;
+  };
+  totalErrors?: number;
 }
 
 export interface UserTypes {

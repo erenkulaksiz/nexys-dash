@@ -1,7 +1,8 @@
 import Settings from "./Tabs/Settings";
 import Logs from "./Tabs/Logs";
-import Overview from "./Tabs/Overview/Overview";
-import Batches from "./Tabs/Batches/Batches";
+import Overview from "./Tabs/Overview";
+import Batches from "./Tabs/Batches";
+import Exceptions from "./Tabs/Exceptions";
 import { MdOutlineErrorOutline, MdOutlineError } from "react-icons/md";
 import {
   VscDebugBreakpointLogUnverified,
@@ -10,8 +11,10 @@ import {
 import {
   RiDashboardFill,
   RiDashboardLine,
+  RiDashboard2Line,
   RiFilePaperFill,
   RiFilePaperLine,
+  RiDashboard2Fill,
 } from "react-icons/ri";
 import { HiOutlineFolderAdd, HiFolderAdd } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
@@ -49,8 +52,7 @@ export default [
       </div>
     ),
     id: "exceptions",
-    children: <div>bekle</div>,
-    disabled: true,
+    children: <Exceptions />,
   },
   {
     activeTitle: (
@@ -83,6 +85,23 @@ export default [
     ),
     id: "batches",
     children: <Batches />,
+  },
+  {
+    activeTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <RiDashboard2Fill />
+        <span>Statistics</span>
+      </div>
+    ),
+    nonActiveTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <RiDashboard2Line />
+        <span>Statistics</span>
+      </div>
+    ),
+    id: "statistics",
+    children: <div>Under construction.</div>,
+    disabled: true,
   },
   {
     activeTitle: "Requests",

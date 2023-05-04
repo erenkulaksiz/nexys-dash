@@ -9,6 +9,7 @@ import { useProjectStore, setProjectLoading } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import { deleteProject } from "@/utils/service/project/delete";
 import { Log, formatDateToHuman } from "@/utils";
+import { nexys } from "@/utils/nexys";
 
 export default function Project() {
   const project = useProjectStore((state) => state.currentProject);
@@ -29,6 +30,12 @@ export default function Project() {
     }
 
     Log.error("Countered an error while deleting project.", res.error);
+    nexys.log(
+      {
+        id: project?._id,
+      },
+      { action: "DELETE_PROJECT" }
+    );
     setProjectLoading(false);
   }
 
@@ -60,7 +67,7 @@ export default function Project() {
             <span>Project Last Update</span>
             <span className="dark:text-neutral-600 text-neutral-400">
               {formatDateToHuman({
-                date: project?.createdAt ?? "",
+                date: project?.updatedAt ?? "",
                 output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
               })}
             </span>

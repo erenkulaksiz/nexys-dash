@@ -40,6 +40,7 @@ export async function setting(
     {
       $set: {
         localhostAccess: localhostAccess ? true : false,
+        updatedAt: Date.now(),
       },
     }
   );

@@ -1,22 +1,22 @@
 import Head from "next/head";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import ConfettiExplosion from "react-confetti-explosion";
 
 import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
-import Loading from "@/components/Loading";
 import AddProjectCard from "@/components/home/AddProjectCard";
-import ProjectCard from "@/components/home/ProjectCard";
+const ProjectCard = dynamic(() => import("@/components/home/ProjectCard"), {});
 import { useAuthStore } from "@/stores/authStore";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { RiDashboardFill } from "react-icons/ri";
 import WithAuth from "@/hocs/withAuth";
+import useProjects from "@/hooks/useProjects";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps, ProjectTypes } from "@/types";
 import type { GetServerSidePropsContext } from "next";
-import useProjects from "@/hooks/useProjects";
 
 export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
@@ -35,19 +35,27 @@ export default function HomePage(props: NexysComponentProps) {
         </Head>
         <main className="flex flex-col overflow-y-auto overflow-x-hidden h-full">
           <Navbar />
+          <Container>
+            <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
+              <RiDashboardFill size={20} />
+              <h1 className="text-xl font-semibold">Projects</h1>
+            </div>
+          </Container>
           {loading ? (
-            <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
-              <Loading size="xl" />
-              <span>Loading projects...</span>
+            <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
+              <Container>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
+                  {Array.from(Array(3)).map((_, index) => (
+                    <div
+                      key={index}
+                      className="animate-pulse relative group flex items-center justify-center dark:bg-neutral-900 bg-neutral-100 rounded-lg p-4 h-32"
+                    ></div>
+                  ))}
+                </div>
+              </Container>
             </div>
           ) : (
             <>
-              <Container>
-                <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
-                  <RiDashboardFill size={20} />
-                  <h1 className="text-xl font-semibold">Projects</h1>
-                </div>
-              </Container>
               <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
                 <Container>
                   <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">

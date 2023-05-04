@@ -38,6 +38,9 @@ export default async function handler(
 
   const data = req.body;
 
+  if (!data) return reject({ res, reason: "no-data" });
+  // TODO: validate data like user agent and other data
+
   const project = (await projectsCollection.findOne({
     publicKey: API_KEY,
     _deleted: { $in: [null, false] },
@@ -79,9 +82,9 @@ export default async function handler(
     { _id: new ObjectId(project._id) },
     {
       $set: {
-        updatedAt: new Date().getTime(),
+        updatedAt: Date.now(),
         verified: isDomainHostSame ? true : false,
-        verifiedAt: isDomainHostSame ? new Date().getTime() : 0,
+        verifiedAt: isDomainHostSame ? Date.now() : 0,
       },
       $inc: {
         logUsage: 1,
@@ -95,7 +98,7 @@ export default async function handler(
     API_KEY,
     APP_NAME,
     project: project._id,
-    createdAt: new Date().getTime(),
+    createdAt: Date.now(),
   });
 
   return accept({

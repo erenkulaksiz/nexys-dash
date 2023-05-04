@@ -24,7 +24,7 @@ export async function deleteproject(
 
   await projectsCollection.updateOne(
     { _id: new ObjectId(id) },
-    { $set: { _deleted: true } }
+    { $set: { _deleted: true, updatedAt: Date.now() } }
   );
 
   return accept({ res });

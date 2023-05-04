@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 
 import Button from "@/components/Button";
+import { NotifyLogin } from "@/utils/notifyLogin";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
@@ -22,9 +23,11 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
   function onLoginPlatform(provider: GithubAuthProvider | GoogleAuthProvider) {
     const auth = getAuth();
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         const user = result.user as User;
         signin(user);
+        const token = await user.getIdToken();
+        await NotifyLogin(token);
         Log.debug("User", user);
       })
       .catch((error) => {

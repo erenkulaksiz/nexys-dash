@@ -7,7 +7,7 @@ import { Log, server } from "@/utils";
 import { refreshToken } from "@/stores/authStore";
 
 interface useProjectsParams {
-  uid: string;
+  uid?: string;
 }
 
 export default function useProjects({ uid }: useProjectsParams) {
