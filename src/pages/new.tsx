@@ -35,7 +35,8 @@ export default function NewProjectPage(props: NexysComponentProps) {
         <Container>
           <div className="w-full grid sm:grid-cols-2 grid-cols-1 items-start gap-2">
             <AddProject />
-            <div className="dark:shadow-neutral-900 flex flex-col gap-2 justify-between dark:bg-black bg-white rounded-lg p-4 border-[1px] border-neutral-200 dark:border-neutral-900">
+            <div className="dark:shadow-neutral-900 flex flex-col justify-between dark:bg-black bg-white rounded-lg p-4 border-[1px] border-neutral-200 dark:border-neutral-900">
+              <div>total of</div>
               <div className="flex flex-row gap-1 items-end">
                 <div className="flex flex-row text-4xl items-end font-semibold dark:text-red-800 text-red-600">
                   <MdError size={18} />
@@ -43,15 +44,12 @@ export default function NewProjectPage(props: NexysComponentProps) {
                 </div>
                 <div>errors caught</div>
               </div>
-              <div className="flex flex-row gap-1 items-end">
+              {/*<div className="flex flex-row gap-1 items-end">
                 <div className="text-4xl font-semibold text-neutral-600 dark:text-neutral-500">
                   <CountUp end={44768} duration={0.8} />
                 </div>
                 <div>logs processed</div>
-              </div>
-              <div className="text-neutral-500 text-sm">
-                Add your project to reduce number of errors
-              </div>
+              </div>*/}
             </div>
           </div>
         </Container>

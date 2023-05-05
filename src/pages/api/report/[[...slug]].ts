@@ -51,7 +51,9 @@ export default async function handler(
   if (project.name !== APP_NAME) return reject({ res, reason: "app-name" });
   //if (project.verified !== true) return reject({ res, reason: "not-verified" });
 
-  const isDomainHostSame = project.domain === req.headers.host;
+  const isDomainHostSame =
+    project.domain === req.headers.host ||
+    project.domain === req.headers.origin;
 
   Log.debug(
     "isDomainHostSame",
@@ -61,7 +63,9 @@ export default async function handler(
     " project?.domain",
     project?.domain,
     " req.headers.host",
-    req.headers.host
+    req.headers.host,
+    " req.headers.origin",
+    req.headers.origin
   );
 
   if (project?.localhostAccess !== true && !isDomainHostSame)

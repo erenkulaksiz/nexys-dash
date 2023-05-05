@@ -11,7 +11,6 @@ import WithAuth from "@/hocs/withAuth";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
-import { nexys } from "@/utils/nexys";
 import useProject from "@/hooks/useProject";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { GetServerSidePropsContext } from "next";
@@ -65,12 +64,7 @@ export default function ProjectPage(props: NexysComponentProps) {
                   <Tab
                     id="dashboard"
                     defaultTab={props?.query?.p}
-                    onTabChange={({ id }) => {
-                      nexys.log(
-                        { id: query, toTabId: id },
-                        { action: "CHANGE_TAB" }
-                      );
-
+                    onTabChange={({ id }) =>
                       router.push(
                         {
                           pathname: `/project/[id]`,
@@ -78,8 +72,8 @@ export default function ProjectPage(props: NexysComponentProps) {
                         },
                         `/project/${query}?p=${id}`,
                         { shallow: true }
-                      );
-                    }}
+                      )
+                    }
                   >
                     {Tabs.map((tab) => (
                       <Tab.TabView

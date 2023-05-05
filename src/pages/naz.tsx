@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import ConfettiExplosion from "react-confetti-explosion";
 
 import Navbar from "@/components/Navbar";
@@ -10,8 +9,6 @@ import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
 
-import Ne from "@/public/images/ne.jpeg";
-
 export default function Naz(props: NexysComponentProps) {
   return (
     <Layout withoutLayout {...props}>
@@ -19,12 +16,11 @@ export default function Naz(props: NexysComponentProps) {
         <title>{"Nex · Naz <3"}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Navbar />
-      <main className="h-full">
-        <Container>
-          <div className="flex flex-col pb-2 pt-2 justify-center">
-            <h1 className="text-3xl font-semibold">{"Naz'ı çok seviyorum."}</h1>
-            <h2 className="text-neutral-400">{"Öyle böyle değil lan."}</h2>
+      <main className="h-full overflow-y-auto overflow-x-hidden">
+        <Navbar />
+        <Container className="flex flex-col items-center">
+          <div className="flex flex-col pb-10 pt-2 justify-center">
+            <h1 className="text-6xl font-bold">{"Sevgilim."}</h1>
           </div>
 
           <ConfettiExplosion
@@ -33,12 +29,74 @@ export default function Naz(props: NexysComponentProps) {
             particleCount={250}
             width={1920}
           />
-          <Image src={Ne} alt="Naz" width={200} className="rounded-lg" />
 
-          <div className="flex flex-col py-2 pb-2 pt-2 text-xl justify-center">
+          <div className="flex flex-row relative">
+            <img
+              src="/images/ne/ne1.jpg"
+              alt="Naz"
+              width={300}
+              className="rounded-lg object-cover rotate-2 hover:-rotate-6 transition-all ease-in-out"
+            />
+            <img
+              src="/images/ne/ne2.jpg"
+              alt="Naz"
+              width={400}
+              className="rounded-lg object-cover -rotate-6 hover:rotate-2 transition-all ease-in-out"
+            />
+            <img
+              src="/images/ne/ne3.jpg"
+              alt="Naz"
+              width={300}
+              className="rounded-lg object-cover rotate-2 hover:-rotate-12 transition-all ease-in-out"
+            />
+          </div>
+
+          <div className="flex flex-row relative">
+            <img
+              src="/images/ne/ne4.jpg"
+              alt="Naz"
+              width={200}
+              className="rounded-lg object-cover rotate-4 hover:-rotate-12 transition-all ease-in-out"
+            />
+            <img
+              src="/images/ne/ne5.jpg"
+              alt="Naz"
+              width={200}
+              className="rounded-lg object-cover -rotate-3 hover:rotate-6 transition-all ease-in-out"
+            />
+            <img
+              src="/images/ne/ne6.jpg"
+              alt="Naz"
+              width={200}
+              className="rounded-lg object-cover rotate-12 hover:-rotate-12 transition-all ease-in-out"
+            />
+          </div>
+
+          <div className="flex flex-row relative">
+            <img
+              src="/images/ne/ne7.jpg"
+              alt="Naz"
+              width={200}
+              className="rounded-lg object-cover rotate-1 hover:-rotate-6 transition-all ease-in-out"
+            />
+            <img
+              src="/images/ne/ne8.jpg"
+              alt="Naz"
+              width={200}
+              className="rounded-lg object-cover -rotate-3 hover:rotate-6 transition-all ease-in-out"
+            />
+          </div>
+
+          <div className="flex flex-col py-2 pb-10 pt-2 gap-2 justify-center">
+            <span className="text-4xl">
+              {
+                "Seni seviyorum. Seni seviyorum. Seni seviyorum. Seni seviyorum. Bunu yapay zeka yazdı. Şaka bir yana, seni gerçekten çok seviyorum. Bunu artık yapay zeka bile algılayıp kod önerisinde seni seviyorum'u öneriyorsa, bence bizden olmuştur."
+              }
+            </span>
             <span>
-              Seni sana, seni ne kadar sevdiğimi falan anlatamam. Öyle böyle bir
-              güzellik değil tarif edilemez. Çok seviyorum sevgilim. {"<3"}
+              {
+                "Bu arada, söylememe gerek var mı bilmiyorum ama o kadar güzelsin ki. Gerçekten."
+              }
             </span>
           </div>
         </Container>

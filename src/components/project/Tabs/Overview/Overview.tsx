@@ -68,7 +68,7 @@ export default function Overview() {
   );
 
   function getProjectScoreMessage() {
-    if (projectScore == 100) {
+    if (projectScore > 80) {
       return "Perfect!";
     } else if (projectScore >= 80) {
       return "Nearly bug free";
