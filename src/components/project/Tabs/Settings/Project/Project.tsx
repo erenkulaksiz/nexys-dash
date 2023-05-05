@@ -74,6 +74,15 @@ export default function Project() {
           </div>
         </div>
         <Tooltip content="This action cannot be undone!">
+          <Button className="px-2 text-white" onClick={() => {}}>
+            <span className="mr-1">
+              <MdDelete size={18} />
+            </span>
+            <span>Clear Logs</span>
+          </Button>
+        </Tooltip>
+
+        <Tooltip content="This action cannot be undone!">
           <Button
             light="dark:bg-red-700 bg-red-600"
             className="px-2 text-white"

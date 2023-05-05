@@ -1,35 +1,7 @@
-import { Log, formatString } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 
 export default async function getTotalErrors() {
   const { db } = await connectToDatabase();
-
-  /*
-  const logs = await db
-    .collection("logs")
-    .aggregate([
-      {
-        $unwind: { path: "$data.logs" },
-      },
-      {
-        $group: {
-          _id: "$_id",
-          logs: { $push: "$data.logs" },
-          count: { $sum: 1 },
-        },
-      },
-    ])
-    .toArray();
-  logs
-    .map((log) => log.logs)
-    .flat()
-    .filter(
-      (log) =>
-        log?.options?.type == "ERROR" ||
-        log?.options?.type == "AUTO:ERROR" ||
-        log?.options?.type == "AUTO:UNHANDLEDREJECTION"
-    ).length;
-    */
 
   const logs = await db
     .collection("logs")

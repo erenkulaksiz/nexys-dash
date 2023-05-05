@@ -15,7 +15,9 @@ export default function Codeblock({
 
   function onCopy() {
     if (copied || disableCopy) return;
-    navigator.clipboard.writeText(data || "");
+    navigator.clipboard.writeText(
+      typeof data == "object" ? JSON.stringify(data) : data || ""
+    );
     setCopied(true);
   }
 
