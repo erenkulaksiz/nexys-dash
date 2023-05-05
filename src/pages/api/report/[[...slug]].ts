@@ -51,18 +51,14 @@ export default async function handler(
   if (project.name !== APP_NAME) return reject({ res, reason: "app-name" });
   //if (project.verified !== true) return reject({ res, reason: "not-verified" });
 
-  function getDomainWithoutSubdomain(url: string) {
-    const urlParts = new URL(url).hostname.split(".");
-
-    return urlParts
-      .slice(0)
-      .slice(-(urlParts.length === 4 ? 3 : 2))
-      .join(".");
+  let isDomainHostSame = project.domain === req.headers?.host;
+  if (!isDomainHostSame) {
+    const origin = req.headers?.origin;
+    if (origin) {
+      const url = new URL(origin);
+      isDomainHostSame = project.domain === url.host;
+    }
   }
-
-  const isDomainHostSame =
-    project.domain ===
-    getDomainWithoutSubdomain(req.headers?.host ?? req.headers?.origin ?? "");
 
   Log.debug(
     "isDomainHostSame",
@@ -74,9 +70,7 @@ export default async function handler(
     " req.headers.host",
     req.headers.host,
     " req.headers.origin",
-    req.headers.origin,
-    "getDomainWithoutSubdomain",
-    getDomainWithoutSubdomain(req.headers?.host ?? req.headers?.origin ?? "")
+    req.headers.origin
   );
 
   if (project?.localhostAccess !== true && !isDomainHostSame)
