@@ -53,10 +53,9 @@ export default async function handler(
 
   let isDomainHostSame = project.domain === req.headers?.host;
   if (!isDomainHostSame) {
-    const split = req.headers?.host?.split(".");
-    if (split && split.length > 2) {
-      isDomainHostSame = project.domain === split[split.length - 2];
-    }
+    const host = req.headers?.host?.split(".");
+    host?.shift();
+    isDomainHostSame = project.domain === host?.join(".");
   }
 
   Log.debug(

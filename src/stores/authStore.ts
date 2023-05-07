@@ -31,18 +31,25 @@ export const useAuthStore = create<AuthState>((set) => ({
       const idToken = await user.getIdToken();
       Cookies.set("auth", idToken);
       await NotifyLogin(idToken);
-      nexys.log(user, { action: "LOGIN" });
+      nexys.log(
+        { user: useAuthStore.getState().user?.email },
+        { action: "LOGIN" }
+      );
       set({ user });
     },
     signout: async function () {
       set({ authLoading: true });
-      nexys.log(useAuthStore.getState().user, { action: "SIGNOUT" });
+      nexys.log(
+        { user: useAuthStore.getState().user?.email },
+        { action: "SIGNOUT" }
+      );
       const auth = getAuth();
       await auth.signOut();
       Cookies.remove("auth");
       set({ user: null, authLoading: false });
     },
     setValidatedUser: function (user: UserTypes) {
+      nexys.configure((config) => config.setUser(user?.email ?? ""));
       set({ validatedUser: user });
     },
     setUser: function (user: User) {

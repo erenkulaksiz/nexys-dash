@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import { ValidateToken } from "@/utils/api/validateToken";
+import { nexys } from "@/utils/nexys";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
@@ -22,6 +23,8 @@ export default function Naz(props: NexysComponentProps) {
           <div className="flex flex-col pb-10 pt-2 justify-center">
             <h1 className="text-6xl font-bold">{"Sevgilim."}</h1>
           </div>
+
+          <button onClick={() => nexys.error("test error")}>crash</button>
 
           <ConfettiExplosion
             force={0.8}

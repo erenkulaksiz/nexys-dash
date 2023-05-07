@@ -58,7 +58,7 @@ export default function useBatch({ uid }: useBatchParams) {
         (async () => {
           await refreshToken(true);
           await batch.mutate();
-          router.reload();
+          //router.reload();
         })();
         return;
       }

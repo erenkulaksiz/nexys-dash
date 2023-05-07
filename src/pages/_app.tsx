@@ -5,13 +5,11 @@ import { ThemeProvider } from "next-themes";
 import { nexys } from "@/utils/nexys";
 import { version } from "@/utils";
 import type { AppProps } from "next/app";
-//import type { NextWebVitalsMetric } from "next/app";
+import type { NextWebVitalsMetric } from "next/app";
 
-/*
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   nexys.metric(metric);
 }
-*/
 
 nexys.configure((config) => config.setAppVersion(version));
 

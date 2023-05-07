@@ -69,7 +69,7 @@ export default function useLogs({ type = "logs" }: useLogsParams) {
         (async () => {
           await refreshToken(true);
           await logs.mutate();
-          router.reload();
+          //router.reload();
         })();
         return;
       }
