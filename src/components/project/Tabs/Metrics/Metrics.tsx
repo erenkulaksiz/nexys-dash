@@ -17,7 +17,7 @@ function Metric({
 }) {
   return (
     <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
-      <div className="border-b-[1px] gap-1 w-full border-neutral-200 dark:border-neutral-900 flex items-center p-2 text-xl font-semibold">
+      <div className="border-b-[1px] gap-1 w-full border-neutral-200 dark:border-neutral-900 flex items-center p-2 text-lg sm:text-xl font-semibold">
         <span>{title}</span>
         {smallTitle && (
           <span className="text-xs text-neutral-500">{smallTitle}</span>

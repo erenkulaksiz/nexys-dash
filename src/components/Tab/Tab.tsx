@@ -61,7 +61,7 @@ function Tab({ children, id, className, onTabChange, defaultTab }: TabProps) {
                   onChange={() => handleTabChange({ index, id: props.id })}
                   disabled={props?.disabled}
                 />
-                <div className="z-20 peer-checked:text-black dark:peer-checked:text-white dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-neutral-800 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400 break-keep">
+                <div className="break-keep z-20 peer-checked:text-black dark:peer-checked:text-white dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-neutral-800 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400">
                   {activeTab == index
                     ? props.activeTitle
                     : props.nonActiveTitle}

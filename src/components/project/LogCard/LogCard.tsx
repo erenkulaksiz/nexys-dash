@@ -76,7 +76,7 @@ export default function LogCard({
         <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl -z-10"></div>
       )}
       <div className="flex flex-col gap-2">
-        <div className="w-full flex flex-row justify-between items-center">
+        <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center sm:gap-0 gap-2">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
             <div className="text-sm">LOG</div>
             <div>

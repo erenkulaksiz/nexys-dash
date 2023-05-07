@@ -14,7 +14,7 @@ export default function BatchCard({ batch }: { batch: any }) {
   return (
     <div className="flex flex-col border-[1px] rounded-lg p-3 border-neutral-200 dark:border-neutral-900">
       <div className="flex flex-col gap-2">
-        <div className="w-full flex flex-row justify-between items-center">
+        <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
             <div className="text-sm">BATCH</div>
             <div>
@@ -49,7 +49,7 @@ export default function BatchCard({ batch }: { batch: any }) {
           </div>
         )}
         <div className="flex flex-row items-center gap-2">
-          <ul className="flex flex-row gap-2 items-center">
+          <ul className="flex flex-row gap-2 items-center flex-wrap">
             {Object.keys(batch?.logTypes)
               .sort((a: any, b: any) => {
                 return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;

@@ -98,7 +98,7 @@ export default function ProjectPage(props: NexysComponentProps) {
                         ></div>
                       ))}
                     </div>
-                    <div className="flex flex-row gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
                       <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
                     </div>
