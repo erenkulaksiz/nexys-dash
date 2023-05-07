@@ -11,6 +11,27 @@ import { BuildComponent } from "@/utils/style";
 import { useProjectStore } from "@/stores/projectStore";
 import type { LogCardProps } from "./LogCard.types";
 
+function LogCardEntry({
+  title,
+  value,
+}: {
+  title: string;
+  value: string | number | boolean;
+}) {
+  return (
+    <div className="flex flex-col items-start">
+      <div className="flex flex-row gap-1 items-center">
+        <div>{title}</div>
+      </div>
+      <div>
+        <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+          {value}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function LogCard({
   log,
   viewingBatch,
@@ -23,13 +44,17 @@ export default function LogCard({
     log?.options?.type === "AUTO:UNHANDLEDREJECTION" ||
     log?.options?.type === "ERROR";
 
-  const isJson = typeof log?.data === "object";
+  const isJson =
+    typeof log?.data === "object" && Object.keys(log?.data).length > 0;
+  const isEmptyObject =
+    typeof log?.data === "object" && Object.keys(log?.data).length === 0;
 
   return (
     <div
       className={
         BuildComponent({
-          defaultClasses: "relative flex flex-col border-[1px] rounded-lg p-3",
+          defaultClasses:
+            "relative flex flex-col border-[1px] rounded-lg p-3 align-start",
           conditionalClasses: [
             {
               true: "border-red-400 dark:border-red-700",
@@ -48,11 +73,12 @@ export default function LogCard({
       </div>
       */}
       {logSelected && (
-        <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl"></div>
+        <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl -z-10"></div>
       )}
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-row justify-between items-center">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
+            <div className="text-sm">LOG</div>
             <div>
               <MdOutlineAccessTime />
             </div>
@@ -97,7 +123,7 @@ export default function LogCard({
                 {log?.data?.message}
               </div>
             )}
-            {!log?.data?.message && log?.data && !isJson && (
+            {!log?.data?.message && log?.data && !isJson && !isEmptyObject && (
               <div className="text-sm w-full break-all">{log?.data}</div>
             )}
             {!log?.data?.message && log?.data && isJson && (
@@ -112,113 +138,23 @@ export default function LogCard({
           </div>
         </div>
         {log?.options?.type && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>Type</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.options?.type}
-              </span>
-            </div>
-          </div>
+          <LogCardEntry title="Type" value={log?.options?.type} />
         )}
         {log?.env?.type && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>Environment</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.env?.type}
-              </span>
-            </div>
-          </div>
+          <LogCardEntry title="Environment" value={log?.env?.type} />
         )}
-        {log?.env?.ver && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>Platform</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                NextJS
-              </span>
-            </div>
-          </div>
-        )}
-        {log?.path && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>Path</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.path}
-              </span>
-            </div>
-          </div>
-        )}
+        {log?.env?.ver && <LogCardEntry title="Platform" value="NextJS" />}
+        {log?.path && <LogCardEntry title="Path" value={log?.path} />}
         {log?.options?.action && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>Action</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.options?.action}
-              </span>
-            </div>
-          </div>
+          <LogCardEntry title="Action" value={log?.options?.action} />
         )}
         {log?.data?.filename && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>File</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.data?.filename}
-              </span>
-            </div>
-          </div>
+          <LogCardEntry title="File" value={log?.data?.filename} />
         )}
-        {log?.guid && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>GUID</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log?.guid}
-              </span>
-            </div>
-          </div>
-        )}
-        {log._id && (
-          <div className="flex flex-row gap-2 items-center">
-            <div className="flex flex-row gap-1 items-center">
-              <div>ID</div>
-            </div>
-            <div>
-              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {log._id}
-              </span>
-            </div>
-          </div>
-        )}
+        {log?.guid && <LogCardEntry title="GUID" value={log?.guid} />}
+        {log._id && <LogCardEntry title="ID" value={log._id} />}
         {log?.data?.stack && (
-          <>
-            <div className="flex flex-row gap-1 items-center">
-              <RiStackLine size={18} />
-              <div>Stack Trace</div>
-            </div>
-            <Codeblock data={log?.data?.stack}>
-              <span className="text-xs whitespace-pre-wrap text-neutral-400">
-                {log?.data?.stack}
-              </span>
-            </Codeblock>
-          </>
+          <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
         )}
       </div>
     </div>

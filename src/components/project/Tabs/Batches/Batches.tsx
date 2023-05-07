@@ -1,14 +1,19 @@
-import { RiFilePaperFill } from "react-icons/ri";
+import { useState } from "react";
 
-import BatchCard from "../../BatchCard/BatchCard";
+import { RiFilePaperFill } from "react-icons/ri";
+import BatchCard from "../../BatchCard";
 import { useProjectStore } from "@/stores/projectStore";
 import { Log } from "@/utils";
 import useLogs from "@/hooks/useLogs";
+import Pager from "@/components/Pager";
 
 export default function Batches() {
+  const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
-  const batches = useLogs({ type: "batches" });
+  const batches = useLogs({ type: "batches", page });
   const batchesLoading = useProjectStore((state) => state.batchesLoading);
+
+  const totalPages = Math.ceil(batches.data?.data?.batchesLength / 10);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -20,6 +25,18 @@ export default function Batches() {
               <span>Batches</span>
             </div>
           </div>
+          {!batchesLoading && totalPages >= 10 && (
+            <div className="flex flex-col gap-2 p-4 pb-0">
+              <Pager
+                currentPage={page}
+                totalPages={totalPages}
+                perPage={2}
+                onPageClick={(page) => setPage(page)}
+                onPreviousClick={() => page != 0 && setPage(page - 1)}
+                onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-2 p-4">
             {batchesLoading &&
               Array.from(Array(3)).map((_, index) => (

@@ -8,7 +8,6 @@ import { useProjectStore } from "@/stores/projectStore";
 import Loading from "@/components/Loading";
 import { BuildComponent } from "@/utils/style";
 import Tooltip from "@/components/Tooltip";
-import useLogs from "@/hooks/useLogs";
 import { Log } from "@/utils";
 
 const Statistics = dynamic(() => import("./Statistics"), {
@@ -21,9 +20,9 @@ const LastExceptions = dynamic(() => import("./LastExceptions"), {
 export default function Overview() {
   const project = useProjectStore((state) => state.currentProject);
 
-  const projectScore = Math.abs(
+  const projectScore = Math.floor(
     // @ts-ignore
-    100 - Math.floor(Math.abs(project?.logCount * project?.errorCount) / 100)
+    100 - (project?.errorCount / project?.logCount) * 100
   );
 
   function getProjectScoreMessage(score: number) {

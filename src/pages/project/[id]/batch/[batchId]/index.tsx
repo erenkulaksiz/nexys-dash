@@ -36,11 +36,11 @@ export default function BatchPage(props: NexysComponentProps) {
   const router = useRouter();
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
+  const batchLoading = useProjectStore((state) => state.batchLoading);
   const authUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
   const batch = useBatch({ uid: uid ?? "" });
-  const batchLoading = useProjectStore((state) => state.batchLoading);
 
   const logId = router.query.log as string;
 
@@ -73,7 +73,23 @@ export default function BatchPage(props: NexysComponentProps) {
               </div>
             </div>
           )}
-          <Container className="pt-1" hidden={batch?.data?.data == null}>
+          <Container className="pt-1">
+            {batchLoading && (
+              <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
+                <div className="flex flex-row gap-2">
+                  {Array.from(Array(6)).map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                    ></div>
+                  ))}
+                </div>
+                <div className="flex flex-row gap-2">
+                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                </div>
+              </div>
+            )}
             {!loading && !batchLoading && (
               <Tab id="batchpage">
                 <Tab.TabView
@@ -329,23 +345,6 @@ export default function BatchPage(props: NexysComponentProps) {
                 </Tab.TabView>
               </Tab>
             )}
-            {loading ||
-              (batchLoading && (
-                <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
-                  <div className="flex flex-row gap-2">
-                    {Array.from(Array(6)).map((_, index) => (
-                      <div
-                        key={index}
-                        className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
-                      ></div>
-                    ))}
-                  </div>
-                  <div className="flex flex-row gap-2">
-                    <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                    <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                  </div>
-                </div>
-              ))}
           </Container>
         </main>
       </WithAuth>

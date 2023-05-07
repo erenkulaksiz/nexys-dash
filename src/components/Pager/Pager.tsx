@@ -23,7 +23,7 @@ export default function Pager({
         }).classes
       }
     >
-      <Button onClick={onPreviousClick}>
+      <Button onClick={onPreviousClick} className="w-8">
         <MdArrowLeft size={24} />
       </Button>
 
@@ -31,7 +31,7 @@ export default function Pager({
         className={
           BuildComponent({
             name: "Pager Button",
-            defaultClasses: "px-2",
+            defaultClasses: "w-8",
             conditionalClasses: [
               { true: "dark:bg-neutral-900 bg-neutral-200" },
             ],
@@ -54,7 +54,7 @@ export default function Pager({
             className={
               BuildComponent({
                 name: "Pager Button",
-                defaultClasses: "px-2",
+                defaultClasses: "w-8",
                 conditionalClasses: [
                   { true: "dark:bg-neutral-900 bg-neutral-200" },
                 ],
@@ -74,7 +74,7 @@ export default function Pager({
         className={
           BuildComponent({
             name: "Pager Button",
-            defaultClasses: "px-2",
+            defaultClasses: "w-8",
             conditionalClasses: [
               { true: "dark:bg-neutral-900 bg-neutral-200" },
             ],
@@ -86,7 +86,7 @@ export default function Pager({
         {totalPages}
       </Button>
 
-      <Button onClick={onNextClick}>
+      <Button onClick={onNextClick} className="w-8">
         <MdArrowRight size={24} />
       </Button>
     </div>

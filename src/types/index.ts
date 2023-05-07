@@ -27,6 +27,14 @@ export interface ProjectTypes {
   batchCount?: number;
   logCount?: number;
   errorCount?: number;
+  metrics?: {
+    FCP?: number;
+    LCP?: number;
+    CLS?: number;
+    FID?: number;
+    TTFB?: number;
+    totalCount?: number;
+  };
 }
 
 export interface NexysComponentProps extends PropsWithChildren {
@@ -39,6 +47,7 @@ export interface NexysComponentProps extends PropsWithChildren {
     p: string;
   };
   totalErrors?: number;
+  totalLogs?: number;
 }
 
 export interface UserTypes {

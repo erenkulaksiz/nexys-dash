@@ -14,9 +14,9 @@ export default async function logs(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { id: string; type: string };
+  const body = req.body as { id: string; type: string; page?: number };
   if (!body || !body.id || !body.type) return reject({ res });
-  const { id, type } = body;
+  const { id, type, page } = body;
 
   if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
 
@@ -56,6 +56,7 @@ export default async function logs(
         ],
       })
       .sort({ ts: -1 })
+      .skip(Math.floor(page ? page * 10 : 0))
       .limit(10)
       .toArray();
 
@@ -65,7 +66,8 @@ export default async function logs(
 
     const batches = await batchCollection
       .find({})
-      .sort({ ts: -1 })
+      .sort({ createdAt: -1 })
+      .skip(Math.floor(page ? page * 10 : 0))
       .limit(10)
       .toArray();
 
@@ -88,6 +90,7 @@ export default async function logs(
         ],
       })
       .sort({ ts: -1 })
+      .skip(Math.floor(page ? page * 10 : 0))
       .limit(10)
       .toArray();
 

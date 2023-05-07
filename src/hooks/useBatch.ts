@@ -73,5 +73,14 @@ export default function useBatch({ uid }: useBatchParams) {
     }
   }, [batch.data]);
 
+  useEffect(() => {
+    if (batch.isValidating) {
+      setBatchLoading(true);
+    } else {
+      if (batch?.data?.success == false) return;
+      setBatchLoading(false);
+    }
+  }, [batch.isValidating]);
+
   return batch;
 }

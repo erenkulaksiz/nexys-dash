@@ -16,6 +16,7 @@ export default function BatchCard({ batch }: { batch: any }) {
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-row justify-between items-center">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
+            <div className="text-sm">BATCH</div>
             <div>
               <MdOutlineAccessTime />
             </div>
@@ -56,7 +57,7 @@ export default function BatchCard({ batch }: { batch: any }) {
               .map((batchType: any) => {
                 return (
                   <li
-                    key={`batchCard-${batchType.type}`}
+                    key={`batchCard-${batchType}`}
                     className={
                       BuildComponent({
                         defaultClasses:

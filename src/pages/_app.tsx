@@ -7,8 +7,12 @@ import { version } from "@/utils";
 import type { AppProps } from "next/app";
 import type { NextWebVitalsMetric } from "next/app";
 
+import { Log } from "@/utils";
+
 export function reportWebVitals(metric: NextWebVitalsMetric) {
-  nexys.metric(metric);
+  if (metric.label === "web-vital") {
+    nexys.metric(metric);
+  }
 }
 
 nexys.configure((config) => config.setAppVersion(version));

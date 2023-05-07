@@ -3,6 +3,7 @@ import Logs from "./Tabs/Logs";
 import Overview from "./Tabs/Overview";
 import Batches from "./Tabs/Batches";
 import Exceptions from "./Tabs/Exceptions";
+import Metrics from "./Tabs/Metrics";
 import { MdOutlineErrorOutline, MdOutlineError } from "react-icons/md";
 import {
   VscDebugBreakpointLogUnverified,
@@ -16,6 +17,7 @@ import {
   RiFilePaperLine,
   RiDashboard2Fill,
 } from "react-icons/ri";
+import { BsBarChartLineFill, BsBarChartLine } from "react-icons/bs";
 import { HiOutlineFolderAdd, HiFolderAdd } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -89,13 +91,13 @@ export default [
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
-        <RiDashboard2Fill />
+        <BsBarChartLineFill />
         <span>Statistics</span>
       </div>
     ),
     nonActiveTitle: (
       <div className="flex flex-row items-center gap-1">
-        <RiDashboard2Line />
+        <BsBarChartLine />
         <span>Statistics</span>
       </div>
     ),
@@ -111,11 +113,21 @@ export default [
     disabled: true,
   },
   {
-    activeTitle: "Metrics",
-    nonActiveTitle: "Metrics",
+    activeTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <RiDashboard2Fill />
+        <span>Metrics</span>
+      </div>
+    ),
+    nonActiveTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <RiDashboard2Line />
+        <span>Metrics</span>
+      </div>
+    ),
     id: "metrics",
-    children: <div>Under construction.</div>,
-    disabled: true,
+    children: <Metrics />,
+    disabled: false,
   },
   {
     activeTitle: (

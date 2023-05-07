@@ -1,6 +1,8 @@
 import { connectToDatabase } from "@/mongodb";
 
-export default async function getTotalErrors() {
+import { Log } from "../logger";
+
+export default async function getTotalLogs() {
   const { db } = await connectToDatabase();
 
   const logCollections = await db
@@ -10,21 +12,21 @@ export default async function getTotalErrors() {
 
   logCollections.filter((collection) => collection !== false);
 
-  const totalErrors = await Promise.all(
+  const totalLogs = await Promise.all(
     logCollections.map(async (collection) => {
-      const totalErrors = await db
+      const totalLogs = await db
         .collection(collection.toString())
         .countDocuments({
-          $or: [
+          $nor: [
             { "options.type": "ERROR" },
             { "options.type": "AUTO:ERROR" },
             { "options.type": "AUTO:UNHANDLEDREJECTION" },
           ],
         });
 
-      return totalErrors;
+      return totalLogs;
     })
   );
 
-  return totalErrors.reduce((a, b) => a + b, 0);
+  return totalLogs.reduce((a, b) => a + b, 0);
 }

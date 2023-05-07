@@ -1,13 +1,18 @@
+import { useState } from "react";
+
 import { VscDebugBreakpointLog } from "react-icons/vsc";
 import { useProjectStore } from "@/stores/projectStore";
 import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
-import { Log } from "@/utils";
+import Pager from "@/components/Pager";
 
 export default function Logs() {
+  const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
-  const logs = useLogs({ type: "logs" });
+  const logs = useLogs({ type: "logs", page });
   const logsLoading = useProjectStore((state) => state.logsLoading);
+
+  const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -19,7 +24,18 @@ export default function Logs() {
               <span>Logs</span>
             </div>
           </div>
-          {/* <div className="flex flex-row px-4">filter</div> */}
+          {!logsLoading && totalPages >= 10 && (
+            <div className="flex flex-col gap-2 p-4 pb-0">
+              <Pager
+                currentPage={page}
+                totalPages={totalPages}
+                perPage={2}
+                onPageClick={(page) => setPage(page)}
+                onPreviousClick={() => page != 0 && setPage(page - 1)}
+                onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-2 p-4">
             {logsLoading &&
               Array.from(Array(3)).map((_, index) => (

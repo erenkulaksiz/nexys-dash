@@ -51,7 +51,7 @@ export default function useProjects({ uid }: useProjectsParams) {
         (async () => {
           await refreshToken(true);
           await projects.mutate();
-          //router.reload();
+          router.reload();
         })();
       }
       return;

@@ -17,12 +17,19 @@ import { Log, server } from "@/utils";
 
 interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
+  page?: number;
 }
 
-export default function useLogs({ type = "logs" }: useLogsParams) {
+export default function useLogs({ type = "logs", page = 0 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
   const router = useRouter();
+
+  useEffect(() => {
+    if (logs.data?.data) {
+      logs.mutate();
+    }
+  }, [page]);
 
   const logs = useSWR(
     [`api/dash/project/${type}/${project?._id}`],
@@ -38,6 +45,7 @@ export default function useLogs({ type = "logs" }: useLogsParams) {
           uid: user?.uid,
           id: project?._id,
           type,
+          page,
         }),
       })
         .then(async (res) => {

@@ -8,6 +8,7 @@ import AddProject from "@/components/AddProject";
 import { ValidateToken } from "@/utils/api/validateToken";
 import WithAuth from "@/hocs/withAuth";
 import getTotalErrors from "@/utils/api/getTotalErrors";
+import getTotalLogs from "@/utils/api/getTotalLogs";
 import { MdError } from "react-icons/md";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
@@ -44,12 +45,12 @@ export default function NewProjectPage(props: NexysComponentProps) {
                 </div>
                 <div>errors caught</div>
               </div>
-              {/*<div className="flex flex-row gap-1 items-end">
+              <div className="flex flex-row gap-1 items-end">
                 <div className="text-4xl font-semibold text-neutral-600 dark:text-neutral-500">
-                  <CountUp end={44768} duration={0.8} />
+                  <CountUp end={props?.totalLogs ?? 0} duration={0.8} />
                 </div>
                 <div>logs processed</div>
-              </div>*/}
+              </div>
             </div>
           </div>
         </Container>
@@ -61,17 +62,19 @@ export default function NewProjectPage(props: NexysComponentProps) {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   let validate = {} as ValidateTokenReturnType;
   let totalErrors: number = 0;
+  let totalLogs: number = 0;
   if (ctx.req) {
     validate = await ValidateToken({ token: ctx.req.cookies.auth });
     totalErrors = await getTotalErrors();
+    totalLogs = await getTotalLogs();
     if (validate.success) {
       if (!validate.data.emailVerified) {
         ctx.res.writeHead(302, { Location: "/auth/verify" });
         ctx.res.end();
-        return { props: { validate, totalErrors } };
+        return { props: { validate, totalErrors, totalLogs } };
       }
-      return { props: { validate, totalErrors } };
+      return { props: { validate, totalErrors, totalLogs } };
     }
   }
-  return { props: { validate, totalErrors } };
+  return { props: { validate, totalErrors, totalLogs } };
 }
