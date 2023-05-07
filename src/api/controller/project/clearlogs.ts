@@ -1,13 +1,12 @@
 import { ObjectId } from "mongodb";
 
 import { accept, reject } from "@/api/utils";
-import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
 
-export default async function setting(
+export default async function clearlogs(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType
@@ -15,19 +14,17 @@ export default async function setting(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { id: string; localhostAccess: boolean };
-  if (!body || !body.id || body.localhostAccess == null) return reject({ res });
-
-  const { id, localhostAccess } = body;
+  const body = req.body as { id: string };
+  if (!body || !body.id) return reject({ res });
+  const { id } = body;
 
   if (!ObjectId.isValid(id)) {
     return reject({ res, reason: "invalid-id" });
   }
 
-  const _project = (await projectsCollection.findOne({
+  const _project = await projectsCollection.findOne({
     _id: new ObjectId(id),
-    _deleted: { $in: [null, false] },
-  })) as ProjectTypes | null;
+  });
 
   if (!_project) return reject({ res, reason: "not-found" });
 
@@ -35,17 +32,7 @@ export default async function setting(
 
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
-  await projectsCollection.updateOne(
-    { _id: new ObjectId(id) },
-    {
-      $set: {
-        localhostAccess: localhostAccess ? true : false,
-        updatedAt: Date.now(),
-      },
-    }
-  );
-
-  Log.debug("Project setting", _project, localhostAccess);
+  await db.dropCollection(`logs-${id}`);
 
   return accept({ res });
 }

@@ -2,95 +2,54 @@ import { RiDashboard3Line } from "react-icons/ri";
 import { IoFlagOutline } from "react-icons/io5";
 import { MdAccessTime, MdInfo } from "react-icons/md";
 import CountUp from "react-countup";
-import { useMemo } from "react";
 import dynamic from "next/dynamic";
 
-import LogBatch from "../../LogBatch";
-import Loading from "@/components/Loading";
 import { useProjectStore } from "@/stores/projectStore";
+import Loading from "@/components/Loading";
 import { BuildComponent } from "@/utils/style";
 import Tooltip from "@/components/Tooltip";
+import useLogs from "@/hooks/useLogs";
 import { Log } from "@/utils";
 
 const Statistics = dynamic(() => import("./Statistics"), {
+  loading: () => <Loading />,
+});
+const LastExceptions = dynamic(() => import("./LastExceptions"), {
   loading: () => <Loading />,
 });
 
 export default function Overview() {
   const project = useProjectStore((state) => state.currentProject);
 
-  const allLogs = useMemo(
-    () =>
-      project?.logs
-        ?.map((log) => log.data.logs?.map((log: any) => log?.options?.type))
-        .flat(),
-    [project?.logs]
-  );
-  let logCounts = {
-    "AUTO:ERROR": 0,
-    "AUTO:UNHANDLEDREJECTION": 0,
-    ERROR: 0,
-  } as { [key: string]: number };
-  allLogs?.forEach((x: any) => {
-    logCounts[x as any] = (logCounts[x] || 0) + 1;
-  });
-  const total = Object.values(logCounts).reduce((a, b) => a + b, 0);
-  const errorCount =
-    logCounts["AUTO:ERROR"] +
-    logCounts["AUTO:UNHANDLEDREJECTION"] +
-    logCounts["ERROR"];
-  const isProjectNew = project?.logs?.length == 0;
-  const projectScore = isProjectNew
-    ? 100
-    : Math.abs(100 - (errorCount / total) * 100);
-
-  const exceptionTypeExist = useMemo(
-    () =>
-      project?.logs
-        ?.map((log: any) => {
-          const logsArr = log.data.logs.filter((log: any) => {
-            const typeException =
-              log?.options?.type == "AUTO:ERROR" ||
-              log?.options?.type == "ERROR" ||
-              log?.options?.type == "AUTO:UNHANDLEDREJECTION";
-            if (typeException) {
-              return true;
-            }
-            return false;
-          });
-          if (logsArr.length) {
-            return true;
-          }
-          return false;
-        })
-        .includes(true),
-    [project?.logs]
+  const projectScore = Math.abs(
+    // @ts-ignore
+    100 - Math.floor(Math.abs(project?.logCount * project?.errorCount) / 100)
   );
 
-  function getProjectScoreMessage() {
-    if (projectScore > 80) {
+  function getProjectScoreMessage(score: number) {
+    if (score > 80) {
       return "Perfect!";
-    } else if (projectScore >= 80) {
+    } else if (score >= 80) {
       return "Nearly bug free";
-    } else if (projectScore >= 70) {
+    } else if (score >= 70) {
       return "Nice";
-    } else if (projectScore >= 50) {
+    } else if (score >= 50) {
       return "Good";
-    } else if (projectScore >= 30) {
+    } else if (score >= 30) {
       return "Needs improvement";
     } else {
       return "Needs improvement";
     }
   }
 
-  function getProjectScoreColor() {
-    if (projectScore >= 80) {
+  function getProjectScoreColor(score: number) {
+    if (score > 80) {
       return "border-green-600 text-green-600";
-    } else if (projectScore >= 70) {
+    } else if (score >= 70) {
       return "border-yellow-600 text-yellow-600";
-    } else if (projectScore >= 50) {
+    } else if (score >= 50) {
       return "border-yellow-600 text-yellow-600";
-    } else if (projectScore >= 30) {
+    } else if (score >= 30) {
       return "border-yellow-600 text-yellow-600";
     } else {
       return "border-red-600 text-red-600";
@@ -112,7 +71,7 @@ export default function Overview() {
                   name: "Count Up",
                   defaultClasses:
                     "w-24 h-24 font-semibold text-2xl flex items-center justify-center border-4 rounded-full",
-                  extraClasses: getProjectScoreColor(),
+                  extraClasses: getProjectScoreColor(projectScore),
                 }).classes
               }
             >
@@ -124,18 +83,26 @@ export default function Overview() {
                   outline
                   content="Project score calculated by (error/total) logs."
                 >
-                  <MdInfo />
+                  <MdInfo size={14} />
                 </Tooltip>
-                <span className="text-xl text-center font-semibold">
-                  {getProjectScoreMessage()}
+                <span
+                  className={
+                    BuildComponent({
+                      name: "Score Message",
+                      defaultClasses: "text-xl text-center font-semibold",
+                      extraClasses: getProjectScoreColor(projectScore),
+                    }).classes
+                  }
+                >
+                  {getProjectScoreMessage(projectScore)}
                 </span>
               </div>
-              {!isProjectNew && (
+              {project?.logCount != 0 && (
                 <span className="text-sm text-neutral-500">
-                  {errorCount} error(s) / {total} log(s)
+                  {project?.errorCount} error(s) / {project?.logCount} log(s)
                 </span>
               )}
-              {isProjectNew && (
+              {project?.logCount == 0 && (
                 <span className="text-sm text-neutral-500">No logs yet.</span>
               )}
             </div>
@@ -147,17 +114,7 @@ export default function Overview() {
             <span>Last exceptions</span>
           </div>
           <div className="flex flex-col gap-2 p-4">
-            {((project && project.logs?.length == 0) ||
-              !exceptionTypeExist) && <div>Vola! No exceptions found.</div>}
-            {project &&
-              Array.isArray(project.logs) &&
-              project.logs &&
-              project.logs?.length > 0 &&
-              project.logs.map((batch) => {
-                return (
-                  <LogBatch batch={batch} key={batch._id} type="exception" />
-                );
-              })}
+            <LastExceptions />
           </div>
         </div>
       </div>

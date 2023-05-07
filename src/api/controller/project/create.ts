@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
 
-export async function create(
+export default async function create(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType

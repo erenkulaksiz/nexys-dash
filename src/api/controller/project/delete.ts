@@ -5,7 +5,7 @@ import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 
-export async function deleteproject(
+export default async function deleteproject(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType
@@ -18,8 +18,8 @@ export async function deleteproject(
 
   const { id } = body;
 
-  if (!ObjectId.isValid(id) || !id) {
-    return reject({ res, reason: "no-id" });
+  if (!ObjectId.isValid(id)) {
+    return reject({ res, reason: "invalid-id" });
   }
 
   await projectsCollection.updateOne(

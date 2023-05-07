@@ -1,34 +1,12 @@
-import { useMemo } from "react";
-
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
-import LogBatch from "../../LogBatch";
+import useLogs from "@/hooks/useLogs";
+import LogCard from "@/components/project/LogCard";
 
 export default function Exceptions() {
   const project = useProjectStore((state) => state.currentProject);
-
-  const exceptionTypeExist = useMemo(
-    () =>
-      project?.logs
-        ?.map((log: any) => {
-          const logsArr = log.data.logs.filter((log: any) => {
-            const typeException =
-              log?.options?.type == "AUTO:ERROR" ||
-              log?.options?.type == "ERROR" ||
-              log?.options?.type == "AUTO:UNHANDLEDREJECTION";
-            if (typeException) {
-              return true;
-            }
-            return false;
-          });
-          if (logsArr.length) {
-            return true;
-          }
-          return false;
-        })
-        .includes(true),
-    [project?.logs]
-  );
+  const exceptions = useLogs({ type: "exceptions" });
+  const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -41,15 +19,24 @@ export default function Exceptions() {
             </div>
           </div>
           <div className="flex flex-col gap-2 p-4">
-            {!exceptionTypeExist && <div>No exceptions found.</div>}
-            {project &&
-              Array.isArray(project.logs) &&
-              project.logs &&
-              project.logs?.length > 0 &&
-              project.logs.map((batch) => {
-                return (
-                  <LogBatch batch={batch} key={batch._id} type="exception" />
-                );
+            {exceptionsLoading &&
+              Array.from(Array(3)).map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
+                ></div>
+              ))}
+            {!exceptionsLoading &&
+              exceptions.data?.data?.exceptions?.length == 0 && (
+                <div>No exceptions found.</div>
+              )}
+            {!exceptionsLoading &&
+              project &&
+              Array.isArray(exceptions.data?.data?.exceptions) &&
+              exceptions.data?.data?.exceptions &&
+              exceptions.data?.data?.exceptions.length > 0 &&
+              exceptions.data?.data?.exceptions.map((exception: any) => {
+                return <LogCard log={exception} key={exception._id} />;
               })}
           </div>
         </div>

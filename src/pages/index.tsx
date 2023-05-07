@@ -45,7 +45,7 @@ export default function HomePage(props: NexysComponentProps) {
             <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
               <Container>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
-                  {Array.from(Array(3)).map((_, index) => (
+                  {Array.from(Array(6)).map((_, index) => (
                     <div
                       key={index}
                       className="animate-pulse relative group flex items-center justify-center dark:bg-neutral-900 bg-neutral-100 rounded-lg p-4 h-32"

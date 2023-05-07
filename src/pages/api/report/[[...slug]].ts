@@ -67,9 +67,7 @@ export default async function handler(
     " project?.domain",
     project?.domain,
     " req.headers.host",
-    req.headers.host,
-    " req.headers.origin",
-    req.headers.origin
+    req.headers.host
   );
 
   if (project?.localhostAccess !== true && !isDomainHostSame)
@@ -86,6 +84,49 @@ export default async function handler(
     });
   }
 
+  const { logs, ...rest } = data;
+
+  const logsCollection = await db.collection(`logs-${project._id}`);
+  let logId: ObjectId | null = null;
+
+  const batchesCollection = await db.collection(`batches-${project._id}`);
+
+  let logTypes = {};
+  // increase log type count
+  logs.forEach((log: any) => {
+    const type = log?.options?.type;
+    // @ts-ignore
+    if (logTypes[type]) {
+      // @ts-ignore
+      logTypes[type] = logTypes[type] + 1;
+    } else {
+      // @ts-ignore
+      logTypes[type] = 1;
+    }
+  });
+
+  const batchInsert = await batchesCollection.insertOne({
+    ...rest,
+    createdAt: Date.now(),
+    logTypes,
+  });
+
+  const logInsert = await logsCollection.insertMany(
+    logs.map((log: any) => ({
+      ...log,
+      batchId: batchInsert?.insertedId,
+    }))
+  );
+
+  await batchesCollection.updateOne(
+    { _id: new ObjectId(batchInsert?.insertedId) },
+    {
+      $set: {
+        logIds: logInsert.insertedIds,
+      },
+    }
+  );
+
   await projectsCollection.updateOne(
     { _id: new ObjectId(project._id) },
     {
@@ -95,19 +136,10 @@ export default async function handler(
         verifiedAt: isDomainHostSame ? Date.now() : 0,
       },
       $inc: {
-        logUsage: 1,
+        logUsage: logs.length,
       },
     }
   );
-
-  const logsCollection = await db.collection("logs");
-  await logsCollection.insertOne({
-    data,
-    API_KEY,
-    APP_NAME,
-    project: project._id,
-    createdAt: Date.now(),
-  });
 
   return accept({
     res,

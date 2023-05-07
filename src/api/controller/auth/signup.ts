@@ -14,7 +14,10 @@ if (!admin.apps.length) {
   });
 }
 
-export async function signup(req: NextApiRequest, res: NextApiResponse) {
+export default async function signup(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { db } = await connectToDatabase();
   const usersCollection = await db.collection("users");
   const auth = await admin.auth();

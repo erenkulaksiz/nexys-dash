@@ -11,29 +11,6 @@ import Button from "@/components/Button";
 export default function BatchCard({ batch }: { batch: any }) {
   const project = useProjectStore((state) => state.currentProject);
 
-  const batches = useMemo(
-    () =>
-      batch?.data?.logs?.reduce((acc: any, log: any) => {
-        if (!acc[log?.options?.type]) {
-          acc[log?.options?.type] = [];
-        }
-        acc[log?.options?.type].push(log);
-        return acc;
-      }, {}),
-    [batch?.data?.logs]
-  );
-
-  const batchTypeLengths = useMemo(
-    () =>
-      Object.keys(batches).map((key) => {
-        return {
-          type: key,
-          length: batches[key].length,
-        };
-      }),
-    [batches]
-  );
-
   return (
     <div className="flex flex-col border-[1px] rounded-lg p-3 border-neutral-200 dark:border-neutral-900">
       <div className="flex flex-col gap-2">
@@ -72,12 +49,14 @@ export default function BatchCard({ batch }: { batch: any }) {
         )}
         <div className="flex flex-row items-center gap-2">
           <ul className="flex flex-row gap-2 items-center">
-            {batchTypeLengths
-              .sort((a, b) => (a.type == "undefined" ? 1 : -1))
-              .map((batchTypeLength) => {
+            {Object.keys(batch?.logTypes)
+              .sort((a: any, b: any) => {
+                return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;
+              })
+              .map((batchType: any) => {
                 return (
                   <li
-                    key={`logBatch${batchTypeLength.type}`}
+                    key={`batchCard-${batchType.type}`}
                     className={
                       BuildComponent({
                         defaultClasses:
@@ -89,35 +68,24 @@ export default function BatchCard({ batch }: { batch: any }) {
                           },
                         ],
                         selectedClasses: [
-                          batchTypeLength.type == "ERROR" ||
-                            batchTypeLength.type == "AUTO:ERROR" ||
-                            batchTypeLength.type == "AUTO:UNHANDLEDREJECTION",
+                          batchType == "ERROR" ||
+                            batchType == "AUTO:ERROR" ||
+                            batchType == "AUTO:UNHANDLEDREJECTION",
                         ],
                       }).classes
                     }
                   >
                     <div className="flex flex-row gap-[2px] items-center">
                       <span className="text-sm">
-                        {batchTypeLength.type != "undefined"
-                          ? batchTypeLength.type
-                          : "Others"}
+                        {batchType != "undefined" ? batchType : "LOG"}
                       </span>
                       <span className="text-neutral-500 text-xs">
-                        ({batchTypeLength.length})
+                        ({batch?.logTypes[batchType]})
                       </span>
                     </div>
                   </li>
                 );
               })}
-
-            <li className="flex flex-row gap-2 items-center border-[1px] px-1 rounded border-neutral-200 dark:border-neutral-900">
-              <div className="flex flex-row gap-[2px] items-center">
-                <span className="text-sm">Total</span>
-                <span className="text-neutral-500 text-xs">
-                  ({batch?.data?.logs?.length})
-                </span>
-              </div>
-            </li>
           </ul>
         </div>
       </div>

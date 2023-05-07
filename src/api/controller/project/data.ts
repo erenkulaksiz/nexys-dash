@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
 
-export async function data(
+export default async function data(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType
@@ -29,12 +29,21 @@ export async function data(
 
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
-  const logsCollection = await db.collection("logs");
-  const logs = await logsCollection
+  const batchCollection = await db.collection(`batches-${_project._id}`);
+  const logCollection = await db.collection(`logs-${_project._id}`);
+
+  const batchCount = await batchCollection.countDocuments();
+  const logCount = await logCollection.countDocuments();
+
+  const errorCount = await logCollection
     .find({
-      project: new ObjectId(_project._id),
+      $or: [
+        { "options.type": "ERROR" },
+        { "options.type": "AUTO:ERROR" },
+        { "options.type": "AUTO:UNHANDLEDREJECTION" },
+      ],
     })
-    .toArray();
+    .count();
 
   const project = {
     name: _project.name,
@@ -43,12 +52,14 @@ export async function data(
     createdAt: _project.createdAt,
     updatedAt: _project.updatedAt,
     publicKey: _project.publicKey,
-    logs,
     verified: _project.verified ? true : false,
     verifiedAt: _project.verifiedAt,
     localhostAccess: _project.localhostAccess ? true : false,
     logUsage: _project?.logUsage,
     logUsageLimit: _project?.logUsageLimit,
+    batchCount,
+    logCount,
+    errorCount,
   };
 
   return accept({ res, data: project });

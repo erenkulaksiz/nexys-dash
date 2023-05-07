@@ -1,35 +1,13 @@
 import { VscDebugBreakpointLog } from "react-icons/vsc";
-import { useMemo } from "react";
-
-import LogBatch from "../../LogBatch/LogBatch";
 import { useProjectStore } from "@/stores/projectStore";
+import useLogs from "@/hooks/useLogs";
+import LogCard from "@/components/project/LogCard";
+import { Log } from "@/utils";
 
 export default function Logs() {
   const project = useProjectStore((state) => state.currentProject);
-
-  const logTypeExist = useMemo(
-    () =>
-      project?.logs
-        ?.map((log: any) => {
-          const logsArr = log.data.logs.filter((log: any) => {
-            const typeLog =
-              log?.options?.type != "AUTO:ERROR" &&
-              log?.options?.type != "ERROR" &&
-              log?.options?.type != "AUTO:UNHANDLEDREJECTION" &&
-              log?.options?.type != "METRIC";
-            if (typeLog) {
-              return true;
-            }
-            return false;
-          });
-          if (logsArr.length) {
-            return true;
-          }
-          return false;
-        })
-        .includes(true),
-    [project?.logs]
-  );
+  const logs = useLogs({ type: "logs" });
+  const logsLoading = useProjectStore((state) => state.logsLoading);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -43,13 +21,23 @@ export default function Logs() {
           </div>
           {/* <div className="flex flex-row px-4">filter</div> */}
           <div className="flex flex-col gap-2 p-4">
-            {!logTypeExist && <div>No logs found.</div>}
-            {project &&
-              Array.isArray(project.logs) &&
-              project.logs &&
-              project.logs?.length > 0 &&
-              project.logs.map((batch) => {
-                return <LogBatch batch={batch} key={batch._id} type="log" />;
+            {logsLoading &&
+              Array.from(Array(3)).map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
+                ></div>
+              ))}
+            {!logsLoading && logs.data?.data?.logs?.length == 0 && (
+              <div>No logs found.</div>
+            )}
+            {!logsLoading &&
+              project &&
+              Array.isArray(logs.data?.data?.logs) &&
+              logs.data?.data?.logs &&
+              logs.data?.data?.logs?.length > 0 &&
+              logs.data?.data?.logs?.map((log: any) => {
+                return <LogCard log={log} key={log._id} />;
               })}
           </div>
         </div>

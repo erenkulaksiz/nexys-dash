@@ -24,6 +24,9 @@ export interface ProjectTypes {
   localhostAccess?: boolean;
   logUsage?: number;
   logUsageLimit?: number;
+  batchCount?: number;
+  logCount?: number;
+  errorCount?: number;
 }
 
 export interface NexysComponentProps extends PropsWithChildren {

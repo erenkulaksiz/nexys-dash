@@ -56,25 +56,31 @@ export default function Project() {
         <div className="flex flex-col w-full">
           <div className="flex flex-row gap-2 items-start">
             <span>Project Creation</span>
-            <span className="dark:text-neutral-600 text-neutral-400">
+            <time
+              dateTime={project?.createdAt?.toString()}
+              className="dark:text-neutral-600 text-neutral-400"
+            >
               {formatDateToHuman({
                 date: project?.createdAt ?? "",
                 output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
               })}
-            </span>
+            </time>
           </div>
           <div className="flex flex-row gap-2 items-start">
             <span>Project Last Update</span>
-            <span className="dark:text-neutral-600 text-neutral-400">
+            <time
+              dateTime={project?.updatedAt?.toString()}
+              className="dark:text-neutral-600 text-neutral-400"
+            >
               {formatDateToHuman({
                 date: project?.updatedAt ?? "",
                 output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
               })}
-            </span>
+            </time>
           </div>
         </div>
-        <Tooltip content="This action cannot be undone!">
-          <Button className="px-2 text-white" onClick={() => {}}>
+        <Tooltip content="Will be activated soon.">
+          <Button className="px-2" onClick={() => {}}>
             <span className="mr-1">
               <MdDelete size={18} />
             </span>

@@ -6,16 +6,16 @@ import JSONPretty from "react-json-pretty";
 
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
-import { formatDateToHuman } from "@/utils";
+import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { useProjectStore } from "@/stores/projectStore";
+import type { LogCardProps } from "./LogCard.types";
 
 export default function LogCard({
   log,
-  data,
   viewingBatch,
   logSelected = false,
-}: any) {
+}: LogCardProps) {
   const project = useProjectStore((state) => state.currentProject);
 
   const isTypeError =
@@ -40,11 +40,13 @@ export default function LogCard({
         }).classes
       }
     >
-      {/*<div className="absolute -right-2 -top-2 text-black dark:text-white">
+      {/*
+      <div className="absolute -right-2 -top-2 text-black dark:text-white">
         <Tooltip content="Unread">
           <FaDotCircle size={24} />
         </Tooltip>
-    </div>*/}
+      </div>
+      */}
       {logSelected && (
         <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl"></div>
       )}
@@ -54,12 +56,12 @@ export default function LogCard({
             <div>
               <MdOutlineAccessTime />
             </div>
-            <span>
+            <time dateTime={log?.ts}>
               {formatDateToHuman({
                 date: log?.ts,
                 output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
               })}
-            </span>
+            </time>
           </div>
           <div className="flex flex-row gap-2">
             {/*
@@ -71,8 +73,8 @@ export default function LogCard({
             {!viewingBatch && (
               <Link
                 href={`/project/${project?.name ? project.name : ""}/batch/${
-                  data._id
-                }?logGuid=${log.guid}`}
+                  log.batchId
+                }?log=${log._id}`}
               >
                 <Button
                   light="dark:bg-white bg-black dark:text-black"
@@ -121,19 +123,19 @@ export default function LogCard({
             </div>
           </div>
         )}
-        {data?.env?.type && (
+        {log?.env?.type && (
           <div className="flex flex-row gap-2 items-center">
             <div className="flex flex-row gap-1 items-center">
               <div>Environment</div>
             </div>
             <div>
               <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
-                {data?.env?.type}
+                {log?.env?.type}
               </span>
             </div>
           </div>
         )}
-        {data?.env?.ver && (
+        {log?.env?.ver && (
           <div className="flex flex-row gap-2 items-center">
             <div className="flex flex-row gap-1 items-center">
               <div>Platform</div>
@@ -189,6 +191,18 @@ export default function LogCard({
             <div>
               <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
                 {log?.guid}
+              </span>
+            </div>
+          </div>
+        )}
+        {log._id && (
+          <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-1 items-center">
+              <div>ID</div>
+            </div>
+            <div>
+              <span className="text-xs whitespace-pre-wrap dark:text-neutral-400 text-neutral-600">
+                {log._id}
               </span>
             </div>
           </div>

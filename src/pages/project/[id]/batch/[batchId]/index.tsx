@@ -26,25 +26,23 @@ import BatchHeader from "@/components/project/BatchHeader";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
+import useBatch from "@/hooks/useBatch";
 import { Log } from "@/utils";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
 
 export default function BatchPage(props: NexysComponentProps) {
+  const router = useRouter();
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const authUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
-  const router = useRouter();
+  const batch = useBatch({ uid: uid ?? "" });
+  const batchLoading = useProjectStore((state) => state.batchLoading);
 
-  const { batchId, logGuid } = router.query;
-
-  const currentBatch = useMemo(
-    () => project?.data?.data?.logs?.find((batch: any) => batch._id == batchId),
-    [project?.data?.data?.logs, batchId]
-  );
+  const logId = router.query.log as string;
 
   return (
     <Layout {...props} withoutLayout>
@@ -65,7 +63,7 @@ export default function BatchPage(props: NexysComponentProps) {
           <div className="flex z-40 flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <BatchHeader />
           </div>
-          {!currentBatch && (
+          {!batch?.data?.data && !batchLoading && !loading && (
             <div className="flex flex-col items-center justify-center h-full">
               <div className="flex flex-col items-center justify-center gap-2">
                 <h1 className="text-2xl font-bold">Batch not found</h1>
@@ -75,8 +73,8 @@ export default function BatchPage(props: NexysComponentProps) {
               </div>
             </div>
           )}
-          <Container className="pt-1" hidden={currentBatch == null}>
-            {!loading && (
+          <Container className="pt-1" hidden={batch?.data?.data == null}>
+            {!loading && !batchLoading && (
               <Tab id="batchpage">
                 <Tab.TabView
                   activeTitle={
@@ -94,15 +92,14 @@ export default function BatchPage(props: NexysComponentProps) {
                   id="Batch"
                 >
                   <div className="flex flex-col gap-2 py-2">
-                    {currentBatch?.data?.logs
+                    {batch?.data?.data?.logs
                       ?.sort((a: any, b: any) => b.ts - a.ts)
                       .map((log: any) => {
                         return (
                           <LogCard
                             log={log}
-                            data={project?.data?.data}
-                            key={log.guid}
-                            logSelected={logGuid == log.guid}
+                            key={log._id}
+                            logSelected={log._id == logId}
                             viewingBatch
                           />
                         );
@@ -128,22 +125,20 @@ export default function BatchPage(props: NexysComponentProps) {
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="configUser">User</label>
-                        <Codeblock data={currentBatch?.data?.config?.user}>
-                          {currentBatch?.data?.config?.user}
+                        <Codeblock data={batch?.data?.data?.config?.user}>
+                          {batch?.data?.data?.config?.user}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="configClient">Client</label>
-                        <Codeblock data={currentBatch?.data?.config?.client}>
-                          {currentBatch?.data?.config?.client}
+                        <Codeblock data={batch?.data?.data?.config?.client}>
+                          {batch?.data?.data?.config?.client}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="version">App Version</label>
-                        <Codeblock
-                          data={currentBatch?.data?.config?.appVersion}
-                        >
-                          {currentBatch?.data?.config?.appVersion}
+                        <Codeblock data={batch?.data?.data?.config?.appVersion}>
+                          {batch?.data?.data?.config?.appVersion}
                         </Codeblock>
                       </div>
                     </div>
@@ -170,35 +165,33 @@ export default function BatchPage(props: NexysComponentProps) {
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="userAgent">User Agent</label>
                         <Codeblock
-                          data={currentBatch?.data?.deviceData?.userAgent}
+                          data={batch?.data?.data?.deviceData?.userAgent}
                         >
-                          {currentBatch?.data?.deviceData?.userAgent}
+                          {batch?.data?.data?.deviceData?.userAgent}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="language">Language</label>
                         <Codeblock
-                          data={currentBatch?.data?.deviceData?.language}
+                          data={batch?.data?.data?.deviceData?.language}
                         >
-                          {currentBatch?.data?.deviceData?.language}
+                          {batch?.data?.data?.deviceData?.language}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="platform">Platform</label>
                         <Codeblock
-                          data={currentBatch?.data?.deviceData?.platform}
+                          data={batch?.data?.data?.deviceData?.platform}
                         >
-                          {currentBatch?.data?.deviceData?.platform}
+                          {batch?.data?.data?.deviceData?.platform}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="platform">Screen</label>
-                        <Codeblock
-                          data={currentBatch?.data?.deviceData?.screen}
-                        >
+                        <Codeblock data={batch?.data?.data?.deviceData?.screen}>
                           <div className="text-xs">
                             <JSONPretty
-                              data={currentBatch?.data?.deviceData?.screen}
+                              data={batch?.data?.data?.deviceData?.screen}
                             />
                           </div>
                         </Codeblock>
@@ -206,17 +199,15 @@ export default function BatchPage(props: NexysComponentProps) {
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="deviceMemory">Device Memory</label>
                         <Codeblock
-                          data={currentBatch?.data?.deviceData?.deviceMemory}
+                          data={batch?.data?.data?.deviceData?.deviceMemory}
                         >
-                          {currentBatch?.data?.deviceData?.deviceMemory}
+                          {batch?.data?.data?.deviceData?.deviceMemory}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="deviceMemory">Vendor</label>
-                        <Codeblock
-                          data={currentBatch?.data?.deviceData?.vendor}
-                        >
-                          {currentBatch?.data?.deviceData?.vendor}
+                        <Codeblock data={batch?.data?.data?.deviceData?.vendor}>
+                          {batch?.data?.data?.deviceData?.vendor}
                         </Codeblock>
                       </div>
                     </div>
@@ -242,27 +233,27 @@ export default function BatchPage(props: NexysComponentProps) {
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="type">Type</label>
-                        <Codeblock data={currentBatch?.data?.env?.type}>
-                          {currentBatch?.data?.env?.type}
+                        <Codeblock data={batch?.data?.data?.env?.type}>
+                          {batch?.data?.data?.env?.type}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="p_version">Version</label>
-                        <Codeblock data={currentBatch?.data?.env?.ver}>
-                          {currentBatch?.data?.env?.ver}
+                        <Codeblock data={batch?.data?.data?.env?.ver}>
+                          {batch?.data?.data?.env?.ver}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="isClient">Is Client</label>
-                        <Codeblock data={currentBatch?.data?.env?.isClient}>
-                          {currentBatch?.data?.env?.isClient ? "true" : "false"}
+                        <Codeblock data={batch?.data?.data?.env?.isClient}>
+                          {batch?.data?.data?.env?.isClient ? "true" : "false"}
                         </Codeblock>
                       </div>
-                      {currentBatch?.data?.env?.el && (
+                      {batch?.data?.data?.env?.el && (
                         <div className="flex flex-col gap-2 w-full">
                           <label htmlFor="isClient">Body Element Count</label>
-                          <Codeblock data={currentBatch?.data?.env?.el}>
-                            {currentBatch?.data?.env?.el}
+                          <Codeblock data={batch?.data?.data?.env?.el}>
+                            {batch?.data?.data?.env?.el}
                           </Codeblock>
                         </div>
                       )}
@@ -289,15 +280,15 @@ export default function BatchPage(props: NexysComponentProps) {
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="package">Package</label>
                         <Codeblock
-                          data={currentBatch?.data?.package?.libraryName}
+                          data={batch?.data?.data?.package?.libraryName}
                         >
-                          {currentBatch?.data?.package?.libraryName}
+                          {batch?.data?.data?.package?.libraryName}
                         </Codeblock>
                       </div>
                       <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="version">Version</label>
-                        <Codeblock data={currentBatch?.data?.package?.version}>
-                          {currentBatch?.data?.package?.version}
+                        <Codeblock data={batch?.data?.data?.package?.version}>
+                          {batch?.data?.data?.package?.version}
                         </Codeblock>
                       </div>
                     </div>
@@ -327,9 +318,9 @@ export default function BatchPage(props: NexysComponentProps) {
                             Package options.
                           </span>
                         </div>
-                        <Codeblock data={currentBatch?.data?.options}>
+                        <Codeblock data={batch?.data?.data?.options}>
                           <div className="text-xs">
-                            <JSONPretty data={currentBatch?.data?.options} />
+                            <JSONPretty data={batch?.data?.data?.options} />
                           </div>
                         </Codeblock>
                       </div>
@@ -338,22 +329,23 @@ export default function BatchPage(props: NexysComponentProps) {
                 </Tab.TabView>
               </Tab>
             )}
-            {loading && (
-              <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
-                <div className="flex flex-row gap-2">
-                  {Array.from(Array(6)).map((_, index) => (
-                    <div
-                      key={index}
-                      className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
-                    ></div>
-                  ))}
+            {loading ||
+              (batchLoading && (
+                <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
+                  <div className="flex flex-row gap-2">
+                    {Array.from(Array(6)).map((_, index) => (
+                      <div
+                        key={index}
+                        className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                      ></div>
+                    ))}
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                    <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                  </div>
                 </div>
-                <div className="flex flex-row gap-2">
-                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                  <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                </div>
-              </div>
-            )}
+              ))}
           </Container>
         </main>
       </WithAuth>
