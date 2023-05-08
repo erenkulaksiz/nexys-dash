@@ -25,7 +25,7 @@ export default function Batches() {
               <span>Batches</span>
             </div>
           </div>
-          {!batchesLoading && totalPages >= 10 && (
+          {!batchesLoading && totalPages > 10 && (
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager
                 currentPage={page}

@@ -9,12 +9,19 @@ import { refreshToken } from "@/stores/authStore";
 
 interface useBatchParams {
   uid: string;
+  page?: number;
 }
 
-export default function useBatch({ uid }: useBatchParams) {
+export default function useBatch({ uid, page = 0 }: useBatchParams) {
   const router = useRouter();
 
   const { id, batchId } = router.query;
+
+  useEffect(() => {
+    if (batch.data?.data) {
+      batch.mutate();
+    }
+  }, [page]);
 
   const batch = useSWR([`api/dash/project/batch/${batchId}`], async () => {
     const token = Cookies.get("auth");
@@ -28,6 +35,7 @@ export default function useBatch({ uid }: useBatchParams) {
         uid,
         projectId: id,
         id: batchId,
+        page,
       }),
     })
       .then(async (res) => {

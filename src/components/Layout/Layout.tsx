@@ -28,7 +28,7 @@ export default function Layout(props: LayoutProps) {
         if (props.validate.error === "auth/id-token-expired") {
           (async () => {
             await refreshToken(true);
-            router.reload();
+            //router.reload();
           })();
         }
       }

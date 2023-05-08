@@ -25,6 +25,8 @@ export default async function getTotalErrors() {
       return totalErrors;
     })
   );
+  const totalErrorCount = totalErrors.reduce((a, b) => a + b, 0);
+  const ceil = Math.ceil(totalErrorCount / 1000) * 1000;
 
-  return totalErrors.reduce((a, b) => a + b, 0);
+  return ceil;
 }

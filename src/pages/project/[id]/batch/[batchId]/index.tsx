@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useState } from "react";
 import { MdPerson, MdPersonOutline } from "react-icons/md";
 import {
   RiFilePaperLine,
@@ -27,12 +27,15 @@ import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import useBatch from "@/hooks/useBatch";
+import { BuildComponent } from "@/utils/style";
+import Pager from "@/components/Pager";
 import { Log } from "@/utils";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
 
 export default function BatchPage(props: NexysComponentProps) {
+  const [page, setPage] = useState<number>(0);
   const router = useRouter();
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
@@ -40,8 +43,9 @@ export default function BatchPage(props: NexysComponentProps) {
   const authUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
-  const batch = useBatch({ uid: uid ?? "" });
+  const batch = useBatch({ uid: uid ?? "", page });
 
+  const totalPages = Math.ceil(batch.data?.data?.logsLength / 10);
   const logId = router.query.log as string;
 
   return (
@@ -74,7 +78,7 @@ export default function BatchPage(props: NexysComponentProps) {
             </div>
           )}
           <Container className="pt-1">
-            {batchLoading && (
+            {(loading || batchLoading) && (
               <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
                 <div className="flex flex-row gap-2">
                   {Array.from(Array(6)).map((_, index) => (
@@ -107,19 +111,80 @@ export default function BatchPage(props: NexysComponentProps) {
                   }
                   id="Batch"
                 >
-                  <div className="flex flex-col gap-2 py-2">
-                    {batch?.data?.data?.logs
-                      ?.sort((a: any, b: any) => b.ts - a.ts)
-                      .map((log: any) => {
-                        return (
-                          <LogCard
-                            log={log}
-                            key={log._id}
-                            logSelected={log._id == logId}
-                            viewingBatch
-                          />
-                        );
-                      })}
+                  <div className="flex flex-col">
+                    <div className="flex flex-row flex-wrap gap-2 items-start pt-2">
+                      {batch?.data?.data?.logTypes &&
+                        Object.keys(batch?.data?.data?.logTypes)
+                          .sort((a: any, b: any) => {
+                            return batch?.data?.data?.logTypes[a] >
+                              batch?.data?.data?.logTypes[b]
+                              ? -1
+                              : 1;
+                          })
+                          .map((batchType: any) => {
+                            return (
+                              <li
+                                key={`batchCard-${batchType}`}
+                                className={
+                                  BuildComponent({
+                                    defaultClasses:
+                                      "flex flex-row gap-2 items-center border-[1px] px-1 rounded",
+                                    conditionalClasses: [
+                                      {
+                                        true: "border-red-400 dark:border-red-800",
+                                        false:
+                                          "border-neutral-200 dark:border-neutral-900",
+                                      },
+                                    ],
+                                    selectedClasses: [
+                                      batchType == "ERROR" ||
+                                        batchType == "AUTO:ERROR" ||
+                                        batchType == "AUTO:UNHANDLEDREJECTION",
+                                    ],
+                                  }).classes
+                                }
+                              >
+                                <div className="flex flex-row gap-[2px] items-center">
+                                  <span className="text-sm">
+                                    {batchType != "undefined"
+                                      ? batchType
+                                      : "LOG"}
+                                  </span>
+                                  <span className="text-neutral-500 text-xs">
+                                    ({batch?.data?.data?.logTypes[batchType]})
+                                  </span>
+                                </div>
+                              </li>
+                            );
+                          })}
+                    </div>
+                    {batch.data?.data?.logs?.length != 0 && totalPages > 1 && (
+                      <Pager
+                        currentPage={page}
+                        totalPages={totalPages}
+                        perPage={2}
+                        onPageClick={(page) => setPage(page)}
+                        onPreviousClick={() => page != 0 && setPage(page - 1)}
+                        onNextClick={() =>
+                          page + 1 < totalPages && setPage(page + 1)
+                        }
+                        className="pt-2"
+                      />
+                    )}
+                    <div className="flex flex-col gap-2 py-2">
+                      {batch?.data?.data?.logs
+                        ?.sort((a: any, b: any) => b.ts - a.ts)
+                        .map((log: any) => {
+                          return (
+                            <LogCard
+                              log={log}
+                              key={log._id}
+                              logSelected={log._id == logId}
+                              viewingBatch
+                            />
+                          );
+                        })}
+                    </div>
                   </div>
                 </Tab.TabView>
                 <Tab.TabView

@@ -42,12 +42,14 @@ export default function NewProjectPage(props: NexysComponentProps) {
                 <div className="flex flex-row text-4xl items-end font-semibold dark:text-red-800 text-red-600">
                   <MdError size={18} />
                   <CountUp end={props?.totalErrors ?? 0} duration={0.8} />
+                  <div>+</div>
                 </div>
                 <div>errors caught</div>
               </div>
               <div className="flex flex-row gap-1 items-end">
-                <div className="text-4xl font-semibold text-neutral-600 dark:text-neutral-500">
+                <div className="flex flex-row text-4xl font-semibold text-neutral-600 dark:text-neutral-500">
                   <CountUp end={props?.totalLogs ?? 0} duration={0.8} />
+                  <div>+</div>
                 </div>
                 <div>logs processed</div>
               </div>

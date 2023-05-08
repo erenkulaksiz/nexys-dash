@@ -10,6 +10,7 @@ export default function BatchHeader() {
   const project = useProjectStore((state) => state.currentProject);
   const loading = useProjectStore((state) => state.loading);
   const batchLoading = useProjectStore((state) => state.batchLoading);
+  const batch = useProjectStore((state) => state.currentBatch);
   const router = useRouter();
   const { batchId } = router.query;
 
@@ -32,7 +33,24 @@ export default function BatchHeader() {
         )}
         {!loading && !batchLoading && (
           <div className="flex flex-col">
-            <h1 className="text-2xl font-semibold">Viewing Batch</h1>
+            <div className="flex flex-row gap-2 items-center">
+              <h1 className="text-2xl font-semibold">Viewing Batch</h1>
+              {batch?.env?.git && (
+                <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                  {batch?.env?.git}
+                </span>
+              )}
+              {batch?.env?.gitCommitMessage && (
+                <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                  {batch?.env?.gitCommitMessage}
+                </span>
+              )}
+              {batch?.env?.gitCommitAuthorLogin && (
+                <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                  {batch?.env?.gitCommitAuthorLogin}
+                </span>
+              )}
+            </div>
             <div className="text-xs text-neutral-400">{`id: ${batchId}`}</div>
           </div>
         )}

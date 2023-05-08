@@ -27,6 +27,8 @@ export default async function getTotalLogs() {
       return totalLogs;
     })
   );
+  const totalLogCount = totalLogs.reduce((a, b) => a + b, 0);
+  const ceil = Math.ceil(totalLogCount / 1000) * 1000;
 
-  return totalLogs.reduce((a, b) => a + b, 0);
+  return ceil;
 }

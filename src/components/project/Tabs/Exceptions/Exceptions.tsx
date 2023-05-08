@@ -28,39 +28,39 @@ export default function Exceptions() {
               <span>Exceptions</span>
             </div>
           </div>
+          {!exceptionsLoading && (
+            <div className="flex flex-col items-start gap-4 p-4 pb-0">
+              <Button
+                className="px-2"
+                size="h-8"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+              >
+                {filtersOpen ? <RiFilterFill /> : <RiFilterLine />}
+                Filters
+              </Button>
+              {filtersOpen && (
+                <Select
+                  options={[
+                    { id: "asc", text: "Ascending" },
+                    { id: "desc", text: "Descending" },
+                  ]}
+                  onChange={(event) => {}}
+                  className="h-8"
+                />
+              )}
+              {!exceptionsLoading && totalPages > 10 && (
+                <Pager
+                  currentPage={page}
+                  totalPages={totalPages}
+                  perPage={2}
+                  onPageClick={(page) => setPage(page)}
+                  onPreviousClick={() => page != 0 && setPage(page - 1)}
+                  onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
+                />
+              )}
+            </div>
+          )}
           <div className="flex flex-col gap-2 p-4">
-            {!exceptionsLoading && (
-              <div className="flex flex-row items-start gap-2">
-                <Button
-                  className="px-2"
-                  size="h-8"
-                  onClick={() => setFiltersOpen(!filtersOpen)}
-                >
-                  {filtersOpen ? <RiFilterFill /> : <RiFilterLine />}
-                  Filters
-                </Button>
-                {filtersOpen && (
-                  <Select
-                    options={[
-                      { id: "asc", text: "Ascending" },
-                      { id: "desc", text: "Descending" },
-                    ]}
-                    onChange={(event) => {}}
-                    className="h-8"
-                  />
-                )}
-              </div>
-            )}
-            {!exceptionsLoading && totalPages >= 10 && (
-              <Pager
-                currentPage={page}
-                totalPages={totalPages}
-                perPage={2}
-                onPageClick={(page) => setPage(page)}
-                onPreviousClick={() => page != 0 && setPage(page - 1)}
-                onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
-              />
-            )}
             {exceptionsLoading &&
               Array.from(Array(3)).map((_, index) => (
                 <div

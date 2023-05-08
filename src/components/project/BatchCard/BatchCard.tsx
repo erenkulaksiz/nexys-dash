@@ -6,10 +6,21 @@ import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { TbListDetails } from "react-icons/tb";
 import { useProjectStore } from "@/stores/projectStore";
+import LogCardEntry from "../LogCardEntry";
 import Button from "@/components/Button";
 
 export default function BatchCard({ batch }: { batch: any }) {
   const project = useProjectStore((state) => state.currentProject);
+
+  const isProduction = useMemo(() => {
+    return batch?.env?.type == "production";
+  }, [batch]);
+  const gitBranch = useMemo(() => {
+    return batch?.env?.git;
+  }, [batch]);
+  const gitCommit = useMemo(() => {
+    return batch?.env?.gitCommitMessage;
+  }, [batch]);
 
   return (
     <div className="flex flex-col border-[1px] rounded-lg p-3 border-neutral-200 dark:border-neutral-900">
@@ -42,6 +53,25 @@ export default function BatchCard({ batch }: { batch: any }) {
             </Button>
           </Link>
         </div>
+        {(isProduction || gitBranch || gitCommit) && (
+          <div className="flex flex-row gap-2 items-start">
+            {isProduction && (
+              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                Production
+              </span>
+            )}
+            {gitBranch && (
+              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                {gitBranch}
+              </span>
+            )}
+            {gitCommit && (
+              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                {gitCommit}
+              </span>
+            )}
+          </div>
+        )}
         {batch?.data?.config?.user && (
           <div className="flex flex-row gap-1 text-sm text-neutral-500 items-center">
             <MdPerson />
@@ -88,6 +118,23 @@ export default function BatchCard({ batch }: { batch: any }) {
                 );
               })}
           </ul>
+        </div>
+        <div className="flex flex-col">
+          {batch?.config?.appVersion && (
+            <LogCardEntry
+              title="App Version"
+              value={batch?.config?.appVersion}
+            />
+          )}
+          {batch?.package?.version && (
+            <LogCardEntry
+              title="Nexys Package Version"
+              value={batch?.package?.version}
+            />
+          )}
+          {batch?.config?.user && (
+            <LogCardEntry title="User" value={batch?.config?.user} />
+          )}
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ export default function Logs() {
               <span>Logs</span>
             </div>
           </div>
-          {!logsLoading && totalPages >= 10 && (
+          {!logsLoading && totalPages > 1 && (
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager
                 currentPage={page}

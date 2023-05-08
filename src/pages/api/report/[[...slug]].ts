@@ -83,11 +83,9 @@ export default async function handler(
     });
   }
 
-  const { logs, ...rest } = data;
+  const { logs, requests, ...rest } = data;
 
   const logsCollection = await db.collection(`logs-${project._id}`);
-  let logId: ObjectId | null = null;
-
   const batchesCollection = await db.collection(`batches-${project._id}`);
 
   let logTypes = {};

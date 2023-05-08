@@ -14,9 +14,9 @@ export default async function logs(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { projectId: string; id: string };
+  const body = req.body as { projectId: string; id: string; page?: number };
   if (!body || !body.projectId || !body.id) return reject({ res });
-  const { projectId, id } = body;
+  const { projectId, id, page } = body;
 
   const _project = (await projectsCollection.findOne({
     name: projectId,
@@ -37,11 +37,17 @@ export default async function logs(
   if (!batch) {
     return reject({ res, reason: "invalid-type" });
   }
+
+  const logsLength = await logCollection.countDocuments({
+    batchId: new ObjectId(batch._id),
+  });
+
   const logs = await logCollection
     .find({ batchId: new ObjectId(batch._id) })
     .sort({ ts: -1 })
+    .skip(Math.floor(page ? page * 10 : 0))
     .limit(10)
     .toArray();
 
-  return accept({ res, data: { ...batch, logs } });
+  return accept({ res, data: { ...batch, logs, logsLength } });
 }

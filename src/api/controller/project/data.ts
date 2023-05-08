@@ -6,6 +6,13 @@ import { Log } from "@/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
+import {
+  getCLSMetric,
+  getFCPMetric,
+  getFIDMetric,
+  getLCPMetric,
+  getTTFBMetric,
+} from "./metrics";
 
 export default async function data(
   req: NextApiRequest,
@@ -46,8 +53,16 @@ export default async function data(
     })
     .count();
 
-  const FCPMetric = await logCollection
+  const FCPMetric = await getFCPMetric(_project._id ?? null);
+  const LCPMetric = await getLCPMetric(_project._id ?? null);
+  const CLSMetric = await getCLSMetric(_project._id ?? null);
+  const FIDMetric = await getFIDMetric(_project._id ?? null);
+  const TTFBMetric = await getTTFBMetric(_project._id ?? null);
+
+  /*
+  const FCPLast10Metric = await logCollection
     .aggregate([
+      { $sort: { ts: 1 } },
       {
         $match: {
           $and: [
@@ -57,6 +72,7 @@ export default async function data(
           ],
         },
       },
+      { $limit: 10 },
       {
         $group: {
           _id: null,
@@ -66,85 +82,8 @@ export default async function data(
     ])
     .toArray();
 
-  const LCPMetric = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $and: [
-            { "options.type": "METRIC" },
-            { "data.name": "LCP" },
-            { "data.value": { $gt: 0 } },
-          ],
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          LCP: { $avg: "$data.value" },
-        },
-      },
-    ])
-    .toArray();
-
-  const CLSMetric = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $and: [
-            { "options.type": "METRIC" },
-            { "data.name": "CLS" },
-            { "data.value": { $gt: 0 } },
-          ],
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          CLS: { $avg: "$data.value" },
-        },
-      },
-    ])
-    .toArray();
-
-  const FIDMetric = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $and: [
-            { "options.type": "METRIC" },
-            { "data.name": "FID" },
-            { "data.value": { $gt: 0 } },
-          ],
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          FID: { $avg: "$data.value" },
-        },
-      },
-    ])
-    .toArray();
-
-  const TTFBMetric = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $and: [
-            { "options.type": "METRIC" },
-            { "data.name": "TTFB" },
-            { "data.value": { $gt: 0 } },
-          ],
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          TTFB: { $avg: "$data.value" },
-        },
-      },
-    ])
-    .toArray();
+  Log.debug("FCPLast10Metric", FCPLast10Metric);
+  */
 
   // Get total amount of entries in the database for metrics
   const totalCount = await logCollection

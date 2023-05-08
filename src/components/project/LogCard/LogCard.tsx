@@ -9,28 +9,8 @@ import Codeblock from "@/components/Codeblock";
 import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import { useProjectStore } from "@/stores/projectStore";
+import LogCardEntry from "../LogCardEntry";
 import type { LogCardProps } from "./LogCard.types";
-
-function LogCardEntry({
-  title,
-  value,
-}: {
-  title: string;
-  value: string | number | boolean;
-}) {
-  return (
-    <div className="flex flex-col items-start">
-      <div className="flex flex-row gap-1 items-center">
-        <div>{title}</div>
-      </div>
-      <div>
-        <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-          {value}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 export default function LogCard({
   log,
