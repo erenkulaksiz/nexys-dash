@@ -7,7 +7,6 @@ import Layout from "@/components/Layout";
 import AddProject from "@/components/AddProject";
 import { ValidateToken } from "@/utils/api/validateToken";
 import WithAuth from "@/hocs/withAuth";
-import getTotalErrors from "@/utils/api/getTotalErrors";
 import getTotalLogs from "@/utils/api/getTotalLogs";
 import { MdError } from "react-icons/md";
 import type { GetServerSidePropsContext } from "next";
@@ -24,8 +23,8 @@ export default function NewProjectPage(props: NexysComponentProps) {
         </Head>
         <Navbar />
         <Container>
-          <div className="flex flex-col py-2 pb-8 pt-8 justify-center">
-            <h1 className="text-3xl font-semibold">
+          <div className="flex flex-col py-2 sm:py-8 justify-center">
+            <h1 className="text-2xl sm:text-4xl font-semibold">
               {"Let's get you started."}
             </h1>
             <h2 className="text-neutral-400">
@@ -67,8 +66,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   let totalLogs: number = 0;
   if (ctx.req) {
     validate = await ValidateToken({ token: ctx.req.cookies.auth });
-    totalErrors = await getTotalErrors();
-    totalLogs = await getTotalLogs();
+    [totalLogs, totalErrors] = await getTotalLogs();
     if (validate.success) {
       if (!validate.data.emailVerified) {
         ctx.res.writeHead(302, { Location: "/auth/verify" });

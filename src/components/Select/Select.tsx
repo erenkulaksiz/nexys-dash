@@ -1,4 +1,5 @@
 import { BuildComponent } from "@/utils/style/buildComponent";
+import View from "@/components/View";
 import type { SelectProps } from "./Select.types";
 
 export default function Select({
@@ -22,12 +23,13 @@ export default function Select({
       className={BuildSelect.classes}
       id={id}
     >
-      {options &&
-        options.map((element, index) => (
+      <View.If hidden={!options}>
+        {options.map((element, index) => (
           <option key={index} value={element.id} disabled={element.disabled}>
             {element.text}
           </option>
         ))}
+      </View.If>
     </select>
   );
 }

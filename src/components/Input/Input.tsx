@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import View from "@/components/View";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 import { BuildComponent } from "@/utils/style/buildComponent";
 import type { InputProps } from "./Input.types";
@@ -82,14 +83,14 @@ export default function Input({
 
   return (
     <div className={BuildInputContainer.classes}>
-      {icon && (
+      <View.If visible={!!icon}>
         <span
           className="z-20 absolute left-2 fill-inherit"
           style={{ transform: "scale(0.8)" }}
         >
           {icon}
         </span>
-      )}
+      </View.If>
       <InputElement
         id={id}
         required={required}
@@ -110,20 +111,23 @@ export default function Input({
           }
         }}
       />
-      {passwordVisibility && (
+      <View.If visible={passwordVisibility}>
         <button
           className="z-20 absolute -right-2 p-4 fill-inherit"
           style={{ transform: "scale(0.7)" }}
           onClick={() => setPasswordVisible(!passwordVisible)}
           type="button"
         >
-          {passwordVisible ? (
-            <HiOutlineEyeOff size={24} />
-          ) : (
-            <HiOutlineEye size={24} />
-          )}
+          <View viewIf={passwordVisible}>
+            <View.If>
+              <HiOutlineEyeOff size={24} />
+            </View.If>
+            <View.Else>
+              <HiOutlineEye size={24} />
+            </View.Else>
+          </View>
         </button>
-      )}
+      </View.If>
     </div>
   );
 }

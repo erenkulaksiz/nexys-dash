@@ -8,6 +8,7 @@ import { TbListDetails } from "react-icons/tb";
 import { useProjectStore } from "@/stores/projectStore";
 import LogCardEntry from "../LogCardEntry";
 import Button from "@/components/Button";
+import View from "@/components/View";
 
 export default function BatchCard({ batch }: { batch: any }) {
   const project = useProjectStore((state) => state.currentProject);
@@ -32,13 +33,18 @@ export default function BatchCard({ batch }: { batch: any }) {
               <MdOutlineAccessTime />
             </div>
             <span>
-              {batch?.ts || batch?.createdAt
-                ? formatDateToHuman({
+              <View viewIf={!!batch?.ts || !!batch?.createdAt}>
+                <View.If>
+                  {formatDateToHuman({
                     date: batch?.ts ? batch?.ts : batch?.createdAt,
                     output:
                       "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
-                  })
-                : "-"}
+                  })}
+                </View.If>
+                <View.Else>
+                  <span className="text-neutral-400">-</span>
+                </View.Else>
+              </View>
             </span>
           </div>
           <Link
@@ -53,31 +59,31 @@ export default function BatchCard({ batch }: { batch: any }) {
             </Button>
           </Link>
         </div>
-        {(isProduction || gitBranch || gitCommit) && (
+        <View.If visible={isProduction || gitBranch || gitCommit}>
           <div className="flex flex-row gap-2 items-start">
-            {isProduction && (
+            <View.If visible={isProduction}>
               <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
                 Production
               </span>
-            )}
-            {gitBranch && (
+            </View.If>
+            <View.If visible={!!gitBranch}>
               <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
                 {gitBranch}
               </span>
-            )}
-            {gitCommit && (
+            </View.If>
+            <View.If visible={!!gitCommit}>
               <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
                 {gitCommit}
               </span>
-            )}
+            </View.If>
           </div>
-        )}
-        {batch?.data?.config?.user && (
+        </View.If>
+        <View.If visible={!!batch?.data?.config?.user}>
           <div className="flex flex-row gap-1 text-sm text-neutral-500 items-center">
             <MdPerson />
             <span>{`User: ${batch?.data?.config?.user}`}</span>
           </div>
-        )}
+        </View.If>
         <div className="flex flex-row items-center gap-2">
           <ul className="flex flex-row gap-2 items-center flex-wrap">
             {Object.keys(batch?.logTypes)
@@ -108,7 +114,10 @@ export default function BatchCard({ batch }: { batch: any }) {
                   >
                     <div className="flex flex-row gap-[2px] items-center">
                       <span className="text-sm">
-                        {batchType != "undefined" ? batchType : "LOG"}
+                        <View viewIf={!!batchType}>
+                          <View.If>{batchType}</View.If>
+                          <View.Else>LOG</View.Else>
+                        </View>
                       </span>
                       <span className="text-neutral-500 text-xs">
                         ({batch?.logTypes[batchType]})
@@ -120,21 +129,21 @@ export default function BatchCard({ batch }: { batch: any }) {
           </ul>
         </div>
         <div className="flex flex-col">
-          {batch?.config?.appVersion && (
+          <View.If visible={!!batch?.config?.appVersion}>
             <LogCardEntry
               title="App Version"
               value={batch?.config?.appVersion}
             />
-          )}
-          {batch?.package?.version && (
+          </View.If>
+          <View.If visible={!!batch?.package?.version}>
             <LogCardEntry
               title="Nexys Package Version"
               value={batch?.package?.version}
             />
-          )}
-          {batch?.config?.user && (
+          </View.If>
+          <View.If visible={!!batch?.config?.user}>
             <LogCardEntry title="User" value={batch?.config?.user} />
-          )}
+          </View.If>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 
 import Button from "@/components/Button";
+import View from "@/components/View";
 import { NotifyLogin } from "@/utils/notifyLogin";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
@@ -78,9 +79,9 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
           <FaGithub size={16} />
           <span className="ml-2">GitHub</span>
         </Button>
-        {error && (
+        <View.If visible={!!error.length}>
           <label className="text-red-600 font-semibold text-xs">{error}</label>
-        )}
+        </View.If>
         <div className="w-full flex flex-row items-center gap-2">
           <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
           <span className="uppercase text-xs font-semibold text-neutral-500">

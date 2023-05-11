@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import { accept, reject } from "@/api/utils";
+import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
@@ -14,9 +15,15 @@ export default async function logs(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { id: string; type: string; page?: number };
+  const body = req.body as {
+    id: string;
+    type: string;
+    page?: number;
+    asc?: boolean;
+    types?: string[];
+  };
   if (!body || !body.id || !body.type) return reject({ res });
-  const { id, type, page } = body;
+  const { id, type, page, asc, types } = body;
 
   if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
 
@@ -73,28 +80,55 @@ export default async function logs(
 
     return accept({ res, data: { batches, batchesLength } });
   } else if (type === "exceptions") {
-    const exceptionsLength = await logCollection.countDocuments({
-      $or: [
-        { "options.type": "ERROR" },
-        { "options.type": "AUTO:ERROR" },
-        { "options.type": "AUTO:UNHANDLEDREJECTION" },
-      ],
-    });
+    console.log("types", types);
 
-    const exceptions = await logCollection
-      .find({
-        $or: [
+    const selectTypes = types?.length
+      ? types?.map((t) => ({ "options.type": t }))
+      : [
           { "options.type": "ERROR" },
           { "options.type": "AUTO:ERROR" },
           { "options.type": "AUTO:UNHANDLEDREJECTION" },
-        ],
+        ];
+
+    Log.debug("selectTypes", selectTypes);
+
+    const exceptionsLength = await logCollection.countDocuments({
+      $or: selectTypes,
+    });
+
+    const exceptionTypes = await logCollection
+      .aggregate([
+        {
+          $match: {
+            $or: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: "$options.type",
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
+
+    const exceptions = await logCollection
+      .find({
+        $or: selectTypes,
       })
-      .sort({ ts: -1 })
+      .sort({ ts: asc ? 1 : -1 })
       .skip(Math.floor(page ? page * 10 : 0))
       .limit(10)
       .toArray();
 
-    return accept({ res, data: { exceptions, exceptionsLength } });
+    return accept({
+      res,
+      data: { exceptions, exceptionsLength, exceptionTypes },
+    });
   } else if (type == "batches") {
     const batchesLength = await batchCollection.countDocuments({});
 

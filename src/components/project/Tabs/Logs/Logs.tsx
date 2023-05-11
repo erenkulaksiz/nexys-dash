@@ -5,6 +5,7 @@ import { useProjectStore } from "@/stores/projectStore";
 import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
 import Pager from "@/components/Pager";
+import View from "@/components/View";
 
 export default function Logs() {
   const [page, setPage] = useState<number>(0);
@@ -24,7 +25,16 @@ export default function Logs() {
               <span>Logs</span>
             </div>
           </div>
-          {!logsLoading && totalPages > 1 && (
+          <View.If visible={!logsLoading && !!logs.data?.data?.logsLength}>
+            <div className="text-sm p-4 pb-0">
+              Currently showing{" "}
+              <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                {logs.data?.data?.logsLength}
+              </span>{" "}
+              Logs.
+            </div>
+          </View.If>
+          <View.If visible={!logsLoading && totalPages > 1}>
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager
                 currentPage={page}
@@ -35,26 +45,33 @@ export default function Logs() {
                 onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
               />
             </div>
-          )}
+          </View.If>
           <div className="flex flex-col gap-2 p-4">
-            {logsLoading &&
-              Array.from(Array(3)).map((_, index) => (
+            <View.If visible={logsLoading}>
+              {Array.from(Array(3)).map((_, index) => (
                 <div
                   key={index}
                   className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
                 ></div>
               ))}
-            {!logsLoading && logs.data?.data?.logs?.length == 0 && (
+            </View.If>
+            <View.If
+              visible={!logsLoading && logs.data?.data?.logs?.length == 0}
+            >
               <div>No logs found.</div>
-            )}
-            {!logsLoading &&
-              project &&
-              Array.isArray(logs.data?.data?.logs) &&
-              logs.data?.data?.logs &&
-              logs.data?.data?.logs?.length > 0 &&
-              logs.data?.data?.logs?.map((log: any) => {
+            </View.If>
+            <View.If
+              visible={
+                !logsLoading &&
+                project &&
+                Array.isArray(logs.data?.data?.logs) &&
+                logs.data?.data?.logs
+              }
+            >
+              {logs.data?.data?.logs?.map((log: any) => {
                 return <LogCard log={log} key={log._id} />;
               })}
+            </View.If>
           </div>
         </div>
       </div>

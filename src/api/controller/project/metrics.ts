@@ -1,7 +1,10 @@
 import { connectToDatabase } from "@/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function getFCPMetric(project: ObjectId | null) {
+export async function getFCPMetric(
+  project: ObjectId | null,
+  limit: number = 99999999
+) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const FCPMetric = await logCollection
@@ -15,6 +18,7 @@ export async function getFCPMetric(project: ObjectId | null) {
           ],
         },
       },
+      { $limit: limit },
       {
         $group: {
           _id: null,
@@ -27,7 +31,10 @@ export async function getFCPMetric(project: ObjectId | null) {
   return FCPMetric;
 }
 
-export async function getLCPMetric(project: ObjectId | null) {
+export async function getLCPMetric(
+  project: ObjectId | null,
+  limit: number = 99999999
+) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const LCPMetric = await logCollection
@@ -41,6 +48,7 @@ export async function getLCPMetric(project: ObjectId | null) {
           ],
         },
       },
+      { $limit: limit },
       {
         $group: {
           _id: null,
@@ -53,7 +61,10 @@ export async function getLCPMetric(project: ObjectId | null) {
   return LCPMetric;
 }
 
-export async function getCLSMetric(project: ObjectId | null) {
+export async function getCLSMetric(
+  project: ObjectId | null,
+  limit: number = 99999999
+) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const CLSMetric = await logCollection
@@ -67,6 +78,7 @@ export async function getCLSMetric(project: ObjectId | null) {
           ],
         },
       },
+      { $limit: limit },
       {
         $group: {
           _id: null,
@@ -79,7 +91,10 @@ export async function getCLSMetric(project: ObjectId | null) {
   return CLSMetric;
 }
 
-export async function getFIDMetric(project: ObjectId | null) {
+export async function getFIDMetric(
+  project: ObjectId | null,
+  limit: number = 99999999
+) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const FIDMetric = await logCollection
@@ -93,6 +108,7 @@ export async function getFIDMetric(project: ObjectId | null) {
           ],
         },
       },
+      { $limit: limit },
       {
         $group: {
           _id: null,
@@ -105,7 +121,10 @@ export async function getFIDMetric(project: ObjectId | null) {
   return FIDMetric;
 }
 
-export async function getTTFBMetric(project: ObjectId | null) {
+export async function getTTFBMetric(
+  project: ObjectId | null,
+  limit: number = 99999999
+) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const TTFBMetric = await logCollection
@@ -119,6 +138,7 @@ export async function getTTFBMetric(project: ObjectId | null) {
           ],
         },
       },
+      { $limit: limit },
       {
         $group: {
           _id: null,

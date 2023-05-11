@@ -11,6 +11,7 @@ import { formatString, Log } from "@/utils";
 import { LIMITS } from "@/constants";
 import { useAuthStore } from "@/stores/authStore";
 import isValidURL from "@/utils/isValidUrl";
+import View from "@/components/View";
 import { createProject } from "@/utils/service/project/create";
 import { nexys } from "@/utils/nexys";
 import type { ProjectTypes } from "@/types";
@@ -127,7 +128,7 @@ export default function AddProject() {
   }
 
   return (
-    <div className="flex flex-col justify-between dark:bg-black bg-white pb-4 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
+    <div className="order-last sm:order-first flex flex-col justify-between dark:bg-black bg-white pb-4 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <h1 className="text-xl p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
           New Project
@@ -182,17 +183,17 @@ export default function AddProject() {
             Domain is used to identify your project. It must be unique and can
             only contain letters.
           </span>
-          {state.errors.domain && (
+          <View.If visible={!!state.errors.domain?.length}>
             <label className="text-red-600 font-semibold text-xs">
               {state.errors.domain}
             </label>
-          )}
+          </View.If>
         </div>
-        {state.errors.project && (
+        <View.If visible={!!state.errors.project?.length}>
           <label className="text-red-600 font-semibold text-xs px-4">
             {state.errors.project}
           </label>
-        )}
+        </View.If>
         <div className="flex flex-row justify-end gap-2 px-4">
           <Link href="/">
             <Button type="button" className="px-2" loading={loading}>
@@ -200,12 +201,12 @@ export default function AddProject() {
               <span className="text-xs ml-1">cancel</span>
             </Button>
           </Link>
-          {state.name.trim().length > 0 && (
+          <View.If visible={!!state.name.trim().length}>
             <Button type="submit" className="px-2" loading={loading}>
               <MdAdd />
               <span className="text-xs ml-1">add</span>
             </Button>
-          )}
+          </View.If>
         </div>
       </form>
     </div>

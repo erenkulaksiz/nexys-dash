@@ -33,8 +33,16 @@ export interface ProjectTypes {
     CLS?: number;
     FID?: number;
     TTFB?: number;
-    totalCount?: number;
+    totalMetricLogs?: number;
+    last100: {
+      FCP?: number;
+      LCP?: number;
+      CLS?: number;
+      FID?: number;
+      TTFB?: number;
+    };
   };
+  plan?: "free" | "pro" | "enterprise";
 }
 
 export interface NexysComponentProps extends PropsWithChildren {

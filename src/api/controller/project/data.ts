@@ -59,34 +59,14 @@ export default async function data(
   const FIDMetric = await getFIDMetric(_project._id ?? null);
   const TTFBMetric = await getTTFBMetric(_project._id ?? null);
 
-  /*
-  const FCPLast10Metric = await logCollection
-    .aggregate([
-      { $sort: { ts: 1 } },
-      {
-        $match: {
-          $and: [
-            { "options.type": "METRIC" },
-            { "data.name": "FCP" },
-            { "data.value": { $gt: 0 } },
-          ],
-        },
-      },
-      { $limit: 10 },
-      {
-        $group: {
-          _id: null,
-          FCP: { $avg: "$data.value" },
-        },
-      },
-    ])
-    .toArray();
-
-  Log.debug("FCPLast10Metric", FCPLast10Metric);
-  */
+  const FCPLast100Metric = await getFCPMetric(_project._id ?? null, 100);
+  const LCPLast100Metric = await getLCPMetric(_project._id ?? null, 100);
+  const CLSLast100Metric = await getCLSMetric(_project._id ?? null, 100);
+  const FIDLast100Metric = await getFIDMetric(_project._id ?? null, 100);
+  const TTFBLast100Metric = await getTTFBMetric(_project._id ?? null, 100);
 
   // Get total amount of entries in the database for metrics
-  const totalCount = await logCollection
+  const totalMetricLogs = await logCollection
     .find({
       $and: [{ "options.type": "METRIC" }, { "data.value": { $gt: 0 } }],
     })
@@ -128,7 +108,14 @@ export default async function data(
       CLS: CLSMetric[0]?.CLS || 0,
       FID: FIDMetric[0]?.FID || 0,
       TTFB: TTFBMetric[0]?.TTFB || 0,
-      totalCount,
+      totalMetricLogs,
+      last100: {
+        FCP: FCPLast100Metric[0]?.FCP || 0,
+        LCP: LCPLast100Metric[0]?.LCP || 0,
+        CLS: CLSLast100Metric[0]?.CLS || 0,
+        FID: FIDLast100Metric[0]?.FID || 0,
+        TTFB: TTFBLast100Metric[0]?.TTFB || 0,
+      },
     },
   };
 

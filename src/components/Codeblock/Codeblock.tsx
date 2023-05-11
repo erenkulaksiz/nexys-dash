@@ -1,4 +1,5 @@
 import Tooltip from "@/components/Tooltip";
+import View from "@/components/View";
 import { ReactNode, useState, useEffect } from "react";
 import { MdContentCopy, MdCheck } from "react-icons/md";
 
@@ -31,14 +32,24 @@ export default function Codeblock({
 
   return (
     <div className="group border-[1px] p-2 w-full relative rounded-lg border-neutral-200 dark:border-neutral-900">
-      {children ? children : "Empty"}
+      <View viewIf={!!children}>
+        <View.If>{children}</View.If>
+        <View.Else>Empty</View.Else>
+      </View>
       <div className="group-hover:flex hidden absolute right-2 top-[6px] items-center">
         <Tooltip outline content={copied ? "Copied!" : "Copy"}>
           <button
             className="p-1 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900"
             onClick={onCopy}
           >
-            {copied ? <MdCheck /> : <MdContentCopy />}
+            <View viewIf={copied}>
+              <View.If>
+                <MdCheck />
+              </View.If>
+              <View.Else>
+                <MdContentCopy />
+              </View.Else>
+            </View>
           </button>
         </Tooltip>
       </div>

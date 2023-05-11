@@ -3,6 +3,7 @@ import { useState } from "react";
 import LogCard from "@/components/project/LogCard";
 import useLogs from "@/hooks/useLogs";
 import Pager from "@/components/Pager";
+import View from "@/components/View";
 import { useProjectStore } from "@/stores/projectStore";
 
 export default function LastExceptions() {
@@ -26,21 +27,26 @@ export default function LastExceptions() {
           onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
         />
       )}
-      {exceptionsLoading &&
-        Array.from(Array(3)).map((_, index) => (
-          <div
-            key={index}
-            className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
-          ></div>
-        ))}
-      {!exceptionsLoading &&
-        lastExceptions.data?.data?.exceptions?.length == 0 && (
-          <div>No exceptions found.</div>
-        )}
-      {!exceptionsLoading &&
-        lastExceptions.data?.data?.exceptions?.map((exception: any) => (
+      <View viewIf={exceptionsLoading}>
+        <View.If>
+          {Array.from(Array(3)).map((_, index) => (
+            <div
+              key={index}
+              className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
+            ></div>
+          ))}
+        </View.If>
+        <View.Else>
+          {lastExceptions.data?.data?.exceptions?.length == 0 && (
+            <div>No exceptions found.</div>
+          )}
+        </View.Else>
+      </View>
+      <View.If hidden={exceptionsLoading}>
+        {lastExceptions.data?.data?.exceptions?.map((exception: any) => (
           <LogCard log={exception} key={exception._id} />
         ))}
+      </View.If>
     </div>
   );
 }

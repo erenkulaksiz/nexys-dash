@@ -1,41 +1,6 @@
 import { useProjectStore } from "@/stores/projectStore";
-import CountUp from "react-countup";
 import { RiDashboard2Fill } from "react-icons/ri";
-
-function Metric({
-  title,
-  smallTitle,
-  type,
-  value,
-  decimals = 2,
-}: {
-  title: string;
-  smallTitle?: string;
-  type?: string;
-  value: number;
-  decimals?: number;
-}) {
-  return (
-    <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
-      <div className="border-b-[1px] gap-1 w-full border-neutral-200 dark:border-neutral-900 flex items-center p-2 text-lg sm:text-xl font-semibold">
-        <span>{title}</span>
-        {smallTitle && (
-          <span className="text-xs text-neutral-500">{smallTitle}</span>
-        )}
-      </div>
-      <div className="flex flex-row p-2 gap-1 items-end">
-        <CountUp
-          end={value}
-          duration={2}
-          decimals={decimals}
-          separator=""
-          className="text-4xl font-semibold"
-        />
-        {type && <div className="text-neutral-500">{type}</div>}
-      </div>
-    </div>
-  );
-}
+import Metric from "./Metric";
 
 export default function Metrics() {
   const project = useProjectStore((state) => state.currentProject);
@@ -50,13 +15,19 @@ export default function Metrics() {
               <span>Metrics</span>
             </div>
           </div>
-          <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4">
+          <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4 pb-0">
             <Metric
               title="Total Metric Logs"
               type="Logs"
-              value={Number(project?.metrics?.totalCount) || 0}
+              value={Number(project?.metrics?.totalMetricLogs) || 0}
               decimals={0}
             />
+          </div>
+          <div className="flex flex-col gap-4 px-4 pt-4 text-3xl font-semibold">
+            <h1>Average</h1>
+            <div className="w-full border-b-[1px] border-neutral-200 dark:border-neutral-900"></div>
+          </div>
+          <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4">
             <Metric
               title="FCP"
               smallTitle="First Contentful Paint"
@@ -85,6 +56,81 @@ export default function Metrics() {
               smallTitle="Time to First Byte"
               type="ms"
               value={Number(project?.metrics?.TTFB?.toFixed(2)) || 0}
+            />
+          </div>
+          <div className="flex flex-col gap-4 px-4 pt-4 text-3xl font-semibold">
+            <h1>Average of last 100 Logs</h1>
+            <div className="w-full border-b-[1px] border-neutral-200 dark:border-neutral-900"></div>
+          </div>
+          <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4">
+            <Metric
+              title="FCP"
+              smallTitle="First Contentful Paint"
+              type="ms"
+              value={Number(project?.metrics?.last100?.FCP?.toFixed(2)) || 0}
+              arrow={
+                project?.metrics?.last100?.FCP
+                  ? Number(project?.metrics?.last100?.FCP) <
+                    Number(project?.metrics?.FCP)
+                    ? "up"
+                    : "down"
+                  : null
+              }
+            />
+            <Metric
+              title="LCP"
+              smallTitle="Largest Contentful Paint"
+              type="ms"
+              value={Number(project?.metrics?.last100?.LCP?.toFixed(2)) || 0}
+              arrow={
+                project?.metrics?.last100?.LCP
+                  ? Number(project?.metrics?.last100?.LCP) <
+                    Number(project?.metrics?.LCP)
+                    ? "up"
+                    : "down"
+                  : null
+              }
+            />
+            <Metric
+              title="CLS"
+              smallTitle="Cumulative Layout Shift"
+              value={Number(project?.metrics?.last100?.CLS?.toFixed(2)) || 0}
+              arrow={
+                project?.metrics?.last100?.CLS
+                  ? Number(project?.metrics?.last100?.CLS) <
+                    Number(project?.metrics?.CLS)
+                    ? "up"
+                    : "down"
+                  : null
+              }
+            />
+            <Metric
+              title="FID"
+              smallTitle="First Input Delay"
+              type="ms"
+              value={Number(project?.metrics?.last100?.FID?.toFixed(2)) || 0}
+              arrow={
+                project?.metrics?.last100?.FID
+                  ? Number(project?.metrics?.last100?.FID) <
+                    Number(project?.metrics?.FID)
+                    ? "up"
+                    : "down"
+                  : null
+              }
+            />
+            <Metric
+              title="TTFB"
+              smallTitle="Time to First Byte"
+              type="ms"
+              value={Number(project?.metrics?.last100?.TTFB?.toFixed(2)) || 0}
+              arrow={
+                project?.metrics?.last100?.TTFB
+                  ? Number(project?.metrics?.last100?.TTFB) <
+                    Number(project?.metrics?.TTFB)
+                    ? "up"
+                    : "down"
+                  : null
+              }
             />
           </div>
         </div>

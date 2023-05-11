@@ -68,6 +68,7 @@ export default async function create(
     localhostAccess: false,
     logUsage: 0,
     logUsageLimit: LIMITS.MAX.LOG_USAGE_LIMIT,
+    plan: "free",
   };
 
   await projectsCollection.insertOne(project);

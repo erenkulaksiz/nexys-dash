@@ -4,6 +4,7 @@ import { sendEmailVerification } from "firebase/auth";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
+import View from "@/components/View";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { AiOutlineUser } from "react-icons/ai";
 import { IoMdArrowBack } from "react-icons/io";
@@ -118,9 +119,9 @@ export function Signup() {
       });
 
       if (signinResult?.success) {
-        if (authUser) {
+        setTimeout(async () => {
           await sendEmailVerification(signinResult?.user);
-        }
+        }, 5000);
       }
 
       /* giriş yap adama mail at
@@ -165,11 +166,15 @@ export function Signup() {
                 maxLength={LIMITS.MAX.USERNAME_CHARACTER_LENGTH}
                 icon={<AiOutlineUser size={18} />}
               />
-              {errors.username && (
+              <View.If
+                visible={
+                  errors?.username != null && errors?.username.length > 0
+                }
+              >
                 <label className="text-red-600 font-semibold text-xs">
                   {errors.username}
                 </label>
-              )}
+              </View.If>
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="email" className="font-semibold">
@@ -186,11 +191,13 @@ export function Signup() {
                 maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
                 icon={<MdOutlineEmail size={18} />}
               />
-              {errors.email && (
+              <View.If
+                visible={errors?.email != null && errors?.email.length > 0}
+              >
                 <label className="text-red-600 font-semibold text-xs">
                   {errors.email}
                 </label>
-              )}
+              </View.If>
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="password" className="font-semibold">

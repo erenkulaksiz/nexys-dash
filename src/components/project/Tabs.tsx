@@ -41,6 +41,13 @@ export default [
     children: <Overview />,
   },
   {
+    activeTitle: "All",
+    nonActiveTitle: "All",
+    id: "allLogs",
+    children: <div>all logs</div>,
+    disabled: true,
+  },
+  {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
         <MdOutlineError />
@@ -133,13 +140,13 @@ export default [
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
         <HiFolderAdd />
-        <span>Add Channel</span>
+        <div className="break-keep">Add Channel</div>
       </div>
     ),
     nonActiveTitle: (
       <div className="flex flex-row items-center gap-1">
         <HiOutlineFolderAdd />
-        <span>Add Channel</span>
+        <div className="break-keep">Add Channel</div>
       </div>
     ),
     id: "add-channel",

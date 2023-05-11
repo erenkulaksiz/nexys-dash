@@ -3,11 +3,15 @@ import { IoFlagOutline } from "react-icons/io5";
 import { MdAccessTime, MdInfo } from "react-icons/md";
 import CountUp from "react-countup";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
-import { useProjectStore } from "@/stores/projectStore";
+import Button from "@/components/Button";
 import Loading from "@/components/Loading";
-import { BuildComponent } from "@/utils/style";
 import Tooltip from "@/components/Tooltip";
+import View from "@/components/View";
+import { useProjectStore } from "@/stores/projectStore";
+import { BuildComponent } from "@/utils/style";
 import { Log } from "@/utils";
 
 const Statistics = dynamic(() => import("./Statistics"), {
@@ -19,6 +23,8 @@ const LastExceptions = dynamic(() => import("./LastExceptions"), {
 
 export default function Overview() {
   const project = useProjectStore((state) => state.currentProject);
+  const router = useRouter();
+  const id = router.query.id;
 
   const projectScore = Math.floor(
     // @ts-ignore
@@ -57,7 +63,7 @@ export default function Overview() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 py-2 pt-2 items-start">
-      <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
+      <div className="border-[1px] sm:order-first order-last border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
         <div className="border-b-[1px] border-neutral-200 dark:border-neutral-900 w-full">
           <div className="flex flex-row gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <IoFlagOutline />
@@ -96,21 +102,33 @@ export default function Overview() {
                   {getProjectScoreMessage(projectScore)}
                 </span>
               </div>
-              {project?.logCount != 0 && (
-                <span className="text-sm text-neutral-500">
-                  {project?.errorCount} error(s) / {project?.logCount} log(s)
-                </span>
-              )}
-              {project?.logCount == 0 && (
-                <span className="text-sm text-neutral-500">No logs yet.</span>
-              )}
+              <View viewIf={project?.logCount != 0}>
+                <View.If>
+                  <span className="text-sm text-neutral-500">
+                    {project?.errorCount} error(s) / {project?.logCount} log(s)
+                  </span>
+                </View.If>
+                <View.Else>
+                  <span className="text-sm text-neutral-500">No logs yet.</span>
+                </View.Else>
+              </View>
             </div>
           </div>
         </div>
         <div className="flex flex-col w-full h-full">
-          <div className="flex flex-row gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
-            <MdAccessTime />
-            <span>Last exceptions</span>
+          <div className="flex flex-row justify-between gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
+            <div className="flex flex-row gap-2 items-center">
+              <MdAccessTime />
+              <span>Last exceptions</span>
+            </div>
+            <Link href={`/project/${id}?p=exceptions`}>
+              <Button
+                light="dark:bg-white bg-black dark:text-black"
+                className="px-4  text-white"
+              >
+                <span>View All</span>
+              </Button>
+            </Link>
           </div>
           <div className="flex flex-col gap-2 p-4">
             <LastExceptions />
@@ -118,9 +136,19 @@ export default function Overview() {
         </div>
       </div>
       <div className="flex flex-col rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
-        <div className="flex flex-row gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
-          <RiDashboard3Line size={14} />
-          <span>Statistics</span>
+        <div className="flex flex-row justify-between p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
+          <div className="flex flex-row gap-2 items-center">
+            <RiDashboard3Line size={14} />
+            <span>Statistics</span>
+          </div>
+          <Link href={`/project/${id}?p=statistics`}>
+            <Button
+              light="dark:bg-white bg-black dark:text-black"
+              className="px-4  text-white"
+            >
+              <span>View All</span>
+            </Button>
+          </Link>
         </div>
         <div className="w-full p-4">
           <Statistics />

@@ -4,6 +4,7 @@ import { HiCheckCircle } from "react-icons/hi";
 import { RiGlobalLine } from "react-icons/ri";
 
 import Tooltip from "@/components/Tooltip";
+import View from "@/components/View";
 import Avatar from "@/components/Avatar";
 import type { ProjectCardProps } from "./ProjectCard.types";
 
@@ -22,7 +23,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               <div
                 className={project.verified ? "text-green-600" : "text-red-600"}
               >
-                {project.verified ? <HiCheckCircle /> : <MdError />}
+                <View viewIf={project.verified}>
+                  <View.If>
+                    <HiCheckCircle />
+                  </View.If>
+                  <View.Else>
+                    <MdError />
+                  </View.Else>
+                </View>
               </div>
             </Tooltip>
           </div>

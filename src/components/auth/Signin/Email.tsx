@@ -9,6 +9,7 @@ import { MdOutlineLogin, MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { LIMITS } from "@/constants";
 import { signin } from "@/utils/signin";
+import View from "@/components/View";
 import { useAuthStore } from "@/stores/authStore";
 import { Log } from "@/utils";
 import type { FormEvent } from "react";
@@ -99,11 +100,13 @@ export function Email({ onBack }: { onBack?: () => void }) {
                 icon={<MdOutlineEmail size={18} />}
                 maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
               />
-              {errors.email && (
+              <View.If
+                visible={errors?.email != null && errors?.email?.length > 0}
+              >
                 <label className="text-red-600 font-semibold text-xs">
                   {errors.email}
                 </label>
-              )}
+              </View.If>
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="password" className="font-semibold">
@@ -122,11 +125,15 @@ export function Email({ onBack }: { onBack?: () => void }) {
                 icon={<RiLockPasswordLine size={18} />}
                 maxLength={LIMITS.MAX.PASSWORD_CHARACTER_LENGTH}
               />
-              {errors.password && (
+              <View.If
+                visible={
+                  errors?.password != null && errors?.password?.length > 0
+                }
+              >
                 <label className="text-red-600 font-semibold text-xs">
                   {errors.password}
                 </label>
-              )}
+              </View.If>
             </div>
             <Button
               className="mt-4"
@@ -137,11 +144,11 @@ export function Email({ onBack }: { onBack?: () => void }) {
               <MdOutlineLogin />
               <span className="ml-2">Sign in</span>
             </Button>
-            {errors.login && (
+            <View.If visible={!!errors.login?.length}>
               <label className="text-red-600 font-semibold text-xs">
                 {errors.login}
               </label>
-            )}
+            </View.If>
             <div className="flex flex-row items-center justify-center gap-2 w-full mt-1">
               <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>
               <Link href="/auth/forgot-password">

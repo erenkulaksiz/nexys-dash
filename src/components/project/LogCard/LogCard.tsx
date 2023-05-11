@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
 import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
+import View from "@/components/View";
 import { useProjectStore } from "@/stores/projectStore";
 import LogCardEntry from "../LogCardEntry";
 import type { LogCardProps } from "./LogCard.types";
@@ -45,16 +46,9 @@ export default function LogCard({
         }).classes
       }
     >
-      {/*
-      <div className="absolute -right-2 -top-2 text-black dark:text-white">
-        <Tooltip content="Unread">
-          <FaDotCircle size={24} />
-        </Tooltip>
-      </div>
-      */}
-      {logSelected && (
+      <View.If visible={logSelected}>
         <div className="absolute -inset-1 ring-2 ring-yellow-400 dark:ring-yellow-700 rounded-xl -z-10"></div>
-      )}
+      </View.If>
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center sm:gap-0 gap-2">
           <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
@@ -70,13 +64,7 @@ export default function LogCard({
             </time>
           </div>
           <div className="flex flex-row gap-2">
-            {/*
-              <Button light className="px-4" onClick={() => {}}>
-                <MdOutlineRemove />
-                <span className="ml-1">Ignore</span>
-              </Button>
-            */}
-            {!viewingBatch && (
+            <View.If hidden={viewingBatch}>
               <Link
                 href={`/project/${project?.name ? project.name : ""}/batch/${
                   log.batchId
@@ -90,23 +78,27 @@ export default function LogCard({
                   <span className="ml-1">View Batch</span>
                 </Button>
               </Link>
-            )}
+            </View.If>
           </div>
         </div>
         <div className="flex flex-row justify-between pb-2 border-b-[1px] border-neutral-200 dark:border-neutral-900">
           <div className="flex flex-row gap-1 items-center w-full">
-            {isTypeError && (
+            <View.If visible={isTypeError}>
               <MdOutlineError size={24} className="fill-red-700" />
-            )}
-            {log?.data?.message && (
+            </View.If>
+            <View.If visible={!!log?.data?.message}>
               <div className="text-sm w-full break-all">
                 {log?.data?.message}
               </div>
-            )}
-            {!log?.data?.message && log?.data && !isJson && !isEmptyObject && (
+            </View.If>
+            <View.If
+              visible={
+                !log?.data?.message && log?.data && !isJson && !isEmptyObject
+              }
+            >
               <div className="text-sm w-full break-all">{log?.data}</div>
-            )}
-            {!log?.data?.message && log?.data && isJson && (
+            </View.If>
+            <View.If visible={!log?.data?.message && log?.data && isJson}>
               <Codeblock data={log?.data}>
                 <JSONPretty
                   id="json-pretty"
@@ -114,28 +106,36 @@ export default function LogCard({
                   className="text-sm"
                 ></JSONPretty>
               </Codeblock>
-            )}
+            </View.If>
           </div>
         </div>
-        {log?.options?.type && (
+        <View.If hidden={!log?.options?.type}>
           <LogCardEntry title="Type" value={log?.options?.type} />
-        )}
-        {log?.env?.type && (
+        </View.If>
+        <View.If hidden={!log?.env?.type}>
           <LogCardEntry title="Environment" value={log?.env?.type} />
-        )}
-        {log?.env?.ver && <LogCardEntry title="Platform" value="NextJS" />}
-        {log?.path && <LogCardEntry title="Path" value={log?.path} />}
-        {log?.options?.action && (
+        </View.If>
+        <View.If hidden={!log?.env?.ver}>
+          <LogCardEntry title="Platform" value="NextJS" />
+        </View.If>
+        <View.If hidden={!log?.path}>
+          <LogCardEntry title="Path" value={log?.path} />
+        </View.If>
+        <View.If hidden={!log?.options?.action}>
           <LogCardEntry title="Action" value={log?.options?.action} />
-        )}
-        {log?.data?.filename && (
+        </View.If>
+        <View.If hidden={!log?.data?.filename}>
           <LogCardEntry title="File" value={log?.data?.filename} />
-        )}
-        {log?.guid && <LogCardEntry title="GUID" value={log?.guid} />}
-        {log._id && <LogCardEntry title="ID" value={log._id} />}
-        {log?.data?.stack && (
+        </View.If>
+        <View.If hidden={!log?.guid}>
+          <LogCardEntry title="GUID" value={log?.guid} />
+        </View.If>
+        <View.If hidden={!log._id}>
+          <LogCardEntry title="ID" value={log._id} />
+        </View.If>
+        <View.If hidden={!log?.data?.stack}>
           <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
-        )}
+        </View.If>
       </div>
     </div>
   );

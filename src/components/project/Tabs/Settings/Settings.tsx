@@ -5,12 +5,15 @@ import {
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
 import { RiTelegramLine, RiTelegramFill } from "react-icons/ri";
+import { RiVipDiamondLine, RiVipDiamondFill } from "react-icons/ri";
 
 import Tab from "@/components/Tab";
+import View from "@/components/View";
 import { formatDateToHuman } from "@/utils";
 import { useProjectStore } from "@/stores/projectStore";
 import Project from "./Project";
 import API from "./API";
+import Plan from "./Plan";
 
 export default function Settings() {
   const project = useProjectStore((state) => state.currentProject);
@@ -34,7 +37,24 @@ export default function Settings() {
       >
         <Project />
       </Tab.TabView>
-
+      <Tab.TabView
+        activeTitle={
+          <div className="flex flex-row items-center gap-1">
+            <RiVipDiamondFill />
+            <span>Plan</span>
+          </div>
+        }
+        nonActiveTitle={
+          <div className="flex flex-row items-center gap-1">
+            <RiVipDiamondLine />
+            <span>Plan</span>
+          </div>
+        }
+        id="plan"
+        disabled
+      >
+        <Plan />
+      </Tab.TabView>
       <Tab.TabView
         activeTitle={
           <div className="flex flex-row items-center gap-1">
@@ -68,24 +88,27 @@ export default function Settings() {
         id="verify"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 pt-2 gap-4">
-          {project?.verified ? (
-            <div>{`This project has been verified on ${formatDateToHuman({
-              date: project.verifiedAt ?? 0,
-              output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
-            })}`}</div>
-          ) : (
-            <div className="w-full flex flex-col gap-2 items-start">
-              <div>
-                You need to verify your project using production domain in order
-                to use some features.
+          <View viewIf={project?.verified}>
+            <View.If>
+              <div>{`This project has been verified on ${formatDateToHuman({
+                date: project?.verifiedAt ?? 0,
+                output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+              })}`}</div>
+            </View.If>
+            <View.Else>
+              <div className="w-full flex flex-col gap-2 items-start">
+                <div>
+                  You need to verify your project using production domain in
+                  order to use some features.
+                </div>
+                <div>
+                  You just need to send log request to Nexys from your
+                  production domain. Nexys will automatically detect hostname
+                  and verify your project.
+                </div>
               </div>
-              <div>
-                You just need to send log request to Nexys from your production
-                domain. Nexys will automatically detect hostname and verify your
-                project.
-              </div>
-            </div>
-          )}
+            </View.Else>
+          </View>
         </div>
       </Tab.TabView>
       <Tab.TabView

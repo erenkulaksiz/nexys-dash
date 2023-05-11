@@ -27,8 +27,27 @@ export default async function getTotalLogs() {
       return totalLogs;
     })
   );
-  const totalLogCount = totalLogs.reduce((a, b) => a + b, 0);
-  const ceil = Math.ceil(totalLogCount / 1000) * 1000;
 
-  return ceil;
+  const totalErrors = await Promise.all(
+    logCollections.map(async (collection) => {
+      const totalErrors = await db
+        .collection(collection.toString())
+        .countDocuments({
+          $or: [
+            { "options.type": "ERROR" },
+            { "options.type": "AUTO:ERROR" },
+            { "options.type": "AUTO:UNHANDLEDREJECTION" },
+          ],
+        });
+
+      return totalErrors;
+    })
+  );
+
+  const totalErrorCount = totalErrors.reduce((a, b) => a + b, 0);
+  const totalLogCount = totalLogs.reduce((a, b) => a + b, 0);
+  const totalLogCeil = Math.ceil(totalLogCount / 1000) * 1000;
+  const totalErrorCeil = Math.ceil(totalErrorCount / 1000) * 1000;
+
+  return [totalLogCeil, totalErrorCeil];
 }

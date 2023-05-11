@@ -32,6 +32,8 @@ export default async function logs(
   const batchCollection = await db.collection(`batches-${_project._id}`);
   const logCollection = await db.collection(`logs-${_project._id}`);
 
+  if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
+
   const batch = await batchCollection.findOne({ _id: new ObjectId(id) });
 
   if (!batch) {

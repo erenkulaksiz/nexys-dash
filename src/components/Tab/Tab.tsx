@@ -1,12 +1,25 @@
-import React, { useState, isValidElement } from "react";
+import React, { useState, isValidElement, useEffect } from "react";
 import { BuildComponent } from "@/utils/style";
 
 import type { TabProps, TabViewProps } from "./Tab.types";
 
-function Tab({ children, id, className, onTabChange, defaultTab }: TabProps) {
+function Tab({
+  children,
+  id,
+  className,
+  onTabChange,
+  defaultTab,
+  tabChange,
+}: TabProps) {
   const [activeTab, setActiveTab] = useState<number>(
     defaultTabStringToIndex(defaultTab)
   );
+
+  useEffect(() => {
+    if (typeof tabChange == "undefined" || typeof tabChange == null) return;
+    if (defaultTabStringToIndex(tabChange) == activeTab) return;
+    setActiveTab(defaultTabStringToIndex(tabChange));
+  }, [tabChange]);
 
   function defaultTabStringToIndex(defaultTab?: string): number {
     if (!defaultTab) return 0;
