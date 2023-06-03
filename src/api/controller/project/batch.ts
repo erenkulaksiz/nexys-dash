@@ -18,6 +18,8 @@ export default async function logs(
   if (!body || !body.projectId || !body.id) return reject({ res });
   const { projectId, id, page } = body;
 
+  if (ObjectId.isValid(projectId)) return reject({ res, reason: "invalid-id" });
+
   const _project = (await projectsCollection.findOne({
     name: projectId,
     _deleted: { $in: [null, false] },

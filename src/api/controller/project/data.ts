@@ -6,13 +6,13 @@ import { Log } from "@/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
+import { getMetric } from "./metrics";
 import {
-  getCLSMetric,
-  getFCPMetric,
-  getFIDMetric,
-  getLCPMetric,
-  getTTFBMetric,
-} from "./metrics";
+  getExceptionRate,
+  getLogRate,
+  getLastWeekLogRate,
+  getErrorTypes,
+} from "./statistics";
 
 export default async function data(
   req: NextApiRequest,
@@ -35,6 +35,8 @@ export default async function data(
 
   const isOwner = _project.owner === validateUser.decodedToken.user_id;
 
+  if (!_project._id) return reject({ res, reason: "not-found" });
+
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
   const batchCollection = await db.collection(`batches-${_project._id}`);
@@ -53,17 +55,11 @@ export default async function data(
     })
     .count();
 
-  const FCPMetric = await getFCPMetric(_project._id ?? null);
-  const LCPMetric = await getLCPMetric(_project._id ?? null);
-  const CLSMetric = await getCLSMetric(_project._id ?? null);
-  const FIDMetric = await getFIDMetric(_project._id ?? null);
-  const TTFBMetric = await getTTFBMetric(_project._id ?? null);
-
-  const FCPLast100Metric = await getFCPMetric(_project._id ?? null, 100);
-  const LCPLast100Metric = await getLCPMetric(_project._id ?? null, 100);
-  const CLSLast100Metric = await getCLSMetric(_project._id ?? null, 100);
-  const FIDLast100Metric = await getFIDMetric(_project._id ?? null, 100);
-  const TTFBLast100Metric = await getTTFBMetric(_project._id ?? null, 100);
+  const FCPMetric = await getMetric(_project._id, "FCP");
+  const LCPMetric = await getMetric(_project._id, "LCP");
+  const CLSMetric = await getMetric(_project._id, "CLS");
+  const FIDMetric = await getMetric(_project._id, "FID");
+  const TTFBMetric = await getMetric(_project._id, "TTFB");
 
   // Get total amount of entries in the database for metrics
   const totalMetricLogs = await logCollection
@@ -72,20 +68,10 @@ export default async function data(
     })
     .count();
 
-  /*
-  const dayErrors = await logCollection
-    .aggregate([
-      {
-        $group: {
-          _id: "$_id",
-          ts: { $first: { $toDate: "$ts" } },
-        },
-      },
-    ])
-    .toArray();
-
-  Log.debug("DAY errors", dayErrors);
-  */
+  const exceptionRate = await getExceptionRate(_project._id);
+  const logRate = await getLogRate(_project._id);
+  const lastWeekLogRate = await getLastWeekLogRate(_project._id);
+  const errorTypes = await getErrorTypes(_project._id);
 
   const project = {
     name: _project.name,
@@ -102,19 +88,23 @@ export default async function data(
     batchCount,
     logCount,
     errorCount,
+    exceptionRate,
+    logRate,
+    lastWeekLogRate,
+    errorTypes,
     metrics: {
-      FCP: FCPMetric[0]?.FCP || 0,
-      LCP: LCPMetric[0]?.LCP || 0,
-      CLS: CLSMetric[0]?.CLS || 0,
-      FID: FIDMetric[0]?.FID || 0,
-      TTFB: TTFBMetric[0]?.TTFB || 0,
+      FCP: FCPMetric[0] || 0,
+      LCP: LCPMetric[0] || 0,
+      CLS: CLSMetric[0] || 0,
+      FID: FIDMetric[0] || 0,
+      TTFB: TTFBMetric[0] || 0,
       totalMetricLogs,
       last100: {
-        FCP: FCPLast100Metric[0]?.FCP || 0,
-        LCP: LCPLast100Metric[0]?.LCP || 0,
-        CLS: CLSLast100Metric[0]?.CLS || 0,
-        FID: FIDLast100Metric[0]?.FID || 0,
-        TTFB: TTFBLast100Metric[0]?.TTFB || 0,
+        FCP: FCPMetric[1] || 0,
+        LCP: LCPMetric[1] || 0,
+        CLS: CLSMetric[1] || 0,
+        FID: FIDMetric[1] || 0,
+        TTFB: TTFBMetric[1] || 0,
       },
     },
   };

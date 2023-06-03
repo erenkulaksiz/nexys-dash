@@ -115,7 +115,9 @@ export default function BatchCard({ batch }: { batch: any }) {
                     <div className="flex flex-row gap-[2px] items-center">
                       <span className="text-sm">
                         <View viewIf={!!batchType}>
-                          <View.If>{batchType}</View.If>
+                          <View.If>
+                            {batchType == "undefined" ? "OTHERS" : batchType}
+                          </View.If>
                           <View.Else>LOG</View.Else>
                         </View>
                       </span>

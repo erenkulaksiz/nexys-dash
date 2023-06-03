@@ -27,7 +27,7 @@ export default function ProjectPage(props: NexysComponentProps) {
 
   const router = useRouter();
   const query = router.query.id?.toString() || "";
-  const tab = router.query.p?.toString() || "";
+  const tab = router.query.page?.toString() || "";
 
   return (
     <Layout {...props} withoutLayout>
@@ -84,7 +84,7 @@ export default function ProjectPage(props: NexysComponentProps) {
                             pathname: `/project/[id]`,
                             query,
                           },
-                          `/project/${query}?p=${id}`,
+                          `/project/${query}?page=${id}`,
                           { shallow: true }
                         )
                       }

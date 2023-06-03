@@ -19,6 +19,7 @@ export default function Project() {
   async function onDelete() {
     setProjectLoading(true);
     if (!project?._id) return;
+
     const res = await deleteProject({
       id: project?._id.toString() || "",
       uid: validatedUser?.uid || "",

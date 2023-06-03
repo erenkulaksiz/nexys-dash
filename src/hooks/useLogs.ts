@@ -39,7 +39,7 @@ export default function useLogs({
   }, [page, asc]);
 
   const logs = useSWR(
-    [`api/dash/project/${type}/${project?._id}`],
+    [`api/dash/project/${type}/${project?._id}/${page}/${asc}`],
     async () => {
       const token = Cookies.get("auth");
       return fetch(`${server}/api/dash/project/logs`, {

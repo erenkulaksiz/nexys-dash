@@ -25,24 +25,26 @@ export default function Batches() {
               <RiFilePaperFill />
               <span>Batches</span>
             </div>
+            <View.If
+              visible={
+                !batchesLoading && batches.data?.data?.batchesLength != 0
+              }
+            >
+              <div className="text-sm p-4 pb-0">
+                Currently showing{" "}
+                <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                  {batches.data?.data?.batchesLength}
+                </span>{" "}
+                batches.
+              </div>
+            </View.If>
           </div>
-          <View.If
-            visible={!batchesLoading && batches.data?.data?.batchesLength != 0}
-          >
-            <div className="text-sm p-4 pb-0">
-              Currently showing{" "}
-              <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                {batches.data?.data?.batchesLength}
-              </span>{" "}
-              batches.
-            </div>
-          </View.If>
           {!batchesLoading && totalPages > 10 && (
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager
                 currentPage={page}
                 totalPages={totalPages}
-                perPage={2}
+                perPage={4}
                 onPageClick={(page) => setPage(page)}
                 onPreviousClick={() => page != 0 && setPage(page - 1)}
                 onNextClick={() => page + 1 < totalPages && setPage(page + 1)}

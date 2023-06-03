@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Container from "@/components/Container";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
+import View from "@/components/View";
 import Navbar from "@/components/Navbar";
 import WithAuth from "@/hocs/withAuth";
 import { MdLogout, MdRefresh } from "react-icons/md";
@@ -79,7 +80,7 @@ export default function VerifyPage(props: NexysComponentProps) {
                 After clicking the link we sent you, just refresh this page.
               </p>
               <div className="flex flex-row gap-2">
-                {!sent && (
+                <View.If hidden={sent}>
                   <Button
                     className="px-2"
                     onClick={onSendAgain}
@@ -88,21 +89,23 @@ export default function VerifyPage(props: NexysComponentProps) {
                     <MdRefresh />
                     <span className="ml-1">Send again</span>
                   </Button>
-                )}
+                </View.If>
                 <Button className="px-2" onClick={signout}>
                   <MdLogout />
                   <span className="ml-1">Sign out</span>
                 </Button>
               </div>
-              {sent && (
+              <View.If visible={sent}>
                 <p className="text-neutral-500 text-sm">
                   {"We've sent another verification link to "}
                   <span className="text-neutral-400 font-bold">
                     {authUser?.email}
                   </span>
                 </p>
-              )}
-              {error && <p className="text-neutral-500 text-sm">{error}</p>}
+              </View.If>
+              <View.If visible={!!error}>
+                <p className="text-neutral-500 text-sm">{error}</p>
+              </View.If>
             </div>
           </Container>
         </main>

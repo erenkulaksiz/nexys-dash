@@ -11,6 +11,7 @@ import WithoutAuth from "@/hocs/withoutAuth";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import View from "@/components/View";
 import { LIMITS } from "@/constants";
 import { Log } from "@/utils";
 import { useAuthStore } from "@/stores/authStore";
@@ -57,45 +58,50 @@ export default function ForgotPasswordPage() {
           <Container className="flex justify-center h-full items-center">
             <div className="p-4 flex flex-col gap-2 w-[300px]">
               <h1 className="font-semibold text-2xl">Forgot Password</h1>
-              {sent && (
-                <div className="flex flex-col">
-                  <MdCheckCircleOutline size={48} className="text-green-500" />
-                  <div>We have sent you an email to reset your password.</div>
-                </div>
-              )}
-              {!sent && (
-                <form className="flex flex-col gap-1" onSubmit={onSubmit}>
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="email" className="font-semibold">
-                      E-mail
-                    </label>
-                    <Input
-                      required
-                      id="email"
-                      height="h-8"
-                      type="email"
-                      placeholder="E-mail"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      icon={<MdOutlineEmail size={18} />}
-                      maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
+              <View viewIf={sent}>
+                <View.If>
+                  <div className="flex flex-col">
+                    <MdCheckCircleOutline
+                      size={48}
+                      className="text-green-500"
                     />
-                    <Button
-                      fullWidth
-                      type="submit"
-                      className="mt-2"
-                      loading={authLoading || loading}
-                    >
-                      Reset Password
-                    </Button>
-                    {error && (
-                      <label className="text-red-600 font-semibold text-xs">
-                        {error}
-                      </label>
-                    )}
+                    <div>We have sent you an email to reset your password.</div>
                   </div>
-                </form>
-              )}
+                </View.If>
+                <View.Else>
+                  <form className="flex flex-col gap-1" onSubmit={onSubmit}>
+                    <div className="flex flex-col gap-1">
+                      <label htmlFor="email" className="font-semibold">
+                        E-mail
+                      </label>
+                      <Input
+                        required
+                        id="email"
+                        height="h-8"
+                        type="email"
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        icon={<MdOutlineEmail size={18} />}
+                        maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
+                      />
+                      <Button
+                        fullWidth
+                        type="submit"
+                        className="mt-2"
+                        loading={authLoading || loading}
+                      >
+                        Reset Password
+                      </Button>
+                      {error && (
+                        <label className="text-red-600 font-semibold text-xs">
+                          {error}
+                        </label>
+                      )}
+                    </div>
+                  </form>
+                </View.Else>
+              </View>
               <div className="flex flex-col gap-2">
                 <div className="w-full flex flex-row items-center gap-2">
                   <div className="flex-1 flex h-[2px] rounded bg-neutral-300/30 dark:bg-neutral-900/50"></div>

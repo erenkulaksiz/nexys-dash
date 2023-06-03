@@ -5,6 +5,7 @@ import { accept, reject } from "@/api/utils";
 import { Log } from "@/utils";
 import { ProjectTypes } from "@/types";
 import { LIMITS } from "@/constants";
+import { createSearchIndex } from "@/api/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type NextApiRequestWithQuery = NextApiRequest & {
@@ -137,6 +138,8 @@ export default async function handler(
       },
     }
   );
+
+  await createSearchIndex(new ObjectId(project._id));
 
   return accept({
     res,

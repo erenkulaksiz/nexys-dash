@@ -23,9 +23,9 @@ export async function createProject(
   })
     .then(async (res) => {
       let json: any;
-      try{
+      try {
         json = await res.json();
-      } catch(err){}
+      } catch (err) {}
       if (res.ok) {
         return { success: true };
       }

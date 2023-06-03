@@ -27,19 +27,42 @@ export interface ProjectTypes {
   batchCount?: number;
   logCount?: number;
   errorCount?: number;
+  exceptionRate?: Array<{ _id: string; count: number }>;
+  logRate?: Array<{ _id: string; count: number }>;
+  errorTypes?: Array<{ _id: string; count: number }>;
   metrics?: {
-    FCP?: number;
-    LCP?: number;
-    CLS?: number;
-    FID?: number;
-    TTFB?: number;
+    FCP?: {
+      value: number;
+    };
+    LCP?: {
+      value: number;
+    };
+    CLS?: {
+      value: number;
+    };
+    FID?: {
+      value: number;
+    };
+    TTFB?: {
+      value: number;
+    };
     totalMetricLogs?: number;
     last100: {
-      FCP?: number;
-      LCP?: number;
-      CLS?: number;
-      FID?: number;
-      TTFB?: number;
+      FCP?: {
+        value: number;
+      };
+      LCP?: {
+        value: number;
+      };
+      CLS?: {
+        value: number;
+      };
+      FID?: {
+        value: number;
+      };
+      TTFB?: {
+        value: number;
+      };
     };
   };
   plan?: "free" | "pro" | "enterprise";

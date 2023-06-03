@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import Avatar from "@/components/Avatar";
 import Tooltip from "@/components/Tooltip";
+import View from "@/components/View";
 import Button from "@/components/Button";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
@@ -28,13 +29,13 @@ export default function Dropdown() {
   }, [easterEggClicks]);
 
   function onThemeChange() {
+    setTheme(resolvedTheme == "dark" ? "light" : "dark");
     nexys.log(
       {
         theme: resolvedTheme == "dark" ? "light" : "dark",
       },
       { action: "CHANGE_THEME" }
     );
-    setTheme(resolvedTheme == "dark" ? "light" : "dark");
   }
 
   return (
@@ -88,7 +89,14 @@ export default function Dropdown() {
                 className="w-8"
                 title="Change Theme"
               >
-                {resolvedTheme == "dark" ? <MdDarkMode /> : <MdLightMode />}
+                <View viewIf={resolvedTheme == "dark"}>
+                  <View.If>
+                    <MdDarkMode />
+                  </View.If>
+                  <View.Else>
+                    <MdLightMode />
+                  </View.Else>
+                </View>
               </Button>
             </Tooltip>
           </div>

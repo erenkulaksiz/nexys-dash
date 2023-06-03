@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { MdSearch } from "react-icons/md";
 import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
@@ -10,6 +11,7 @@ import Button from "@/components/Button";
 import Pager from "@/components/Pager";
 import Checkbox from "@/components/Checkbox";
 import Filters from "@/components/project/Filters";
+import Input from "@/components/Input/Input";
 import View from "@/components/View";
 import { Log } from "@/utils";
 import type { FiltersProps } from "@/components/project/Filters";
@@ -49,6 +51,20 @@ export default function Exceptions() {
               <MdError />
               <span>Exceptions</span>
             </div>
+            <View.If
+              visible={
+                !exceptionsLoading &&
+                exceptions.data?.data?.exceptionsLength != 0
+              }
+            >
+              <div className="text-sm">
+                Currently showing{" "}
+                <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                  {exceptions.data?.data?.exceptionsLength}
+                </span>{" "}
+                exceptions.
+              </div>
+            </View.If>
           </div>
           <View.If hidden={exceptionsLoading}>
             <div className="flex flex-col items-start gap-4 p-4 pb-0">
@@ -68,23 +84,14 @@ export default function Exceptions() {
                   </View>
                   <span className="ml-1">Filters</span>
                 </Button>
-                <View.If
-                  visible={
-                    !exceptionsLoading &&
-                    exceptions.data?.data?.exceptionsLength != 0
-                  }
-                >
-                  <div className="text-sm">
-                    Currently showing{" "}
-                    <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                      {exceptions.data?.data?.exceptionsLength}
-                    </span>{" "}
-                    exceptions.
-                  </div>
-                </View.If>
               </div>
               <View.If visible={filtersOpen}>
                 <div className="flex flex-row gap-2 flex-wrap w-full items-center">
+                  <Input
+                    height="h-8"
+                    icon={<MdSearch />}
+                    placeholder="Search"
+                  />
                   <Select
                     options={[
                       { id: "asc", text: "Ascending" },
@@ -101,38 +108,40 @@ export default function Exceptions() {
                     id="select-asc-desc"
                   />
                   <View.If visible={!!exceptionTypes?.length}>
-                    {exceptionTypes?.map(
-                      (exceptionType: any, index: number) => (
-                        <Checkbox
-                          checked={filters?.types?.includes(exceptionType)}
-                          onChange={() => {
-                            if (filters?.types?.includes(exceptionType)) {
-                              setFilters({
-                                ...filters,
-                                types: filters.types.filter(
-                                  (type) => type != exceptionType
-                                ),
-                              });
-                            } else {
-                              setFilters({
-                                ...filters,
-                                types: [...filters.types, exceptionType],
-                              });
-                            }
-                          }}
-                          id={`checkbox-filter-${exceptionType}`}
-                          key={`checkbox-filter-${exceptionType}`}
-                        >
-                          <span>{exceptionType}</span>
-                          <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                            {
-                              exceptions.data?.data?.exceptionTypes[index]
-                                ?.count
-                            }
-                          </span>
-                        </Checkbox>
-                      )
-                    )}
+                    <div className="flex flex-row flex-wrap border-[1px] border-neutral-200 dark:border-neutral-900 p-1 px-2 gap-2 rounded-lg">
+                      {exceptionTypes?.map(
+                        (exceptionType: any, index: number) => (
+                          <Checkbox
+                            checked={filters?.types?.includes(exceptionType)}
+                            onChange={() => {
+                              if (filters?.types?.includes(exceptionType)) {
+                                setFilters({
+                                  ...filters,
+                                  types: filters.types.filter(
+                                    (type) => type != exceptionType
+                                  ),
+                                });
+                              } else {
+                                setFilters({
+                                  ...filters,
+                                  types: [...filters.types, exceptionType],
+                                });
+                              }
+                            }}
+                            id={`checkbox-filter-${exceptionType}`}
+                            key={`checkbox-filter-${exceptionType}`}
+                          >
+                            <span>{exceptionType}</span>
+                            <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+                              {
+                                exceptions.data?.data?.exceptionTypes[index]
+                                  ?.count
+                              }
+                            </span>
+                          </Checkbox>
+                        )
+                      )}
+                    </div>
                   </View.If>
                 </div>
               </View.If>
@@ -140,7 +149,7 @@ export default function Exceptions() {
                 <Pager
                   currentPage={page}
                   totalPages={totalPages}
-                  perPage={2}
+                  perPage={4}
                   onPageClick={(page) => setPage(page)}
                   onPreviousClick={() => page != 0 && setPage(page - 1)}
                   onNextClick={() => page + 1 < totalPages && setPage(page + 1)}

@@ -1,7 +1,5 @@
 import { connectToDatabase } from "@/mongodb";
 
-import { Log } from "../logger";
-
 export default async function getTotalLogs() {
   const { db } = await connectToDatabase();
 

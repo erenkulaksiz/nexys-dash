@@ -141,14 +141,14 @@ export default function Overview() {
             <RiDashboard3Line size={14} />
             <span>Statistics</span>
           </div>
-          <Link href={`/project/${id}?p=statistics`}>
+          {/*<Link href={`/project/${id}?p=statistics`}>
             <Button
               light="dark:bg-white bg-black dark:text-black"
               className="px-4  text-white"
             >
               <span>View All</span>
             </Button>
-          </Link>
+                </Link>*/}
         </div>
         <div className="w-full p-4">
           <Statistics />

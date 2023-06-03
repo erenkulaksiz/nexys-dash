@@ -3,6 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getTokenFromHeader } from "@/utils/api/getTokenFromHeader";
 import { ValidateUser, ValidateUserReturnType } from "@/utils/api/validateUser";
 import { Log } from "@/utils";
+import { connectToDatabase } from "@/mongodb";
+import { ObjectId } from "mongodb";
 
 interface acceptProps {
   data?: any;
@@ -81,4 +83,11 @@ export async function checkUserAuth({
     return reject({ res, reason: "auth-uid-error" });
 
   return func(req, res, validateUser);
+}
+
+export async function createSearchIndex(project: ObjectId | null) {
+  const { db } = await connectToDatabase();
+  const logCollection = await db.collection(`logs-${project}`);
+
+  await logCollection.createIndex({ "data.message": "text", path: "text" });
 }

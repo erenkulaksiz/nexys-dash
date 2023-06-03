@@ -1,4 +1,5 @@
 import React, { useState, isValidElement, useEffect } from "react";
+import View from "@/components/View";
 import { BuildComponent } from "@/utils/style";
 
 import type { TabProps, TabViewProps } from "./Tab.types";
@@ -54,8 +55,8 @@ function Tab({
   return (
     <>
       <div className={BuildTab.classes}>
-        {Array.isArray(children) &&
-          children.map((child, index) => {
+        <View.If visible={Array.isArray(children)}>
+          {children.map((child, index) => {
             if (!child || !isValidElement(child)) return;
             const props = child.props as TabViewProps;
             return (
@@ -75,16 +76,18 @@ function Tab({
                   disabled={props?.disabled}
                 />
                 <div className="break-keep z-20 peer-checked:text-black dark:peer-checked:text-white dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-neutral-800 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400">
-                  {activeTab == index
-                    ? props.activeTitle
-                    : props.nonActiveTitle}
+                  <View viewIf={activeTab == index}>
+                    <View.If>{props.activeTitle}</View.If>
+                    <View.Else>{props.nonActiveTitle}</View.Else>
+                  </View>
                 </div>
                 <div className="absolute -bottom-1 left-0 right-0 h-[2px] dark:bg-white bg-black transition-all duration-300 ease-in-out peer-checked:opacity-100 opacity-0" />
               </label>
             );
           })}
+        </View.If>
       </div>
-      {Array.isArray(children) && children[activeTab]}
+      <View.If visible={Array.isArray(children)}>{children[activeTab]}</View.If>
     </>
   );
 }
