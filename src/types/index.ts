@@ -30,6 +30,24 @@ export interface ProjectTypes {
   exceptionRate?: Array<{ _id: string; count: number }>;
   logRate?: Array<{ _id: string; count: number }>;
   errorTypes?: Array<{ _id: string; count: number }>;
+  logPaths?: Array<{
+    _id: string;
+    count: number;
+    "AUTO:ERROR": number;
+    "AUTO:UNHANDLEDREJECTION": number;
+    ERROR: number;
+    METRIC: number;
+    OTHER: number;
+  }>;
+  lastWeekLogRate?: Array<{
+    _id: string;
+    count: number;
+    "AUTO:ERROR": number;
+    "AUTO:UNHANDLEDREJECTION": number;
+    ERROR: number;
+    METRIC: number;
+    OTHER: number;
+  }>;
   metrics?: {
     FCP?: {
       value: number;

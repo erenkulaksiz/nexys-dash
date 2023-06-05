@@ -41,6 +41,11 @@ export default function Statistics() {
         : [],
     [project?.exceptionRate]
   );
+  const LogRateLabels = useMemo(
+    () =>
+      project?.logRate?.length ? project?.logRate?.map((log) => log?._id) : [],
+    [project?.logRate]
+  );
   const LogRateData = useMemo(
     () =>
       project?.logRate?.length
@@ -83,11 +88,27 @@ export default function Statistics() {
               borderColor: "#b91c1c",
               backgroundColor: "#b91c1caf",
             },
+          ],
+        }}
+      />
+
+      <Line
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top" as const,
+            },
+          },
+        }}
+        data={{
+          labels: LogRateLabels,
+          datasets: [
             {
               label: "Log Rate (per day)",
               data: LogRateData,
-              borderColor: "#1c7cb9",
-              backgroundColor: "#1c7cb9af",
+              borderColor: "#8a8a8a",
+              backgroundColor: "#8a8a8aaf",
             },
           ],
         }}

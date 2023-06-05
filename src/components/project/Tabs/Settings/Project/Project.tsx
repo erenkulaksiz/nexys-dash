@@ -80,15 +80,14 @@ export default function Project() {
             </time>
           </div>
         </div>
-        <Tooltip content="Will be activated soon.">
+        {/*<Tooltip content="Will be activated soon.">
           <Button className="px-2" onClick={() => {}}>
             <span className="mr-1">
               <MdDelete size={18} />
             </span>
             <span>Clear Logs</span>
           </Button>
-        </Tooltip>
-
+            </Tooltip>*/}
         <Tooltip content="This action cannot be undone!">
           <Button
             light="dark:bg-red-700 bg-red-600"

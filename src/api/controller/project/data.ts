@@ -12,6 +12,7 @@ import {
   getLogRate,
   getLastWeekLogRate,
   getErrorTypes,
+  getLogPaths,
 } from "./statistics";
 
 export default async function data(
@@ -72,6 +73,7 @@ export default async function data(
   const logRate = await getLogRate(_project._id);
   const lastWeekLogRate = await getLastWeekLogRate(_project._id);
   const errorTypes = await getErrorTypes(_project._id);
+  const logPaths = await getLogPaths(_project._id);
 
   const project = {
     name: _project.name,
@@ -92,6 +94,7 @@ export default async function data(
     logRate,
     lastWeekLogRate,
     errorTypes,
+    logPaths,
     metrics: {
       FCP: FCPMetric[0] || 0,
       LCP: LCPMetric[0] || 0,

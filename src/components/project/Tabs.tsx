@@ -41,10 +41,10 @@ export default [
     children: <Overview />,
   },
   {
-    activeTitle: "All",
-    nonActiveTitle: "All",
-    id: "allLogs",
-    children: <div>all logs</div>,
+    activeTitle: "Pages",
+    nonActiveTitle: "Pages",
+    id: "pages",
+    children: <div>Pages</div>,
     disabled: true,
   },
   {

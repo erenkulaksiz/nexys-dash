@@ -21,9 +21,10 @@ export default async function logs(
     page?: number;
     asc?: boolean;
     types?: string[];
+    search?: string;
   };
   if (!body || !body.id || !body.type) return reject({ res });
-  const { id, type, page, asc, types } = body;
+  const { id, type, page, asc, types, search } = body;
 
   if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
 

@@ -1,4 +1,4 @@
-import { RiDashboard3Line } from "react-icons/ri";
+import { HiOutlineDocument } from "react-icons/hi";
 import { IoFlagOutline } from "react-icons/io5";
 import { MdAccessTime, MdInfo } from "react-icons/md";
 import CountUp from "react-countup";
@@ -6,18 +6,21 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+import { BsBarChartLine } from "react-icons/bs";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Tooltip from "@/components/Tooltip";
 import View from "@/components/View";
 import { useProjectStore } from "@/stores/projectStore";
 import { BuildComponent } from "@/utils/style";
-import { Log } from "@/utils";
 
 const Statistics = dynamic(() => import("./Statistics"), {
   loading: () => <Loading />,
 });
 const LastExceptions = dynamic(() => import("./LastExceptions"), {
+  loading: () => <Loading />,
+});
+const Pages = dynamic(() => import("./Pages"), {
   loading: () => <Loading />,
 });
 
@@ -118,6 +121,17 @@ export default function Overview() {
         <div className="flex flex-col w-full h-full">
           <div className="flex flex-row justify-between gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <div className="flex flex-row gap-2 items-center">
+              <HiOutlineDocument />
+              <span>Pages</span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+            <Pages />
+          </div>
+        </div>
+        <div className="flex flex-col w-full h-full">
+          <div className="flex flex-row justify-between gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
+            <div className="flex flex-row gap-2 items-center">
               <MdAccessTime />
               <span>Last exceptions</span>
             </div>
@@ -138,7 +152,7 @@ export default function Overview() {
       <div className="flex flex-col rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
         <div className="flex flex-row justify-between p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
           <div className="flex flex-row gap-2 items-center">
-            <RiDashboard3Line size={14} />
+            <BsBarChartLine size={14} />
             <span>Statistics</span>
           </div>
           {/*<Link href={`/project/${id}?p=statistics`}>

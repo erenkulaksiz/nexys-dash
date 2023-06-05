@@ -38,7 +38,7 @@ export default function LastExceptions() {
         </View.If>
         <View.Else>
           {lastExceptions.data?.data?.exceptions?.length == 0 && (
-            <div>No exceptions found.</div>
+            <span className="text-sm text-neutral-500">No exceptions yet.</span>
           )}
         </View.Else>
       </View>

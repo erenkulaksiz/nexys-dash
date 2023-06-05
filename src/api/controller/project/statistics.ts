@@ -183,3 +183,68 @@ export async function getErrorTypes(project: ObjectId | null) {
 
   return errorTypes;
 }
+
+export async function getLogPaths(project: ObjectId | null) {
+  const { db } = await connectToDatabase();
+  const logCollection = await db.collection(`logs-${project}`);
+
+  const logPaths = await logCollection
+    .aggregate([
+      {
+        $group: {
+          _id: "$path",
+          count: {
+            $sum: 1,
+          },
+          // get each type of log
+          ERROR: {
+            $sum: {
+              $cond: [{ $eq: ["$options.type", "ERROR"] }, 1, 0],
+            },
+          },
+          "AUTO:ERROR": {
+            $sum: {
+              $cond: [{ $eq: ["$options.type", "AUTO:ERROR"] }, 1, 0],
+            },
+          },
+          "AUTO:UNHANDLEDREJECTION": {
+            $sum: {
+              $cond: [
+                { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                1,
+                0,
+              ],
+            },
+          },
+          METRIC: {
+            $sum: {
+              $cond: [{ $eq: ["$options.type", "METRIC"] }, 1, 0],
+            },
+          },
+          OTHER: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    { $ne: ["$options.type", "ERROR"] },
+                    { $ne: ["$options.type", "AUTO:ERROR"] },
+                    {
+                      $ne: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
+                    },
+                    { $ne: ["$options.type", "METRIC"] },
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+    ])
+    .toArray();
+
+  return logPaths;
+}

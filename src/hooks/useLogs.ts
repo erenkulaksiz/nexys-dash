@@ -19,6 +19,7 @@ interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
   page?: number;
   asc?: boolean;
+  search?: string;
   types?: string[];
 }
 
@@ -26,6 +27,7 @@ export default function useLogs({
   type = "logs",
   page = 0,
   asc = false,
+  search = "",
   types = [],
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
@@ -39,7 +41,7 @@ export default function useLogs({
   }, [page, asc]);
 
   const logs = useSWR(
-    [`api/dash/project/${type}/${project?._id}/${page}/${asc}`],
+    [`api/dash/project/${type}/${project?._id}/${page}/${asc}/${search}`],
     async () => {
       const token = Cookies.get("auth");
       return fetch(`${server}/api/dash/project/logs`, {
@@ -55,6 +57,7 @@ export default function useLogs({
           page,
           asc,
           types,
+          search,
         }),
       })
         .then(async (res) => {

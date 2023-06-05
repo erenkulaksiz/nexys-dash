@@ -11,12 +11,16 @@ import Button from "@/components/Button";
 import Pager from "@/components/Pager";
 import Checkbox from "@/components/Checkbox";
 import Filters from "@/components/project/Filters";
+import useDebounce from "@/hooks/useDebounce";
 import Input from "@/components/Input/Input";
 import View from "@/components/View";
 import { Log } from "@/utils";
 import type { FiltersProps } from "@/components/project/Filters";
 
 export default function Exceptions() {
+  const [filteredText, setFilteredText] = useState<string>("");
+  const [debouncedFilteredText, setDebouncedFilteredText] =
+    useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<FiltersProps>({
     asc: false,
@@ -29,6 +33,7 @@ export default function Exceptions() {
     page,
     asc: filters.asc,
     types: filters.types,
+    search: debouncedFilteredText,
   });
   const exceptionTypes: any = exceptions.data?.data?.exceptionTypes
     .sort((a: any, b: any) => a.count - b.count)
@@ -41,6 +46,14 @@ export default function Exceptions() {
     setPage(0);
     exceptions.mutate();
   }, [filters]);
+
+  useDebounce(
+    () => {
+      setDebouncedFilteredText(filteredText);
+    },
+    [filteredText],
+    800
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -87,11 +100,13 @@ export default function Exceptions() {
               </div>
               <View.If visible={filtersOpen}>
                 <div className="flex flex-row gap-2 flex-wrap w-full items-center">
-                  <Input
+                  {/*<Input
                     height="h-8"
                     icon={<MdSearch />}
                     placeholder="Search"
-                  />
+                    value={filteredText}
+                    onChange={(event) => setFilteredText(event.target.value)}
+            />*/}
                   <Select
                     options={[
                       { id: "asc", text: "Ascending" },
