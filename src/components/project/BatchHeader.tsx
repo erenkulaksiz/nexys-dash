@@ -24,7 +24,7 @@ export default function BatchHeader() {
           <div className="flex h-10 w-28 dark:bg-neutral-900 bg-neutral-200 animate-pulse"></div>
         </View.If>
         <View.If visible={!loading && !batchLoading}>
-          <Link href={`/project/${project?.name}?p=batches`}>
+          <Link href={`/project/${project?.name}?page=batches`}>
             <Button
               light="dark:bg-white bg-black dark:text-black"
               className="px-4  text-white"

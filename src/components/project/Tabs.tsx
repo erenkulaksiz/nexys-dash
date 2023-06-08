@@ -4,6 +4,7 @@ import Overview from "./Tabs/Overview";
 import Batches from "./Tabs/Batches";
 import Exceptions from "./Tabs/Exceptions";
 import Metrics from "./Tabs/Metrics";
+import Pages from "./Tabs/Pages";
 import { MdOutlineErrorOutline, MdOutlineError } from "react-icons/md";
 import {
   VscDebugBreakpointLogUnverified,
@@ -18,7 +19,12 @@ import {
   RiDashboard2Fill,
 } from "react-icons/ri";
 import { BsBarChartLineFill, BsBarChartLine } from "react-icons/bs";
-import { HiOutlineFolderAdd, HiFolderAdd } from "react-icons/hi";
+import {
+  HiOutlineFolderAdd,
+  HiFolderAdd,
+  HiOutlineDocument,
+  HiDocument,
+} from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import type { TabViewProps } from "@/components/Tab/Tab.types";
@@ -41,10 +47,20 @@ export default [
     children: <Overview />,
   },
   {
-    activeTitle: "Pages",
-    nonActiveTitle: "Pages",
+    activeTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <HiDocument />
+        <span>Pages</span>
+      </div>
+    ),
+    nonActiveTitle: (
+      <div className="flex flex-row items-center gap-1">
+        <HiOutlineDocument />
+        <span>Pages</span>
+      </div>
+    ),
     id: "pages",
-    children: <div>Pages</div>,
+    children: <Pages />,
     disabled: true,
   },
   {

@@ -20,7 +20,7 @@ export default function Batches() {
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
       <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
         <div className="flex flex-col w-full h-full">
-          <div className="flex flex-row justify-between items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <div className="flex flex-row gap-2 items-center">
               <RiFilePaperFill />
               <span>Batches</span>
@@ -30,7 +30,7 @@ export default function Batches() {
                 !batchesLoading && batches.data?.data?.batchesLength != 0
               }
             >
-              <div className="text-sm p-4 pb-0">
+              <div className="text-sm sm:mt-0 mt-2">
                 Currently showing{" "}
                 <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
                   {batches.data?.data?.batchesLength}

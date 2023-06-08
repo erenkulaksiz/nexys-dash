@@ -75,6 +75,11 @@ export default function Metrics() {
               type="ms"
               value={Number(project?.metrics?.TTFB?.value?.toFixed(2)) || 0}
             />
+            <Metric
+              title="Core Init"
+              type="ms"
+              value={Number(project?.metrics?.CORE_INIT?.toFixed(2)) || 0}
+            />
           </div>
           <div className="flex flex-col gap-4 px-4 pt-4 text-xl sm:text-3xl font-semibold">
             <h1>Average Performance of last 100 Logs</h1>
@@ -155,6 +160,21 @@ export default function Metrics() {
                 project?.metrics?.last100?.TTFB?.value
                   ? Number(project?.metrics?.last100?.TTFB?.value) <
                     Number(project?.metrics?.TTFB?.value)
+                    ? "up"
+                    : "down"
+                  : null
+              }
+            />
+            <Metric
+              title="Core Init"
+              type="ms"
+              value={
+                Number(project?.metrics?.last100?.CORE_INIT?.toFixed(2)) || 0
+              }
+              arrow={
+                project?.metrics?.last100?.TTFB?.value
+                  ? Number(project?.metrics?.last100?.CORE_INIT) <
+                    Number(project?.metrics?.CORE_INIT)
                     ? "up"
                     : "down"
                   : null

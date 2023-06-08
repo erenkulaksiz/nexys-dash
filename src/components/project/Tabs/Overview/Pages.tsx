@@ -1,5 +1,7 @@
 import { useProjectStore } from "@/stores/projectStore";
 import View from "@/components/View";
+import Tooltip from "@/components/Tooltip";
+import { MdInfoOutline } from "react-icons/md";
 
 export default function Pages() {
   const project = useProjectStore((state) => state.currentProject);
@@ -13,14 +15,52 @@ export default function Pages() {
               path.ERROR + path["AUTO:ERROR"] + path["AUTO:UNHANDLEDREJECTION"];
 
             return (
-              <div className="flex gap-1 flex-row items-center" key={path._id}>
+              <div
+                className="flex gap-1 flex-row items-center text-xs"
+                key={path._id}
+              >
                 <div className="flex">{path._id}</div>
-                <div className="text-sm whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded-full">
+                <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded-full">
                   {path.count}
                 </div>
-                <div className="text-sm whitespace-pre-wrap break-all dark:text-neutral-400 text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
-                  {errors}
-                </div>
+                <View.If visible={errors > 0}>
+                  <Tooltip
+                    outline
+                    content={
+                      <div className="flex flex-col">
+                        <View.If visible={path.ERROR > 0}>
+                          <div className="flex flex-row gap-2">
+                            <div>ERROR</div>
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                              {path.ERROR}
+                            </div>
+                          </div>
+                        </View.If>
+                        <View.If visible={path["AUTO:ERROR"] > 0}>
+                          <div className="flex flex-row gap-2">
+                            <div>AUTO:ERROR</div>
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                              {path["AUTO:ERROR"]}
+                            </div>
+                          </div>
+                        </View.If>
+                        <View.If visible={path["AUTO:UNHANDLEDREJECTION"] > 0}>
+                          <div className="flex flex-row gap-2">
+                            <div>AUTO:UNHANDLEDREJECTION</div>
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                              {path["AUTO:UNHANDLEDREJECTION"]}
+                            </div>
+                          </div>
+                        </View.If>
+                      </div>
+                    }
+                  >
+                    <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 px-1 pr-2 rounded-full">
+                      <MdInfoOutline size={14} />
+                      <span>{errors}</span>
+                    </div>
+                  </Tooltip>
+                </View.If>
               </div>
             );
           })}

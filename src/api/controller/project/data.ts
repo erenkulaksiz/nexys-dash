@@ -13,6 +13,7 @@ import {
   getLastWeekLogRate,
   getErrorTypes,
   getLogPaths,
+  getCoreData,
 } from "./statistics";
 
 export default async function data(
@@ -62,6 +63,8 @@ export default async function data(
   const FIDMetric = await getMetric(_project._id, "FID");
   const TTFBMetric = await getMetric(_project._id, "TTFB");
 
+  const [CORE_INIT, CORE_INIT_LAST_100] = await getCoreData(_project._id);
+
   // Get total amount of entries in the database for metrics
   const totalMetricLogs = await logCollection
     .find({
@@ -101,6 +104,7 @@ export default async function data(
       CLS: CLSMetric[0] || 0,
       FID: FIDMetric[0] || 0,
       TTFB: TTFBMetric[0] || 0,
+      CORE_INIT: CORE_INIT[0]?.value || 0,
       totalMetricLogs,
       last100: {
         FCP: FCPMetric[1] || 0,
@@ -108,6 +112,7 @@ export default async function data(
         CLS: CLSMetric[1] || 0,
         FID: FIDMetric[1] || 0,
         TTFB: TTFBMetric[1] || 0,
+        CORE_INIT: CORE_INIT_LAST_100[0]?.value || 0,
       },
     },
   };

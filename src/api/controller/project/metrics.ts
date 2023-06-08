@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 
 export async function getMetric(
   project: ObjectId,
-  metric: "FCP" | "LCP" | "CLS" | "FID" | "TTFB",
+  metric: "FCP" | "LCP" | "CLS" | "FID" | "TTFB" | "CORE:INIT",
   limit: number = 99999999
 ) {
   const { db } = await connectToDatabase();

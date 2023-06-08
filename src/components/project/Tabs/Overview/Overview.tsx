@@ -1,11 +1,12 @@
 import { HiOutlineDocument } from "react-icons/hi";
 import { IoFlagOutline } from "react-icons/io5";
-import { MdAccessTime, MdInfo } from "react-icons/md";
+import { MdAccessTime, MdInfoOutline } from "react-icons/md";
 import CountUp from "react-countup";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+import { TbListDetails } from "react-icons/tb";
 import { BsBarChartLine } from "react-icons/bs";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
@@ -91,7 +92,7 @@ export default function Overview() {
                   outline
                   content="Project score calculated by (error/total) logs."
                 >
-                  <MdInfo size={14} />
+                  <MdInfoOutline size={14} />
                 </Tooltip>
                 <span
                   className={
@@ -124,6 +125,15 @@ export default function Overview() {
               <HiOutlineDocument />
               <span>Pages</span>
             </div>
+            <Link href={`/project/${id}?page=pages`}>
+              <Button
+                light="dark:bg-white bg-black dark:text-black"
+                className="px-4 text-white"
+              >
+                <TbListDetails />
+                <span className="ml-1">View Pages</span>
+              </Button>
+            </Link>
           </div>
           <div className="flex flex-col gap-2 p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <Pages />
@@ -135,12 +145,13 @@ export default function Overview() {
               <MdAccessTime />
               <span>Last exceptions</span>
             </div>
-            <Link href={`/project/${id}?p=exceptions`}>
+            <Link href={`/project/${id}?page=exceptions`}>
               <Button
                 light="dark:bg-white bg-black dark:text-black"
                 className="px-4  text-white"
               >
-                <span>View All</span>
+                <TbListDetails />
+                <span className="ml-1">View All</span>
               </Button>
             </Link>
           </div>

@@ -10,8 +10,9 @@ import {
   Tooltip,
   Legend,
   BarElement,
+  ArcElement,
 } from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Doughnut } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -21,7 +22,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  BarElement
+  BarElement,
+  ArcElement
 );
 
 export default function Statistics() {
@@ -53,6 +55,27 @@ export default function Statistics() {
         : [],
     [project?.logRate]
   );
+  const LogRateErrorData = useMemo(
+    () =>
+      project?.logRate?.length
+        ? project?.logRate?.map((log) => log["ERROR"])
+        : [],
+    [project?.logRate]
+  );
+  const LogRateAutoErrorData = useMemo(
+    () =>
+      project?.logRate?.length
+        ? project?.logRate?.map((log) => log["AUTO:ERROR"])
+        : [],
+    [project?.logRate]
+  );
+  const LogRateUnhandledRejectionData = useMemo(
+    () =>
+      project?.logRate?.length
+        ? project?.logRate?.map((log) => log["AUTO:UNHANDLEDREJECTION"])
+        : [],
+    [project?.logRate]
+  );
   const ErrorTypeLabels = useMemo(
     () =>
       project?.errorTypes?.length
@@ -66,6 +89,32 @@ export default function Statistics() {
         ? project?.errorTypes?.map((log) => log?.count)
         : [],
     [project?.errorTypes]
+  );
+
+  const LogPathsLabels = useMemo(
+    () =>
+      project?.logPaths?.length
+        ? project?.logPaths?.map((log) => log?._id)
+        : [],
+    [project?.logPaths]
+  );
+  const LogPathsErrorData = useMemo(
+    () =>
+      project?.logPaths?.length
+        ? project?.logPaths?.map((log) => {
+            return (
+              log["AUTO:ERROR"] + log["AUTO:UNHANDLEDREJECTION"] + log["ERROR"]
+            );
+          })
+        : [],
+    [project?.logPaths]
+  );
+  const LogPathsLogData = useMemo(
+    () =>
+      project?.logPaths?.length
+        ? project?.logPaths?.map((log) => log.count)
+        : [],
+    [project?.logPaths]
   );
 
   return (
@@ -110,6 +159,24 @@ export default function Statistics() {
               borderColor: "#8a8a8a",
               backgroundColor: "#8a8a8aaf",
             },
+            {
+              label: "ERROR (per day)",
+              data: LogRateErrorData,
+              borderColor: "#b91c1c",
+              backgroundColor: "#b91c1caf",
+            },
+            {
+              label: "AUTO:ERROR (per day)",
+              data: LogRateAutoErrorData,
+              borderColor: "#b91c1c",
+              backgroundColor: "#b91c1caf",
+            },
+            {
+              label: "AUTO:UNHANDLEDREJECTION (per day)",
+              data: LogRateUnhandledRejectionData,
+              borderColor: "#b91c1c",
+              backgroundColor: "#b91c1caf",
+            },
           ],
         }}
       />
@@ -128,6 +195,31 @@ export default function Statistics() {
           ],
         }}
       />
+
+      <div className="w-full flex items-center justify-center">
+        <div className="w-1/2 flex items-center flex-col">
+          <div>Log Paths</div>
+          <Doughnut
+            data={{
+              labels: LogPathsLabels,
+              datasets: [
+                {
+                  label: "Error Count",
+                  data: LogPathsErrorData,
+                  borderColor: "#b91c1c",
+                  backgroundColor: "#b91c1caf",
+                },
+                {
+                  label: "Log Count",
+                  data: LogPathsLogData,
+                  borderColor: "#8a8a8a",
+                  backgroundColor: "#8a8a8aaf",
+                },
+              ],
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -77,7 +77,7 @@ export default function ProjectPage(props: NexysComponentProps) {
                   <View.Else>
                     <Tab
                       id="dashboard"
-                      defaultTab={props?.query?.p}
+                      defaultTab={props?.query?.page}
                       onTabChange={({ id }) =>
                         router.push(
                           {

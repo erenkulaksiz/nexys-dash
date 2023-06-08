@@ -10,6 +10,16 @@ export interface LogTypes {
   ts: number;
 }
 
+interface LogMetricTypes {
+  _id: string;
+  count: number;
+  "AUTO:ERROR": number;
+  "AUTO:UNHANDLEDREJECTION": number;
+  ERROR: number;
+  METRIC: number;
+  OTHER: number;
+}
+
 export interface ProjectTypes {
   _id?: ObjectId;
   publicKey?: string;
@@ -28,26 +38,10 @@ export interface ProjectTypes {
   logCount?: number;
   errorCount?: number;
   exceptionRate?: Array<{ _id: string; count: number }>;
-  logRate?: Array<{ _id: string; count: number }>;
+  logRate?: LogMetricTypes[];
   errorTypes?: Array<{ _id: string; count: number }>;
-  logPaths?: Array<{
-    _id: string;
-    count: number;
-    "AUTO:ERROR": number;
-    "AUTO:UNHANDLEDREJECTION": number;
-    ERROR: number;
-    METRIC: number;
-    OTHER: number;
-  }>;
-  lastWeekLogRate?: Array<{
-    _id: string;
-    count: number;
-    "AUTO:ERROR": number;
-    "AUTO:UNHANDLEDREJECTION": number;
-    ERROR: number;
-    METRIC: number;
-    OTHER: number;
-  }>;
+  logPaths?: LogMetricTypes[];
+  lastWeekLogRate?: LogMetricTypes[];
   metrics?: {
     FCP?: {
       value: number;
@@ -64,6 +58,7 @@ export interface ProjectTypes {
     TTFB?: {
       value: number;
     };
+    CORE_INIT?: number;
     totalMetricLogs?: number;
     last100: {
       FCP?: {
@@ -81,6 +76,7 @@ export interface ProjectTypes {
       TTFB?: {
         value: number;
       };
+      CORE_INIT?: number;
     };
   };
   plan?: "free" | "pro" | "enterprise";
@@ -93,7 +89,7 @@ export interface NexysComponentProps extends PropsWithChildren {
     error?: string | object;
   };
   query?: {
-    p: string;
+    page: string;
   };
   totalErrors?: number;
   totalLogs?: number;
