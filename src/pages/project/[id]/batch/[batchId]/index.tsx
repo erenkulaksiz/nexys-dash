@@ -40,7 +40,7 @@ export default function BatchPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const batchLoading = useProjectStore((state) => state.batchLoading);
-  const authUser = useAuthStore((state) => state.validatedUser);
+  const authUser = useAuthStore((state) => state.user);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
   const batch = useBatch({ uid: uid ?? "", page });

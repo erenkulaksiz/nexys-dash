@@ -61,7 +61,6 @@ export default [
     ),
     id: "pages",
     children: <Pages />,
-    disabled: true,
   },
   {
     activeTitle: (

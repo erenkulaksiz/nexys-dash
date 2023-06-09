@@ -14,6 +14,7 @@ import {
   getErrorTypes,
   getLogPaths,
   getCoreData,
+  getLogpoolSendallMetric,
 } from "./statistics";
 
 export default async function data(
@@ -29,7 +30,7 @@ export default async function data(
   const { id: name } = body;
 
   const _project = (await projectsCollection.findOne({
-    name: name,
+    name,
     _deleted: { $in: [null, false] },
   })) as ProjectTypes | null;
 
@@ -64,6 +65,9 @@ export default async function data(
   const TTFBMetric = await getMetric(_project._id, "TTFB");
 
   const [CORE_INIT, CORE_INIT_LAST_100] = await getCoreData(_project._id);
+  const [LOGPOOLMetric, LOGPOOL_LAST_100] = await getLogpoolSendallMetric(
+    _project._id
+  );
 
   // Get total amount of entries in the database for metrics
   const totalMetricLogs = await logCollection
@@ -105,6 +109,7 @@ export default async function data(
       FID: FIDMetric[0] || 0,
       TTFB: TTFBMetric[0] || 0,
       CORE_INIT: CORE_INIT[0]?.value || 0,
+      LOGPOOL_SENDALL: LOGPOOLMetric[0]?.value || 0,
       totalMetricLogs,
       last100: {
         FCP: FCPMetric[1] || 0,
@@ -113,6 +118,7 @@ export default async function data(
         FID: FIDMetric[1] || 0,
         TTFB: TTFBMetric[1] || 0,
         CORE_INIT: CORE_INIT_LAST_100[0]?.value || 0,
+        LOGPOOL_SENDALL: LOGPOOL_LAST_100[0]?.value || 0,
       },
     },
   };

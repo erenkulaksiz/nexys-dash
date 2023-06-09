@@ -59,6 +59,7 @@ export interface ProjectTypes {
       value: number;
     };
     CORE_INIT?: number;
+    LOGPOOL_SENDALL?: number;
     totalMetricLogs?: number;
     last100: {
       FCP?: {
@@ -77,6 +78,7 @@ export interface ProjectTypes {
         value: number;
       };
       CORE_INIT?: number;
+      LOGPOOL_SENDALL?: number;
     };
   };
   plan?: "free" | "pro" | "enterprise";

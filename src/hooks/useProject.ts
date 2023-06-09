@@ -8,7 +8,8 @@ import {
   setNotFound,
   setProjectLoading,
 } from "@/stores/projectStore";
-import { refreshToken, useAuthStore } from "@/stores/authStore";
+import { refreshToken } from "@/stores/authStore";
+import { nexys } from "@/utils/nexys";
 
 interface useProjectParams {
   uid: string;
@@ -52,6 +53,7 @@ export default function useProject({ uid }: useProjectParams) {
     setProjectLoading(true);
     if (project?.data?.error) {
       Log.error("Loading of project failed", project?.data?.error);
+      nexys.error({ message: project?.data?.error });
       if (
         project?.data?.error == "auth/id-token-expired" ||
         project?.data?.error == "auth-uid-error"

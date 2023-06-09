@@ -1,6 +1,8 @@
 import CountUp from "react-countup";
 import { BiUpArrowAlt, BiDownArrowAlt } from "react-icons/bi";
 import View from "@/components/View";
+import Tooltip from "@/components/Tooltip";
+import type { ReactNode } from "react";
 
 export default function Metric({
   title,
@@ -9,6 +11,7 @@ export default function Metric({
   value,
   decimals = 2,
   arrow = null,
+  tooltipContent = null,
 }: {
   title: string;
   smallTitle?: string;
@@ -16,9 +19,14 @@ export default function Metric({
   value: number;
   decimals?: number;
   arrow?: "up" | "down" | null;
+  tooltipContent?: string | ReactNode;
 }) {
   return (
-    <div className="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
+    <Tooltip
+      outline
+      content={tooltipContent}
+      allContainerClassName="border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col"
+    >
       <div className="border-b-[1px] gap-0 sm:gap-1 w-full border-neutral-200 dark:border-neutral-900 flex sm:flex-row flex-col items-start sm:items-center p-2 text-lg sm:text-xl font-semibold">
         <span>{title}</span>
         <View.If visible={!!smallTitle}>
@@ -47,6 +55,6 @@ export default function Metric({
           <div className="text-neutral-500">{type}</div>
         </View.If>
       </div>
-    </div>
+    </Tooltip>
   );
 }

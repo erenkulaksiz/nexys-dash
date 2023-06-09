@@ -373,3 +373,53 @@ export async function getCoreData(project: ObjectId | null) {
 
   return [CORE_INIT, CORE_INIT_LAST_100];
 }
+
+export async function getLogpoolSendallMetric(project: ObjectId | null) {
+  const { db } = await connectToDatabase();
+  const logCollection = await db.collection(`logs-${project}`);
+
+  const LogpoolSendall = await logCollection
+    .aggregate([
+      {
+        $match: {
+          $and: [
+            { "options.type": "METRIC" },
+            { "data.type": "LOGPOOL:SENDALL" },
+            { "data.diff": { $gt: 0 } },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          value: { $avg: "$data.diff" },
+        },
+      },
+    ])
+    .toArray();
+
+  const LogpoolSendall_100 = await logCollection
+    .aggregate([
+      {
+        $match: {
+          $and: [
+            { "options.type": "METRIC" },
+            { "data.type": "LOGPOOL:SENDALL" },
+            { "data.diff": { $gt: 0 } },
+          ],
+        },
+      },
+      {
+        $limit: 100,
+      },
+      {
+        $group: {
+          _id: null,
+          value: { $avg: "$data.diff" },
+        },
+      },
+    ])
+    .toArray();
+
+  return [LogpoolSendall, LogpoolSendall_100];
+}
