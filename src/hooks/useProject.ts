@@ -1,21 +1,23 @@
 import useSWR from "swr";
 import { useEffect } from "react";
-import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+
 import { Log, server } from "@/utils";
 import {
   setCurrentProject,
   setNotFound,
   setProjectLoading,
 } from "@/stores/projectStore";
-import { refreshToken } from "@/stores/authStore";
+import { refreshToken, useAuthStore } from "@/stores/authStore";
 import { nexys } from "@/utils/nexys";
 
 interface useProjectParams {
-  uid: string;
+  uid?: string;
 }
 
 export default function useProject({ uid }: useProjectParams) {
+  const user = useAuthStore((state) => state.user);
   const router = useRouter();
   const query = router.query.id?.toString() || "";
 
@@ -28,7 +30,7 @@ export default function useProject({ uid }: useProjectParams) {
       }),
       method: "POST",
       body: JSON.stringify({
-        uid,
+        uid: uid || user?.uid,
         id: query,
       }),
     })

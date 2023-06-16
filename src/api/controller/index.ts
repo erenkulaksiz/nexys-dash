@@ -10,6 +10,8 @@ import setting from "./project/setting";
 import logs from "./project/logs";
 import batch from "./project/batch";
 
+import details from "./project/path/details";
+
 type APIReturnType = (req: NextApiRequest, res: NextApiResponse) => void;
 
 export interface ControllerReturnType {
@@ -25,6 +27,9 @@ export interface ControllerReturnType {
     setting: APIReturnType;
     logs: APIReturnType;
     batch: APIReturnType;
+    path: {
+      details: APIReturnType
+    }
   };
 }
 
@@ -51,6 +56,10 @@ export function Controller(): ControllerReturnType {
         checkUserAuth({ req, res, func: logs }),
       batch: (req: NextApiRequest, res: NextApiResponse) =>
         checkUserAuth({ req, res, func: batch }),
+      path: {
+        details: (req: NextApiRequest, res: NextApiResponse) =>
+          checkUserAuth({ req, res, func: details }),
+      }
     },
   };
 }

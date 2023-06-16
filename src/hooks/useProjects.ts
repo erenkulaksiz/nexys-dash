@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
 
 import { Log, server } from "@/utils";
-import { refreshToken } from "@/stores/authStore";
+import { refreshToken, useAuthStore } from "@/stores/authStore";
 
 interface useProjectsParams {
   uid?: string;
 }
 
 export default function useProjects({ uid }: useProjectsParams) {
-  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const [loading, setLoading] = useState(true);
 
   const projects = useSWR(["api/dash/projects"], async () => {
@@ -22,7 +21,7 @@ export default function useProjects({ uid }: useProjectsParams) {
         Authorization: `Bearer ${token || ""}`,
       }),
       method: "POST",
-      body: JSON.stringify({ uid }),
+      body: JSON.stringify({ uid: uid || user?.uid }),
     })
       .then(async (res) => {
         let json = null;

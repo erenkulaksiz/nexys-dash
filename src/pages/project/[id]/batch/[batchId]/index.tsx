@@ -25,11 +25,9 @@ import useProject from "@/hooks/useProject";
 import BatchHeader from "@/components/project/BatchHeader";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
-import { useAuthStore } from "@/stores/authStore";
 import useBatch from "@/hooks/useBatch";
 import Pager from "@/components/Pager";
 import View from "@/components/View";
-import { Log } from "@/utils";
 import type { GetServerSidePropsContext } from "next";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps } from "@/types";
@@ -40,10 +38,8 @@ export default function BatchPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const batchLoading = useProjectStore((state) => state.batchLoading);
-  const authUser = useAuthStore((state) => state.user);
-  const uid = props?.validate?.data?.uid || authUser?.uid;
-  const project = useProject({ uid: uid ?? "" });
-  const batch = useBatch({ uid: uid ?? "", page });
+  const project = useProject({ uid: props?.validate?.data.uid });
+  const batch = useBatch({ uid: props?.validate?.data.uid, page });
 
   const totalPages = Math.ceil(batch.data?.data?.logsLength / 10);
   const logId = router.query.log as string;

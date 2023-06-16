@@ -1,19 +1,20 @@
 import useSWR from "swr";
-import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 import { setBatchLoading, setCurrentBatch } from "@/stores/projectStore";
 import { Log, server } from "@/utils";
-import { refreshToken } from "@/stores/authStore";
+import { refreshToken, useAuthStore } from "@/stores/authStore";
 
 interface useBatchParams {
-  uid: string;
   page?: number;
+  uid?: string;
 }
 
 export default function useBatch({ uid, page = 0 }: useBatchParams) {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
 
   const { id, batchId } = router.query;
 
@@ -25,14 +26,14 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
 
   const batch = useSWR([`api/dash/project/batch/${batchId}`], async () => {
     const token = Cookies.get("auth");
-    return fetch(`${server}/api/dash/project/batch`, {
+    return fetch(`${server}/api/dash/project/batch/${batchId}`, {
       headers: new Headers({
         "content-type": "application/json",
         Authorization: `Bearer ${token || ""}`,
       }),
       method: "POST",
       body: JSON.stringify({
-        uid,
+        uid: uid || user?.uid,
         projectId: id,
         id: batchId,
         page,

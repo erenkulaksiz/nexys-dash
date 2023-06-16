@@ -1,7 +1,6 @@
-import { useRouter } from "next/router";
 import useSWR from "swr";
-import Cookies from "js-cookie";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 import { useAuthStore, refreshToken } from "@/stores/authStore";
 import {
@@ -32,7 +31,6 @@ export default function useLogs({
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
-  const router = useRouter();
 
   useEffect(() => {
     if (logs.data?.data) {

@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 import { accept, reject } from "@/api/utils";
 import { connectToDatabase } from "@/mongodb";
 import { Log } from "@/utils";

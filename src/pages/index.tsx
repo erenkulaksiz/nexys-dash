@@ -9,10 +9,8 @@ import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import AddProjectCard from "@/components/home/AddProjectCard";
 const ProjectCard = dynamic(() => import("@/components/home/ProjectCard"), {});
-import { useAuthStore } from "@/stores/authStore";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { RiDashboardFill } from "react-icons/ri";
-import { Log } from "@/utils";
 import WithAuth from "@/hocs/withAuth";
 import useProjects from "@/hooks/useProjects";
 import View from "@/components/View";
@@ -22,10 +20,8 @@ import type { GetServerSidePropsContext } from "next";
 
 export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
-  const authUser = useAuthStore((state) => state.user);
   const newProject = router.query.newProject == "true" ? true : false;
-  const uid = props?.validate?.data?.uid || authUser?.uid;
-  const { projects, loading } = useProjects({ uid });
+  const { projects, loading } = useProjects({ uid: props?.validate?.data.uid });
 
   return (
     <Layout {...props} withoutLayout>

@@ -10,7 +10,7 @@ export interface LogTypes {
   ts: number;
 }
 
-interface LogMetricTypes {
+export interface LogMetricTypes {
   _id: string;
   count: number;
   "AUTO:ERROR": number;
