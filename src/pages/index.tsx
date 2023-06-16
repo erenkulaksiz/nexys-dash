@@ -21,7 +21,9 @@ import type { GetServerSidePropsContext } from "next";
 export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
   const newProject = router.query.newProject == "true" ? true : false;
-  const { projects, loading } = useProjects({ uid: props?.validate?.data.uid });
+  const { projects, loading } = useProjects({
+    uid: props?.validate?.data?.uid,
+  });
 
   return (
     <Layout {...props} withoutLayout>

@@ -38,8 +38,8 @@ export default function BatchPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const batchLoading = useProjectStore((state) => state.batchLoading);
-  const project = useProject({ uid: props?.validate?.data.uid });
-  const batch = useBatch({ uid: props?.validate?.data.uid, page });
+  const project = useProject({ uid: props?.validate?.data?.uid });
+  const batch = useBatch({ uid: props?.validate?.data?.uid, page });
 
   const totalPages = Math.ceil(batch.data?.data?.logsLength / 10);
   const logId = router.query.log as string;
