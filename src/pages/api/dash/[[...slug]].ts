@@ -43,7 +43,7 @@ export default async function handler(
     if (typeof ExecuteController == "function") {
       return await ExecuteController(req, res);
     } else {
-      return reject({ res });
+      return reject({ res, reason: "invalid-controller" });
     }
   });
 }

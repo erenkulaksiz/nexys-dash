@@ -13,14 +13,34 @@ export default function PageDetails({ selected, onBack }: PageDetailsProps) {
     path: selected || "/",
   });
 
-  const sortErrorLogs = Object.keys(
+  const filterErrorLogs = Object.keys(
     pathDetails.data?.data?.pathLogCounts || {}
   ).filter(
     (el) =>
       el == "ERROR" || el == "AUTO:ERROR" || el == "AUTO:UNHANDLEDREJECTION"
   );
 
-  const sortedErrorLogs = sortErrorLogs
+  const sortedErrorLogs = filterErrorLogs
+    .map((el) => {
+      return {
+        name: el,
+        count: pathDetails.data?.data?.pathLogCounts?.[el] || 0,
+      };
+    })
+    .sort((a, b) => b.count - a.count)
+    .filter((el) => el.count > 0);
+
+  const filterNonErrorLogs = Object.keys(
+    pathDetails.data?.data?.pathLogCounts || {}
+  ).filter(
+    (el) =>
+      el != "ERROR" &&
+      el != "AUTO:ERROR" &&
+      el != "AUTO:UNHANDLEDREJECTION" &&
+      el != "count"
+  );
+
+  const sortedNonErrorLogs = filterNonErrorLogs
     .map((el) => {
       return {
         name: el,
@@ -48,6 +68,17 @@ export default function PageDetails({ selected, onBack }: PageDetailsProps) {
             {sortedErrorLogs.map((el) => (
               <div
                 className="flex flex-row p-1 px-2 items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 rounded-full"
+                key={el.name}
+              >
+                <span>{el.name}</span>
+                <span className="flex rounded-lg px-1 dark:bg-neutral-900 bg-white dark:text-white text-black">
+                  {el.count}
+                </span>
+              </div>
+            ))}
+            {sortedNonErrorLogs.map((el) => (
+              <div
+                className="flex flex-row p-1 px-2 items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-neutral-400 dark:bg-neutral-600 rounded-full"
                 key={el.name}
               >
                 <span>{el.name}</span>

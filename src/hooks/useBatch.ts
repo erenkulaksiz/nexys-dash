@@ -26,7 +26,7 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
 
   const batch = useSWR([`api/dash/project/batch/${batchId}`], async () => {
     const token = Cookies.get("auth");
-    return fetch(`${server}/api/dash/project/batch/${batchId}`, {
+    return fetch(`${server}/api/dash/project/batch`, {
       headers: new Headers({
         "content-type": "application/json",
         Authorization: `Bearer ${token || ""}`,
@@ -34,7 +34,7 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
       method: "POST",
       body: JSON.stringify({
         uid: uid || user?.uid,
-        projectId: id,
+        project: id,
         id: batchId,
         page,
       }),

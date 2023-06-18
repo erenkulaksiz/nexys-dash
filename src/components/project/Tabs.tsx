@@ -46,6 +46,7 @@ export default [
     id: "overview",
     children: <Overview />,
   },
+  /*
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
@@ -62,6 +63,7 @@ export default [
     id: "pages",
     children: <Pages />,
   },
+  */
   {
     activeTitle: "Actions",
     nonActiveTitle: "Actions",

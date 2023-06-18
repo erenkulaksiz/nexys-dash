@@ -22,9 +22,10 @@ export default async function logs(
     asc?: boolean;
     types?: string[];
     search?: string;
+    path?: string;
   };
   if (!body || !body.id || !body.type) return reject({ res });
-  const { id, type, page, asc, types, search } = body;
+  const { id, type, page, asc, types, search, path } = body;
 
   if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
 
@@ -38,8 +39,6 @@ export default async function logs(
   const isOwner = _project.owner === validateUser.decodedToken.user_id;
 
   if (!isOwner) return reject({ res, reason: "not-owner" });
-
-  // we validated, now load last 10 logs
 
   const batchCollection = await db.collection(`batches-${_project._id}`);
   const logCollection = await db.collection(`logs-${_project._id}`);
@@ -81,8 +80,6 @@ export default async function logs(
 
     return accept({ res, data: { batches, batchesLength } });
   } else if (type === "exceptions") {
-    console.log("types", types);
-
     const selectTypes = types?.length
       ? types?.map((t) => ({ "options.type": t }))
       : [
@@ -95,6 +92,7 @@ export default async function logs(
 
     const exceptionsLength = await logCollection.countDocuments({
       $or: selectTypes,
+      path: path == "all" ? { $exists: true } : path,
     });
 
     const exceptionTypes = await logCollection
@@ -106,12 +104,48 @@ export default async function logs(
               { "options.type": "AUTO:ERROR" },
               { "options.type": "AUTO:UNHANDLEDREJECTION" },
             ],
+            path: path == "all" ? { $exists: true } : path,
           },
         },
         {
           $group: {
             _id: "$options.type",
             count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: {
+            count: -1,
+          },
+        },
+      ])
+      .toArray();
+
+    const exceptionPaths = await logCollection
+      .aggregate([
+        {
+          $group: {
+            _id: "$path",
+            count: {
+              $sum: {
+                $cond: [
+                  {
+                    $or: [
+                      { $eq: ["$options.type", "ERROR"] },
+                      { $eq: ["$options.type", "AUTO:ERROR"] },
+                      { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            count: -1,
           },
         },
       ])
@@ -128,7 +162,7 @@ export default async function logs(
 
     return accept({
       res,
-      data: { exceptions, exceptionsLength, exceptionTypes },
+      data: { exceptions, exceptionsLength, exceptionTypes, exceptionPaths },
     });
   } else if (type == "batches") {
     const batchesLength = await batchCollection.countDocuments({});

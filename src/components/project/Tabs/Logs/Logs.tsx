@@ -6,6 +6,7 @@ import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
 import Pager from "@/components/Pager";
 import View from "@/components/View";
+import CurrentCountText from "@/components/project/CurrentCountText";
 
 export default function Logs() {
   const [page, setPage] = useState<number>(0);
@@ -25,13 +26,10 @@ export default function Logs() {
               <span>Logs</span>
             </div>
             <View.If visible={!logsLoading && !!logs.data?.data?.logsLength}>
-              <div className="text-sm sm:mt-0 mt-2">
-                Currently showing{" "}
-                <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                  {logs.data?.data?.logsLength}
-                </span>{" "}
-                Logs.
-              </div>
+              <CurrentCountText
+                count={logs.data?.data?.logsLength}
+                type="logs"
+              />
             </View.If>
           </div>
           <View.If visible={!logsLoading && totalPages > 1}>

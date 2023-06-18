@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { MdSearch } from "react-icons/md";
 import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
@@ -11,10 +10,10 @@ import Button from "@/components/Button";
 import Pager from "@/components/Pager";
 import Checkbox from "@/components/Checkbox";
 import Filters from "@/components/project/Filters";
+import CurrentCountText from "@/components/project/CurrentCountText";
 import useDebounce from "@/hooks/useDebounce";
-import Input from "@/components/Input/Input";
 import View from "@/components/View";
-import { Log } from "@/utils";
+import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
 import type { FiltersProps } from "@/components/project/Filters";
 
 export default function Exceptions() {
@@ -25,6 +24,7 @@ export default function Exceptions() {
   const [filters, setFilters] = useState<FiltersProps>({
     asc: false,
     types: [],
+    path: "all",
   });
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
@@ -34,13 +34,18 @@ export default function Exceptions() {
     asc: filters.asc,
     types: filters.types,
     search: debouncedFilteredText,
+    path: filters.path,
   });
-  const exceptionTypes: any = exceptions.data?.data?.exceptionTypes
-    .sort((a: any, b: any) => a.count - b.count)
-    .map((type: any) => type._id);
+  const exceptionTypes: any = exceptions.data?.data?.exceptionTypes.map(
+    (type: any) => type._id
+  );
 
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
+
+  const exceptionPaths = exceptions.data?.data?.exceptionPaths
+    ? [...exceptions.data?.data?.exceptionPaths]
+    : [];
 
   useEffect(() => {
     setPage(0);
@@ -70,17 +75,14 @@ export default function Exceptions() {
                 exceptions.data?.data?.exceptionsLength != 0
               }
             >
-              <div className="text-sm sm:mt-0 mt-2">
-                Currently showing{" "}
-                <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                  {exceptions.data?.data?.exceptionsLength}
-                </span>{" "}
-                exceptions.
-              </div>
+              <CurrentCountText
+                count={exceptions.data?.data?.exceptionsLength}
+                type="exceptions"
+              />
             </View.If>
           </div>
           <View.If hidden={exceptionsLoading}>
-            <div className="flex flex-col items-start gap-4 p-4 pb-0">
+            <div className="flex flex-col items-start gap-2 p-4 pb-0">
               <div className="flex flex-row gap-2 items-center">
                 <Button
                   className="px-2"
@@ -99,7 +101,7 @@ export default function Exceptions() {
                 </Button>
               </div>
               <View.If visible={filtersOpen}>
-                <div className="flex flex-row gap-2 flex-wrap w-full items-center">
+                <div className="flex flex-col gap-2 flex-wrap w-full items-start">
                   {/*<Input
                     height="h-8"
                     icon={<MdSearch />}
@@ -107,20 +109,49 @@ export default function Exceptions() {
                     value={filteredText}
                     onChange={(event) => setFilteredText(event.target.value)}
                    />*/}
+                  <div className="flex flex-row gap-2 items-center">
+                    <Select
+                      options={[
+                        { id: "asc", text: "Ascending" },
+                        { id: "desc", text: "Descending" },
+                      ]}
+                      onChange={(event) =>
+                        setFilters({
+                          ...filters,
+                          asc: event.target.value == "asc",
+                        })
+                      }
+                      className="h-8"
+                      value={filters.asc ? "asc" : "desc"}
+                      id="select-asc-desc"
+                    />
+                    <View viewIf={filters.asc}>
+                      <View.If>
+                        <BsSortDown />
+                      </View.If>
+                      <View.Else>
+                        <BsSortDownAlt />
+                      </View.Else>
+                    </View>
+                  </div>
                   <Select
                     options={[
-                      { id: "asc", text: "Ascending" },
-                      { id: "desc", text: "Descending" },
+                      { id: "all", text: "All Paths" },
+                      ...exceptionPaths
+                        ?.filter((el: any) => el.count > 0)
+                        .map((el: any) => {
+                          return { id: el._id, text: el._id };
+                        }),
                     ]}
                     onChange={(event) =>
                       setFilters({
                         ...filters,
-                        asc: event.target.value == "asc",
+                        path: event.target.value,
                       })
                     }
                     className="h-8"
-                    value={filters.asc ? "asc" : "desc"}
-                    id="select-asc-desc"
+                    value={filters.path}
+                    id="select-path"
                   />
                   <View.If visible={!!exceptionTypes?.length}>
                     <div className="flex flex-row flex-wrap border-[1px] border-neutral-200 dark:border-neutral-900 p-1 px-2 gap-2 rounded-lg">

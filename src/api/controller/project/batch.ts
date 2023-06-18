@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 
+import { Log } from "@/utils/logger";
 import { accept, reject } from "@/api/utils";
 import { connectToDatabase } from "@/mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
 
-export default async function logs(
+export default async function batch(
   req: NextApiRequest,
   res: NextApiResponse,
   validateUser: ValidateUserReturnType
@@ -14,14 +15,12 @@ export default async function logs(
   const { db } = await connectToDatabase();
   const projectsCollection = await db.collection("projects");
 
-  const body = req.body as { projectId: string; id: string; page?: number };
-  if (!body || !body.projectId || !body.id) return reject({ res });
-  const { projectId, id, page } = body;
-
-  if (ObjectId.isValid(projectId)) return reject({ res, reason: "invalid-id" });
+  const body = req.body as { project: string; id: string; page?: number };
+  if (!body || !body.project || !body.id) return reject({ res });
+  const { project, id, page } = body;
 
   const _project = (await projectsCollection.findOne({
-    name: projectId,
+    name: project,
     _deleted: { $in: [null, false] },
   })) as ProjectTypes | null;
 

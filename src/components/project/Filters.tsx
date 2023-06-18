@@ -6,6 +6,7 @@ export interface FiltersProps {
   types: string[];
   filters?: any;
   setFilters?: any;
+  path?: string;
 }
 
 export default function Filters({ types, filters, setFilters }: FiltersProps) {

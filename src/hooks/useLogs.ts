@@ -20,6 +20,7 @@ interface useLogsParams {
   asc?: boolean;
   search?: string;
   types?: string[];
+  path?: string;
 }
 
 export default function useLogs({
@@ -28,6 +29,7 @@ export default function useLogs({
   asc = false,
   search = "",
   types = [],
+  path = "all",
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
@@ -56,6 +58,7 @@ export default function useLogs({
           asc,
           types,
           search,
+          path,
         }),
       })
         .then(async (res) => {

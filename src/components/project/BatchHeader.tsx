@@ -21,7 +21,7 @@ export default function BatchHeader() {
     <>
       <Container className="flex flex-col sm:flex-row sm:items-center items-start gap-2 sm:gap-4">
         <View.If visible={loading || batchLoading}>
-          <div className="flex h-10 w-28 dark:bg-neutral-900 bg-neutral-200 animate-pulse"></div>
+          <div className="flex h-10 w-28 dark:bg-neutral-900 bg-neutral-100 animate-pulse"></div>
         </View.If>
         <View.If visible={!loading && !batchLoading}>
           <Link href={`/project/${project?.name}?page=batches`}>
@@ -102,8 +102,8 @@ export default function BatchHeader() {
         </View.If>
         <View.If visible={loading || batchLoading}>
           <div className="flex flex-col gap-1 animate-pulse">
-            <div className="h-5 bg-neutral-200 dark:bg-neutral-900 w-48"></div>
-            <div className="h-2.5 bg-neutral-200  dark:bg-neutral-900 w-32"></div>
+            <div className="h-5 bg-neutral-100 dark:bg-neutral-900 w-48"></div>
+            <div className="h-2.5 bg-neutral-100  dark:bg-neutral-900 w-32"></div>
           </div>
         </View.If>
       </Container>

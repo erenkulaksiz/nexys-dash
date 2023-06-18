@@ -7,6 +7,7 @@ import { Log } from "@/utils";
 import useLogs from "@/hooks/useLogs";
 import View from "@/components/View";
 import Pager from "@/components/Pager";
+import CurrentCountText from "@/components/project/CurrentCountText";
 
 export default function Batches() {
   const [page, setPage] = useState<number>(0);
@@ -30,13 +31,10 @@ export default function Batches() {
                 !batchesLoading && batches.data?.data?.batchesLength != 0
               }
             >
-              <div className="text-sm sm:mt-0 mt-2">
-                Currently showing{" "}
-                <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                  {batches.data?.data?.batchesLength}
-                </span>{" "}
-                batches.
-              </div>
+              <CurrentCountText
+                count={batches.data?.data?.batchesLength}
+                type="batches"
+              />
             </View.If>
           </div>
           {!batchesLoading && totalPages > 10 && (
