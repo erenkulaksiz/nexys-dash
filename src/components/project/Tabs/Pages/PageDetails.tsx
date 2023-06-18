@@ -30,8 +30,6 @@ export default function PageDetails({ selected, onBack }: PageDetailsProps) {
     .sort((a, b) => b.count - a.count)
     .filter((el) => el.count > 0);
 
-  console.log("test", sortedErrorLogs);
-
   return (
     <div className="border-[1px] sm:order-first order-last border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
       <div className="w-full">
@@ -46,7 +44,7 @@ export default function PageDetails({ selected, onBack }: PageDetailsProps) {
           </div>
         </div>
         <div className="p-4 flex flex-col items-start gap-1">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row flex-wrap gap-2">
             {sortedErrorLogs.map((el) => (
               <div
                 className="flex flex-row p-1 px-2 items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 rounded-full"

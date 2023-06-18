@@ -80,7 +80,17 @@ export default async function data(
   const errorTypes = await getErrorTypes(_project._id);
   const logPaths = await getLogPaths(_project._id);
 
+  const forwarded = req.headers["x-forwarded-for"];
+  const ip = Array.isArray(forwarded)
+    ? "array"
+    : forwarded
+    ? forwarded.split(/, /)[0]
+    : req.connection.remoteAddress;
+
+  Log.debug("test", ip);
+
   const project = {
+    ip: ip || "unknown",
     name: _project.name,
     domain: _project.domain,
     _id: _project._id,
