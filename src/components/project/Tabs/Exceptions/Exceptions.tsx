@@ -1,44 +1,38 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
 import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
-import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Pager from "@/components/Pager";
-import Checkbox from "@/components/Checkbox";
-import Filters from "@/components/project/Filters";
+import ExceptionFilters from "@/components/project/ExceptionFilters";
 import CurrentCountText from "@/components/project/CurrentCountText";
-import useDebounce from "@/hooks/useDebounce";
 import View from "@/components/View";
-import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
-import type { FiltersProps } from "@/components/project/Filters";
+import { Log } from "@/utils";
+import type { ExceptionFiltersProps } from "@/components/project/ExceptionFilters";
 
 export default function Exceptions() {
   const [filteredText, setFilteredText] = useState<string>("");
   const [debouncedFilteredText, setDebouncedFilteredText] =
     useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersProps>({
+  const [filters, setFilters] = useState<ExceptionFiltersProps>({
     asc: false,
     types: [],
-    path: "all",
   });
   const [page, setPage] = useState<number>(0);
+  const [path, setPath] = useState<string>("all");
   const project = useProjectStore((state) => state.currentProject);
   const exceptions = useLogs({
     type: "exceptions",
     page,
+    path,
     asc: filters.asc,
     types: filters.types,
     search: debouncedFilteredText,
-    path: filters.path,
   });
-  const exceptionTypes: any = exceptions.data?.data?.exceptionTypes.map(
-    (type: any) => type._id
-  );
 
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
@@ -49,9 +43,22 @@ export default function Exceptions() {
 
   useEffect(() => {
     setPage(0);
-    exceptions.mutate();
   }, [filters]);
 
+  useEffect(() => {
+    if (exceptions?.data?.data) {
+      exceptions.mutate();
+    }
+  }, [filters.types]);
+
+  useEffect(() => {
+    setFilters({
+      ...filters,
+      types: [],
+    });
+  }, [path]);
+
+  /*
   useDebounce(
     () => {
       setDebouncedFilteredText(filteredText);
@@ -59,6 +66,7 @@ export default function Exceptions() {
     [filteredText],
     800
   );
+  */
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -101,95 +109,14 @@ export default function Exceptions() {
                 </Button>
               </div>
               <View.If visible={filtersOpen}>
-                <div className="flex flex-col gap-2 flex-wrap w-full items-start">
-                  {/*<Input
-                    height="h-8"
-                    icon={<MdSearch />}
-                    placeholder="Search"
-                    value={filteredText}
-                    onChange={(event) => setFilteredText(event.target.value)}
-                   />*/}
-                  <div className="flex flex-row gap-2 items-center">
-                    <Select
-                      options={[
-                        { id: "asc", text: "Ascending" },
-                        { id: "desc", text: "Descending" },
-                      ]}
-                      onChange={(event) =>
-                        setFilters({
-                          ...filters,
-                          asc: event.target.value == "asc",
-                        })
-                      }
-                      className="h-8"
-                      value={filters.asc ? "asc" : "desc"}
-                      id="select-asc-desc"
-                    />
-                    <View viewIf={filters.asc}>
-                      <View.If>
-                        <BsSortDown />
-                      </View.If>
-                      <View.Else>
-                        <BsSortDownAlt />
-                      </View.Else>
-                    </View>
-                  </div>
-                  <Select
-                    options={[
-                      { id: "all", text: "All Paths" },
-                      ...exceptionPaths
-                        ?.filter((el: any) => el.count > 0)
-                        .map((el: any) => {
-                          return { id: el._id, text: el._id };
-                        }),
-                    ]}
-                    onChange={(event) =>
-                      setFilters({
-                        ...filters,
-                        path: event.target.value,
-                      })
-                    }
-                    className="h-8"
-                    value={filters.path}
-                    id="select-path"
-                  />
-                  <View.If visible={!!exceptionTypes?.length}>
-                    <div className="flex flex-row flex-wrap border-[1px] border-neutral-200 dark:border-neutral-900 p-1 px-2 gap-2 rounded-lg">
-                      {exceptionTypes?.map(
-                        (exceptionType: any, index: number) => (
-                          <Checkbox
-                            checked={filters?.types?.includes(exceptionType)}
-                            onChange={() => {
-                              if (filters?.types?.includes(exceptionType)) {
-                                setFilters({
-                                  ...filters,
-                                  types: filters.types.filter(
-                                    (type) => type != exceptionType
-                                  ),
-                                });
-                              } else {
-                                setFilters({
-                                  ...filters,
-                                  types: [...filters.types, exceptionType],
-                                });
-                              }
-                            }}
-                            id={`checkbox-filter-${exceptionType}`}
-                            key={`checkbox-filter-${exceptionType}`}
-                          >
-                            <span>{exceptionType}</span>
-                            <span className="ml-1 text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                              {
-                                exceptions.data?.data?.exceptionTypes[index]
-                                  ?.count
-                              }
-                            </span>
-                          </Checkbox>
-                        )
-                      )}
-                    </div>
-                  </View.If>
-                </div>
+                <ExceptionFilters
+                  setFilters={setFilters}
+                  filters={filters}
+                  exceptionPaths={exceptionPaths}
+                  exceptionTypes={exceptions.data?.data?.exceptionTypes}
+                  path={path}
+                  onPathChange={(path) => setPath(path)}
+                />
               </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>
                 <Pager

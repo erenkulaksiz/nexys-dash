@@ -81,14 +81,12 @@ export default async function logs(
     return accept({ res, data: { batches, batchesLength } });
   } else if (type === "exceptions") {
     const selectTypes = types?.length
-      ? types?.map((t) => ({ "options.type": t }))
+      ? types?.map((type) => ({ "options.type": type }))
       : [
           { "options.type": "ERROR" },
           { "options.type": "AUTO:ERROR" },
           { "options.type": "AUTO:UNHANDLEDREJECTION" },
         ];
-
-    Log.debug("selectTypes", selectTypes);
 
     const exceptionsLength = await logCollection.countDocuments({
       $or: selectTypes,
@@ -152,17 +150,49 @@ export default async function logs(
       .toArray();
 
     const exceptions = await logCollection
-      .find({
-        $or: selectTypes,
-      })
-      .sort({ ts: asc ? 1 : -1 })
-      .skip(Math.floor(page ? page * 10 : 0))
-      .limit(10)
+      .aggregate([
+        {
+          $match: {
+            $or: selectTypes,
+            path: path == "all" ? { $exists: true } : path,
+          },
+        },
+        {
+          $lookup: {
+            from: `batches-${_project._id}`,
+            localField: "batchId",
+            foreignField: "_id",
+            as: "batch",
+          },
+        },
+        {
+          $unwind: {
+            path: "$batch",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $sort: {
+            ts: asc ? 1 : -1,
+          },
+        },
+        {
+          $skip: Math.floor(page ? page * 10 : 0),
+        },
+        {
+          $limit: 10,
+        },
+      ])
       .toArray();
 
     return accept({
       res,
-      data: { exceptions, exceptionsLength, exceptionTypes, exceptionPaths },
+      data: {
+        exceptions,
+        exceptionsLength,
+        exceptionTypes,
+        exceptionPaths,
+      },
     });
   } else if (type == "batches") {
     const batchesLength = await batchCollection.countDocuments({});

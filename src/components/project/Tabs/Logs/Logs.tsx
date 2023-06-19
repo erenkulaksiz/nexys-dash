@@ -11,7 +11,7 @@ import CurrentCountText from "@/components/project/CurrentCountText";
 export default function Logs() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
-  const logs = useLogs({ type: "logs", page });
+  const logs = useLogs({ type: "logs", page, path: "all", types: [] });
   const logsLoading = useProjectStore((state) => state.logsLoading);
 
   const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);

@@ -28,7 +28,7 @@ export default function useLogs({
   page = 0,
   asc = false,
   search = "",
-  types = [],
+  types,
   path = "all",
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
@@ -38,7 +38,7 @@ export default function useLogs({
     if (logs.data?.data) {
       logs.mutate();
     }
-  }, [page, asc]);
+  }, [page, asc, path]);
 
   const logs = useSWR(
     [`api/dash/project/${type}/${project?._id}/${page}/${asc}/${search}`],

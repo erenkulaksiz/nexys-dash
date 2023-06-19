@@ -7,10 +7,10 @@ export default function Pages() {
   const project = useProjectStore((state) => state.currentProject);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 items-start">
       <View viewIf={!!project?.logPaths?.length}>
         <View.If>
-          {project?.logPaths?.map((path, index) => {
+          {project?.logPaths?.slice(0, 10).map((path, index) => {
             const errors =
               path.ERROR + path["AUTO:ERROR"] + path["AUTO:UNHANDLEDREJECTION"];
 
@@ -64,6 +64,17 @@ export default function Pages() {
               </div>
             );
           })}
+          <View.If
+            visible={project?.logPaths && project?.logPaths?.length > 10}
+          >
+            <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-black bg-neutral-200 dark:bg-neutral-900 px-1 pr-2 rounded-full">
+              <MdInfoOutline size={14} />
+              <span>
+                {project?.logPaths?.length && project?.logPaths?.length - 10}{" "}
+                more...
+              </span>
+            </div>
+          </View.If>
         </View.If>
         <View.Else>
           <span className="text-sm text-neutral-500">No paths yet.</span>

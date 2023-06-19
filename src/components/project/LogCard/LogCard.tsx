@@ -109,33 +109,45 @@ export default function LogCard({
             </View.If>
           </div>
         </div>
-        <View.If hidden={!log?.options?.type}>
-          <LogCardEntry title="Type" value={log?.options?.type} />
-        </View.If>
-        <View.If hidden={!log?.env?.type}>
-          <LogCardEntry title="Environment" value={log?.env?.type} />
-        </View.If>
-        <View.If hidden={!log?.env?.ver}>
-          <LogCardEntry title="Platform" value="NextJS" />
-        </View.If>
-        <View.If hidden={!log?.path}>
-          <LogCardEntry title="Path" value={log?.path} />
-        </View.If>
-        <View.If hidden={!log?.options?.action}>
-          <LogCardEntry title="Action" value={log?.options?.action} />
-        </View.If>
-        <View.If hidden={!log?.data?.filename}>
-          <LogCardEntry title="File" value={log?.data?.filename} />
-        </View.If>
-        <View.If hidden={!log?.guid}>
-          <LogCardEntry title="GUID" value={log?.guid} />
-        </View.If>
-        <View.If hidden={!log._id}>
-          <LogCardEntry title="ID" value={log._id} />
-        </View.If>
-        <View.If hidden={!log?.data?.stack}>
-          <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
-        </View.If>
+        <div className="flex flex-row gap-2 flex-wrap">
+          <View.If hidden={!log?.options?.type}>
+            <LogCardEntry title="Type" value={log?.options?.type} />
+          </View.If>
+          <View.If hidden={!log?.env?.type}>
+            <LogCardEntry title="Environment" value={log?.env?.type} />
+          </View.If>
+          <View.If hidden={!log?.env?.ver}>
+            <LogCardEntry title="Platform" value="NextJS" />
+          </View.If>
+          <View.If hidden={!log?.path}>
+            <LogCardEntry title="Path" value={log?.path} />
+          </View.If>
+          <View.If hidden={!log?.options?.action}>
+            <LogCardEntry title="Action" value={log?.options?.action} />
+          </View.If>
+          <View.If hidden={!log?.data?.filename}>
+            <LogCardEntry title="File" value={log?.data?.filename} />
+          </View.If>
+          <View.If hidden={!log?.guid}>
+            <LogCardEntry title="GUID" value={log?.guid} />
+          </View.If>
+          <View.If hidden={!log._id}>
+            <LogCardEntry title="ID" value={log._id} />
+          </View.If>
+          <View.If hidden={!log?.batch?.config?.user}>
+            <LogCardEntry title="User" value={log?.batch?.config?.user} />
+          </View.If>
+
+          <View.If hidden={!log?.batch?.config?.appVersion}>
+            <LogCardEntry
+              title="App Version"
+              value={log?.batch?.config?.appVersion}
+            />
+          </View.If>
+          <View.If hidden={!log?.data?.stack}>
+            <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
+          </View.If>
+        </div>
       </div>
     </div>
   );

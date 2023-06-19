@@ -125,7 +125,7 @@ export default function Overview() {
               <HiOutlineDocument />
               <span>Pages</span>
             </div>
-            <Link href={`/project/${id}?page=pages`}>
+            {/*<Link href={`/project/${id}?page=pages`}>
               <Button
                 light="dark:bg-white bg-black dark:text-black"
                 className="px-4 text-white"
@@ -133,7 +133,7 @@ export default function Overview() {
                 <TbListDetails />
                 <span className="ml-1">View Pages</span>
               </Button>
-            </Link>
+            </Link>*/}
           </div>
           <div className="flex flex-col gap-2 p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <Pages />
