@@ -3,6 +3,10 @@ import { ObjectId } from "mongodb";
 import { accept, reject } from "@/api/utils";
 import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
+import filteredLogs from "./filter/logs";
+import filteredBatches from "./filter/batches";
+import filteredAll from "./filter/all";
+import filteredExceptions from "./filter/exceptions";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
@@ -40,180 +44,14 @@ export default async function logs(
 
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
-  const batchCollection = await db.collection(`batches-${_project._id}`);
-  const logCollection = await db.collection(`logs-${_project._id}`);
-
   if (type === "logs") {
-    const logsLength = await logCollection.countDocuments({
-      $nor: [
-        { "options.type": "ERROR" },
-        { "options.type": "AUTO:ERROR" },
-        { "options.type": "AUTO:UNHANDLEDREJECTION" },
-        { "options.type": "METRIC" },
-      ],
-    });
-
-    const logs = await logCollection
-      .find({
-        $nor: [
-          { "options.type": "ERROR" },
-          { "options.type": "AUTO:ERROR" },
-          { "options.type": "AUTO:UNHANDLEDREJECTION" },
-          { "options.type": "METRIC" },
-        ],
-      })
-      .sort({ ts: -1 })
-      .skip(Math.floor(page ? page * 10 : 0))
-      .limit(10)
-      .toArray();
-
-    return accept({ res, data: { logs, logsLength } });
+    return await filteredLogs({ project: _project._id, res, page });
   } else if (type === "batches") {
-    const batchesLength = await batchCollection.countDocuments({});
-
-    const batches = await batchCollection
-      .find({})
-      .sort({ createdAt: -1 })
-      .skip(Math.floor(page ? page * 10 : 0))
-      .limit(10)
-      .toArray();
-
-    return accept({ res, data: { batches, batchesLength } });
+    return await filteredBatches({ project: _project._id, res, page });
   } else if (type === "exceptions") {
-    const selectTypes = types?.length
-      ? types?.map((type) => ({ "options.type": type }))
-      : [
-          { "options.type": "ERROR" },
-          { "options.type": "AUTO:ERROR" },
-          { "options.type": "AUTO:UNHANDLEDREJECTION" },
-        ];
-
-    const exceptionsLength = await logCollection.countDocuments({
-      $or: selectTypes,
-      path: path == "all" ? { $exists: true } : path,
-    });
-
-    const exceptionTypes = await logCollection
-      .aggregate([
-        {
-          $match: {
-            $or: [
-              { "options.type": "ERROR" },
-              { "options.type": "AUTO:ERROR" },
-              { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            ],
-            path: path == "all" ? { $exists: true } : path,
-          },
-        },
-        {
-          $group: {
-            _id: "$options.type",
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: {
-            count: -1,
-          },
-        },
-      ])
-      .toArray();
-
-    const exceptionPaths = await logCollection
-      .aggregate([
-        {
-          $group: {
-            _id: "$path",
-            count: {
-              $sum: {
-                $cond: [
-                  {
-                    $or: [
-                      { $eq: ["$options.type", "ERROR"] },
-                      { $eq: ["$options.type", "AUTO:ERROR"] },
-                      { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
-                    ],
-                  },
-                  1,
-                  0,
-                ],
-              },
-            },
-          },
-        },
-        {
-          $sort: {
-            count: -1,
-          },
-        },
-      ])
-      .toArray();
-
-    const exceptions = await logCollection
-      .aggregate([
-        {
-          $match: {
-            $or: selectTypes,
-            path: path == "all" ? { $exists: true } : path,
-          },
-        },
-        {
-          $lookup: {
-            from: `batches-${_project._id}`,
-            localField: "batchId",
-            foreignField: "_id",
-            as: "batch",
-          },
-        },
-        {
-          $unwind: {
-            path: "$batch",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $sort: {
-            ts: asc ? 1 : -1,
-          },
-        },
-        {
-          $skip: Math.floor(page ? page * 10 : 0),
-        },
-        {
-          $limit: 10,
-        },
-      ])
-      .toArray();
-
-    return accept({
-      res,
-      data: {
-        exceptions,
-        exceptionsLength,
-        exceptionTypes,
-        exceptionPaths,
-      },
-    });
-  } else if (type == "batches") {
-    const batchesLength = await batchCollection.countDocuments({});
-
-    const batches = await batchCollection
-      .find({})
-      .sort({ ts: -1 })
-      .limit(10)
-      .toArray();
-
-    return accept({ res, data: { batches, batchesLength } });
+    return await filteredExceptions({ body, project: _project._id, res });
   } else if (type == "all") {
-    const allLength = await logCollection.countDocuments({});
-
-    const logs = await logCollection
-      .find({})
-      .sort({ ts: -1 })
-      .limit(10)
-      .toArray();
-
-    return accept({ res, data: { logs, allLength } });
+    return await filteredAll({ res });
   }
 
   return reject({ res, reason: "invalid-type" });

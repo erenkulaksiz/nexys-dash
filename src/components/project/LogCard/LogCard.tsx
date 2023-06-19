@@ -137,12 +137,14 @@ export default function LogCard({
           <View.If hidden={!log?.batch?.config?.user}>
             <LogCardEntry title="User" value={log?.batch?.config?.user} />
           </View.If>
-
           <View.If hidden={!log?.batch?.config?.appVersion}>
             <LogCardEntry
               title="App Version"
               value={log?.batch?.config?.appVersion}
             />
+          </View.If>
+          <View.If hidden={!log?.batch?.env?.type}>
+            <LogCardEntry title="Environment" value={log?.batch?.env?.type} />
           </View.If>
           <View.If hidden={!log?.data?.stack}>
             <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
