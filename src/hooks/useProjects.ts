@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 import { Log, server } from "@/utils";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
@@ -11,6 +12,7 @@ interface useProjectsParams {
 
 export default function useProjects({ uid }: useProjectsParams) {
   const user = useAuthStore((state) => state.user);
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   const projects = useSWR(["api/dash/projects"], async () => {
@@ -43,16 +45,11 @@ export default function useProjects({ uid }: useProjectsParams) {
   useEffect(() => {
     if (projects?.data?.success == false) {
       Log.error("Loading of projects failed", projects?.data?.error);
-      if (
-        projects?.data?.error == "auth/id-token-expired" ||
-        projects?.data?.error == "auth-uid-error"
-      ) {
-        (async () => {
-          await refreshToken(true);
-          await projects.mutate();
-          //router.reload();
-        })();
-      }
+      (async () => {
+        await refreshToken(true);
+        await projects.mutate();
+        router.reload();
+      })();
       return;
     } else {
       setLoading(false);

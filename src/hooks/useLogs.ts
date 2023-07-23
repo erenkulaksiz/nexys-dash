@@ -16,6 +16,7 @@ import { Log, server } from "@/utils";
 
 interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
+  batchVersion?: "all" | string;
   page?: number;
   asc?: boolean;
   search?: string;
@@ -30,6 +31,7 @@ export default function useLogs({
   search = "",
   types,
   path = "all",
+  batchVersion = "all",
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
@@ -59,6 +61,7 @@ export default function useLogs({
           types,
           search,
           path,
+          batchVersion,
         }),
       })
         .then(async (res) => {
@@ -80,20 +83,13 @@ export default function useLogs({
   );
 
   useEffect(() => {
-    setLoading(true);
     if (logs?.data?.error) {
       Log.error("Loading of logs failed", logs?.data?.error);
-      if (
-        logs?.data?.error == "auth/id-token-expired" ||
-        logs?.data?.error == "auth-uid-error"
-      ) {
-        (async () => {
-          await refreshToken(true);
-          await logs.mutate();
-          //router.reload();
-        })();
-        return;
-      }
+      (async () => {
+        await refreshToken(true);
+        await logs.mutate();
+        //router.reload();
+      })();
       setLoading(false);
       return;
     }

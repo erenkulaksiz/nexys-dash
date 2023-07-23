@@ -2,12 +2,9 @@ import "@/styles/globals.css";
 import "@/firebase";
 import Progress from "nextjs-progressbar";
 import { ThemeProvider } from "next-themes";
-import { nexys } from "@/utils/nexys";
 import { version } from "@/utils";
-import type { AppProps } from "next/app";
-import type { NextWebVitalsMetric } from "next/app";
-
-import { Log } from "@/utils";
+import { nexys } from "@/utils/nexys";
+import type { AppProps, NextWebVitalsMetric } from "next/app";
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   if (metric.label === "web-vital") {

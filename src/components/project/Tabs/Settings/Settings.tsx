@@ -27,7 +27,7 @@ export default function Settings() {
             <IoMdSettings />
             <span>Settings</span>
           </div>
-          <div className="flex p-4 flex-col">
+          <div className="flex p-4 pt-1 flex-col">
             <Tab id="settings">
               <Tab.TabView
                 activeTitle={

@@ -12,7 +12,7 @@ export default async function filteredExceptions({
   project?: ObjectId;
   res: any;
 }) {
-  const { page, asc, types, path } = body;
+  const { page, asc, types, path, batchVersion } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const batchCollection = await db.collection(`batches-${project}`);
@@ -25,10 +25,39 @@ export default async function filteredExceptions({
         { "options.type": "AUTO:UNHANDLEDREJECTION" },
       ];
 
-  const exceptionsLength = await logCollection.countDocuments({
-    $or: selectTypes,
-    path: path == "all" ? { $exists: true } : path,
-  });
+  const exceptionsLength = await logCollection
+    .aggregate([
+      {
+        $match: {
+          $or: selectTypes,
+          path: path == "all" ? { $exists: true } : path,
+        },
+      },
+      {
+        $lookup: {
+          from: `batches-${project}`,
+          localField: "batchId",
+          foreignField: "_id",
+          as: "batch",
+        },
+      },
+      {
+        $unwind: {
+          path: "$batch",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          "batch.config.appVersion":
+            batchVersion == "all" ? { $exists: true } : batchVersion,
+        },
+      },
+      {
+        $count: "count",
+      },
+    ])
+    .toArray();
 
   const exceptionTypes = await logCollection
     .aggregate([
@@ -40,6 +69,27 @@ export default async function filteredExceptions({
             { "options.type": "AUTO:UNHANDLEDREJECTION" },
           ],
           path: path == "all" ? { $exists: true } : path,
+        },
+      },
+      {
+        $lookup: {
+          from: `batches-${project}`,
+          localField: "batchId",
+          foreignField: "_id",
+          as: "batch",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$batch",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          "batch.config.appVersion":
+            batchVersion == "all" ? { $exists: true } : batchVersion,
         },
       },
       {
@@ -109,6 +159,12 @@ export default async function filteredExceptions({
         },
       },
       {
+        $match: {
+          "batch.config.appVersion":
+            batchVersion == "all" ? { $exists: true } : batchVersion,
+        },
+      },
+      {
         $sort: {
           ts: asc ? 1 : -1,
         },
@@ -135,6 +191,11 @@ export default async function filteredExceptions({
           count: { $sum: 1 },
         },
       },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
     ])
     .toArray();
 
@@ -145,67 +206,24 @@ export default async function filteredExceptions({
           "config.appVersion": { $exists: true },
         },
       },
-      /*
-      {
-        $lookup: {
-          from: `logs-${project}`,
-          localField: "_id",
-          foreignField: "batchId",
-          as: "log",
-        },
-      },
-      {
-        $unwind: {
-          path: "$log",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      */
       {
         $group: {
           _id: "$config.appVersion",
           count: { $sum: 1 },
           ERROR: {
-            $sum: {
-              $cond: [{ $eq: ["$options.type", "ERROR"] }, 1, 0],
-            },
+            $sum: "$logTypes.ERROR",
           },
           "AUTO:ERROR": {
-            $sum: {
-              $cond: [{ $eq: ["$options.type", "AUTO:ERROR"] }, 1, 0],
-            },
+            $sum: "$logTypes.AUTO:ERROR",
           },
           "AUTO:UNHANDLEDREJECTION": {
-            $sum: {
-              $cond: [
-                { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
-                1,
-                0,
-              ],
-            },
+            $sum: "$logTypes.AUTO:UNHANDLEDREJECTION",
           },
           METRIC: {
-            $sum: {
-              $cond: [{ $eq: ["$options.type", "METRIC"] }, 1, 0],
-            },
+            $sum: "$logTypes.METRIC",
           },
           OTHER: {
-            $sum: {
-              $cond: [
-                {
-                  $and: [
-                    { $ne: ["$options.type", "ERROR"] },
-                    { $ne: ["$options.type", "AUTO:ERROR"] },
-                    {
-                      $ne: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
-                    },
-                    { $ne: ["$options.type", "METRIC"] },
-                  ],
-                },
-                1,
-                0,
-              ],
-            },
+            $sum: "$logTypes.undefined",
           },
         },
       },
@@ -221,7 +239,7 @@ export default async function filteredExceptions({
     res,
     data: {
       exceptions,
-      exceptionsLength,
+      exceptionsLength: exceptionsLength[0]?.count || 0,
       exceptionTypes,
       exceptionPaths,
       batchConfigUsers,

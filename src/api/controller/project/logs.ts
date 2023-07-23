@@ -27,9 +27,10 @@ export default async function logs(
     types?: string[];
     search?: string;
     path?: string;
+    batchVersion?: string;
   };
   if (!body || !body.id || !body.type) return reject({ res });
-  const { id, type, page, asc, types, search, path } = body;
+  const { id, type, page } = body;
 
   if (!ObjectId.isValid(id)) return reject({ res, reason: "invalid-id" });
 

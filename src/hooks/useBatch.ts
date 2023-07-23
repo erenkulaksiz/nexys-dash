@@ -60,17 +60,11 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
     setBatchLoading(true);
     if (batch?.data?.error) {
       Log.error("Loading of project failed", batch?.data?.error);
-      if (
-        batch?.data?.error == "auth/id-token-expired" ||
-        batch?.data?.error == "auth-uid-error"
-      ) {
-        (async () => {
-          await refreshToken(true);
-          await batch.mutate();
-          //router.reload();
-        })();
-        return;
-      }
+      (async () => {
+        await refreshToken(true);
+        await batch.mutate();
+        //router.reload();
+      })();
       setBatchLoading(false);
       return;
     }

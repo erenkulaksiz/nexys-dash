@@ -1,14 +1,17 @@
 import { useState } from "react";
 
+import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { VscDebugBreakpointLog } from "react-icons/vsc";
 import { useProjectStore } from "@/stores/projectStore";
 import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
 import Pager from "@/components/Pager";
 import View from "@/components/View";
+import Button from "@/components/Button";
 import CurrentCountText from "@/components/project/CurrentCountText";
 
 export default function Logs() {
+  const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
   const logs = useLogs({ type: "logs", page, path: "all", types: [] });
@@ -34,6 +37,23 @@ export default function Logs() {
           </div>
           <View.If visible={!logsLoading && totalPages > 1}>
             <div className="flex flex-col gap-2 p-4 pb-0">
+              <div className="flex flex-row gap-2 items-center">
+                <Button
+                  className="px-2"
+                  size="h-8"
+                  onClick={() => setFiltersOpen(!filtersOpen)}
+                >
+                  <View viewIf={filtersOpen}>
+                    <View.If>
+                      <RiFilterFill />
+                    </View.If>
+                    <View.Else>
+                      <RiFilterLine />
+                    </View.Else>
+                  </View>
+                  <span className="ml-1">Filters</span>
+                </Button>
+              </div>
               <Pager
                 currentPage={page}
                 totalPages={totalPages}

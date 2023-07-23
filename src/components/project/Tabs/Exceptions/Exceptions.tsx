@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { useProjectStore } from "@/stores/projectStore";
@@ -24,11 +24,13 @@ export default function Exceptions() {
   });
   const [page, setPage] = useState<number>(0);
   const [path, setPath] = useState<string>("all");
+  const [batchVersion, setBatchVersion] = useState<string>("all");
   const project = useProjectStore((state) => state.currentProject);
   const exceptions = useLogs({
     type: "exceptions",
     page,
     path,
+    batchVersion,
     asc: filters.asc,
     types: filters.types,
     search: debouncedFilteredText,
@@ -58,15 +60,13 @@ export default function Exceptions() {
     });
   }, [path]);
 
-  /*
-  useDebounce(
-    () => {
-      setDebouncedFilteredText(filteredText);
-    },
-    [filteredText],
-    800
-  );
-  */
+  useEffect(() => {
+    setFilters({
+      ...filters,
+      types: [],
+      path: "all",
+    });
+  }, [batchVersion]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -114,8 +114,11 @@ export default function Exceptions() {
                   filters={filters}
                   exceptionPaths={exceptionPaths}
                   exceptionTypes={exceptions.data?.data?.exceptionTypes}
+                  batchVersions={exceptions.data?.data?.batchVersions}
                   path={path}
                   onPathChange={(path) => setPath(path)}
+                  batchVersion={batchVersion}
+                  onBatchVersionChange={(version) => setBatchVersion(version)}
                 />
               </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>

@@ -6,12 +6,15 @@ import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
 export interface ExceptionFiltersProps {
   asc?: boolean;
   types?: string[];
+  batchVersion?: string;
+  batchVersions?: any;
   filters?: any;
   setFilters?: any;
   path?: string;
   exceptionPaths?: any;
   exceptionTypes?: any;
   onPathChange?: (path: string) => void;
+  onBatchVersionChange?: (version: string) => void;
 }
 
 export default function ExceptionFilters({
@@ -20,8 +23,21 @@ export default function ExceptionFilters({
   filters,
   setFilters,
   onPathChange,
+  onBatchVersionChange,
+  batchVersion,
+  batchVersions,
   path,
 }: ExceptionFiltersProps) {
+  const _batchVersions = Array.isArray(batchVersions)
+    ? batchVersions
+        ?.filter((el: any) => el.count > 0)
+        .map((el: any) => {
+          const errors =
+            el["AUTO:ERROR"] + el["AUTO:UNHANDLEDREJECTION"] + el["ERROR"];
+          return { id: el._id, text: `${el._id} - ${errors}` };
+        })
+    : [];
+
   return (
     <div className="flex flex-row gap-2 flex-wrap w-full items-start">
       <div className="flex flex-row gap-2 items-center">
@@ -88,7 +104,7 @@ export default function ExceptionFilters({
           ...exceptionPaths
             ?.filter((el: any) => el.count > 0)
             .map((el: any) => {
-              return { id: el._id, text: el._id };
+              return { id: el._id, text: `${el._id} - ${el.count}` };
             }),
         ]}
         onChange={(e) =>
@@ -97,6 +113,16 @@ export default function ExceptionFilters({
         className="h-8"
         value={path}
         id="select-path"
+      />
+      <Select
+        options={[{ id: "all", text: "All Versions" }, ..._batchVersions]}
+        onChange={(e) =>
+          typeof onBatchVersionChange == "function" &&
+          onBatchVersionChange(e.target.value)
+        }
+        className="h-8"
+        value={batchVersion}
+        id="select-version"
       />
     </div>
   );

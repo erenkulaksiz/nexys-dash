@@ -20,6 +20,7 @@ export default function API() {
     });
     if (!res) {
       Log.error("Failed to update project settings");
+      nexys.error({ message: "Failed to update project settings" });
       return;
     }
     nexys.log(
