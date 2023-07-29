@@ -60,14 +60,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authLoading: loading });
     },
     refreshToken: async function (force: boolean) {
-      const auth = getAuth();
-      const user = auth.currentUser;
+      const user = useAuthStore.getState().user;
+
       if (user) {
         try {
-          await user.getIdToken(force);
+          const token = await user.getIdToken(force);
+          Cookies.set("auth", token);
+          Log.debug("Refreshed token!");
         } catch (error) {
           Log.error(error);
         }
+      } else {
+        Log.error("No user found!");
       }
     },
   },

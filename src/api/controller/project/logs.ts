@@ -28,6 +28,8 @@ export default async function logs(
     search?: string;
     path?: string;
     batchVersion?: string;
+    action?: string;
+    configUser?: string;
   };
   if (!body || !body.id || !body.type) return reject({ res });
   const { id, type, page } = body;
@@ -46,7 +48,7 @@ export default async function logs(
   if (!isOwner) return reject({ res, reason: "not-owner" });
 
   if (type === "logs") {
-    return await filteredLogs({ project: _project._id, res, page });
+    return await filteredLogs({ body, project: _project._id, res, page });
   } else if (type === "batches") {
     return await filteredBatches({ project: _project._id, res, page });
   } else if (type === "exceptions") {

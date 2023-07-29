@@ -9,15 +9,33 @@ import Pager from "@/components/Pager";
 import View from "@/components/View";
 import Button from "@/components/Button";
 import CurrentCountText from "@/components/project/CurrentCountText";
+import LogFilters, { LogFiltersProps } from "@/components/project/LogFilters";
 
 export default function Logs() {
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
+  const [filters, setFilters] = useState<LogFiltersProps>({
+    asc: false,
+    path: "all",
+  });
   const project = useProjectStore((state) => state.currentProject);
-  const logs = useLogs({ type: "logs", page, path: "all", types: [] });
+  const logs = useLogs({
+    type: "logs",
+    page,
+    types: [],
+    path: filters.path,
+    asc: filters.asc,
+    action: filters.action,
+  });
   const logsLoading = useProjectStore((state) => state.logsLoading);
-
   const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);
+
+  const logPaths = logs.data?.data?.logPaths
+    ? [...logs.data?.data?.logPaths]
+    : [];
+  const logActions = logs.data?.data?.logActions
+    ? [...logs.data?.data?.logActions]
+    : [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -35,7 +53,7 @@ export default function Logs() {
               />
             </View.If>
           </div>
-          <View.If visible={!logsLoading && totalPages > 1}>
+          <View.If hidden={logsLoading}>
             <div className="flex flex-col gap-2 p-4 pb-0">
               <div className="flex flex-row gap-2 items-center">
                 <Button
@@ -54,14 +72,24 @@ export default function Logs() {
                   <span className="ml-1">Filters</span>
                 </Button>
               </div>
-              <Pager
-                currentPage={page}
-                totalPages={totalPages}
-                perPage={4}
-                onPageClick={(page) => setPage(page)}
-                onPreviousClick={() => page != 0 && setPage(page - 1)}
-                onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
-              />
+              <View.If visible={filtersOpen}>
+                <LogFilters
+                  filters={filters}
+                  setFilters={setFilters}
+                  logPaths={logPaths}
+                  logActions={logActions}
+                />
+              </View.If>
+              <View.If visible={!logsLoading && totalPages > 1}>
+                <Pager
+                  currentPage={page}
+                  totalPages={totalPages}
+                  perPage={4}
+                  onPageClick={(page) => setPage(page)}
+                  onPreviousClick={() => page != 0 && setPage(page - 1)}
+                  onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
+                />
+              </View.If>
             </div>
           </View.If>
           <div className="flex flex-col gap-2 p-4">

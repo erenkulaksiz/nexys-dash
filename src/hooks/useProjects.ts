@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
 
 import { Log, server } from "@/utils";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
@@ -12,7 +11,6 @@ interface useProjectsParams {
 
 export default function useProjects({ uid }: useProjectsParams) {
   const user = useAuthStore((state) => state.user);
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   const projects = useSWR(["api/dash/projects"], async () => {
@@ -48,7 +46,7 @@ export default function useProjects({ uid }: useProjectsParams) {
       (async () => {
         await refreshToken(true);
         await projects.mutate();
-        router.reload();
+        //router.reload();
       })();
       return;
     } else {

@@ -10,4 +10,5 @@ export interface SelectProps {
   value?: string;
   className?: string;
   id?: string;
+  disabled?: boolean;
 }

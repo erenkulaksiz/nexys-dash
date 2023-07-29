@@ -8,6 +8,7 @@ export default function Select({
   value,
   className,
   id,
+  disabled,
 }: SelectProps) {
   const BuildSelect = BuildComponent({
     name: "Select",
@@ -22,6 +23,7 @@ export default function Select({
       value={value}
       className={BuildSelect.classes}
       id={id}
+      disabled={disabled}
     >
       <View.If hidden={!options}>
         {options.map((element, index) => (

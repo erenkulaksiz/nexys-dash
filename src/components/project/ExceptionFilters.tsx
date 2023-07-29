@@ -13,8 +13,8 @@ export interface ExceptionFiltersProps {
   path?: string;
   exceptionPaths?: any;
   exceptionTypes?: any;
-  onPathChange?: (path: string) => void;
-  onBatchVersionChange?: (version: string) => void;
+  configUsers?: any;
+  configUser?: any;
 }
 
 export default function ExceptionFilters({
@@ -22,11 +22,10 @@ export default function ExceptionFilters({
   exceptionTypes,
   filters,
   setFilters,
-  onPathChange,
-  onBatchVersionChange,
   batchVersion,
   batchVersions,
-  path,
+  configUsers,
+  configUser,
 }: ExceptionFiltersProps) {
   const _batchVersions = Array.isArray(batchVersions)
     ? batchVersions
@@ -34,9 +33,13 @@ export default function ExceptionFilters({
         .map((el: any) => {
           const errors =
             el["AUTO:ERROR"] + el["AUTO:UNHANDLEDREJECTION"] + el["ERROR"];
-          return { id: el._id, text: `${el._id} - ${errors}` };
+          return { id: el._id, text: `${el._id} - ${errors} errors` };
         })
     : [];
+
+  const _configUsers = configUsers.map((el: any) => {
+    return { id: el._id, text: el._id };
+  });
 
   return (
     <div className="flex flex-row gap-2 flex-wrap w-full items-start">
@@ -104,25 +107,43 @@ export default function ExceptionFilters({
           ...exceptionPaths
             ?.filter((el: any) => el.count > 0)
             .map((el: any) => {
-              return { id: el._id, text: `${el._id} - ${el.count}` };
+              return { id: el._id, text: `${el._id} - ${el.count} errors` };
             }),
         ]}
-        onChange={(e) =>
-          typeof onPathChange == "function" && onPathChange(e.target.value)
-        }
+        onChange={(e) => {
+          setFilters({
+            ...filters,
+            path: e.target.value,
+          });
+        }}
         className="h-8"
-        value={path}
+        value={filters.path}
         id="select-path"
       />
       <Select
         options={[{ id: "all", text: "All Versions" }, ..._batchVersions]}
-        onChange={(e) =>
-          typeof onBatchVersionChange == "function" &&
-          onBatchVersionChange(e.target.value)
-        }
+        onChange={(e) => {
+          setFilters({
+            ...filters,
+            batchVersion: e.target.value,
+          });
+        }}
         className="h-8"
         value={batchVersion}
         id="select-version"
+      />
+      <Select
+        options={[{ id: "all", text: "All Users" }, ..._configUsers]}
+        onChange={(e) => {
+          setFilters({
+            ...filters,
+            configUser: e.target.value,
+          });
+        }}
+        className="h-8"
+        value={configUser}
+        id="select-user"
+        disabled
       />
     </div>
   );

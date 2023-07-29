@@ -139,7 +139,7 @@ export default async function handler(
     }
   );
 
-  await createSearchIndex(new ObjectId(project._id));
+  //await createSearchIndex(new ObjectId(project._id));
 
   return accept({
     res,

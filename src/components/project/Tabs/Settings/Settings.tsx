@@ -15,6 +15,7 @@ import { useProjectStore } from "@/stores/projectStore";
 import Project from "./Project";
 import API from "./API";
 import Plan from "./Plan";
+import Telegram from "./Telegram";
 
 export default function Settings() {
   const project = useProjectStore((state) => state.currentProject);
@@ -137,9 +138,9 @@ export default function Settings() {
                   </div>
                 }
                 id="delete"
-                disabled={true}
+                //disabled={true}
               >
-                <div>Telegram will be enabled soon.</div>
+                <Telegram />
               </Tab.TabView>
             </Tab>
           </div>

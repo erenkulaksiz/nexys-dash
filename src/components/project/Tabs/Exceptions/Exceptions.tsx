@@ -14,26 +14,22 @@ import { Log } from "@/utils";
 import type { ExceptionFiltersProps } from "@/components/project/ExceptionFilters";
 
 export default function Exceptions() {
-  const [filteredText, setFilteredText] = useState<string>("");
-  const [debouncedFilteredText, setDebouncedFilteredText] =
-    useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<ExceptionFiltersProps>({
     asc: false,
     types: [],
+    path: "all",
   });
   const [page, setPage] = useState<number>(0);
-  const [path, setPath] = useState<string>("all");
-  const [batchVersion, setBatchVersion] = useState<string>("all");
   const project = useProjectStore((state) => state.currentProject);
   const exceptions = useLogs({
     type: "exceptions",
     page,
-    path,
-    batchVersion,
+    path: filters.path,
+    batchVersion: filters.batchVersion,
     asc: filters.asc,
     types: filters.types,
-    search: debouncedFilteredText,
+    configUser: filters.configUser,
   });
 
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
@@ -41,6 +37,15 @@ export default function Exceptions() {
 
   const exceptionPaths = exceptions.data?.data?.exceptionPaths
     ? [...exceptions.data?.data?.exceptionPaths]
+    : [];
+  const exceptionTypes = exceptions.data?.data?.exceptionTypes
+    ? [...exceptions.data?.data?.exceptionTypes]
+    : [];
+  const batchVersions = exceptions.data?.data?.batchVersions
+    ? [...exceptions.data?.data?.batchVersions]
+    : [];
+  const configUsers = exceptions.data?.data?.batchConfigUsers
+    ? [...exceptions.data?.data?.batchConfigUsers]
     : [];
 
   useEffect(() => {
@@ -58,7 +63,7 @@ export default function Exceptions() {
       ...filters,
       types: [],
     });
-  }, [path]);
+  }, [filters.path]);
 
   useEffect(() => {
     setFilters({
@@ -66,7 +71,7 @@ export default function Exceptions() {
       types: [],
       path: "all",
     });
-  }, [batchVersion]);
+  }, [filters.batchVersion]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -113,12 +118,11 @@ export default function Exceptions() {
                   setFilters={setFilters}
                   filters={filters}
                   exceptionPaths={exceptionPaths}
-                  exceptionTypes={exceptions.data?.data?.exceptionTypes}
-                  batchVersions={exceptions.data?.data?.batchVersions}
-                  path={path}
-                  onPathChange={(path) => setPath(path)}
-                  batchVersion={batchVersion}
-                  onBatchVersionChange={(version) => setBatchVersion(version)}
+                  exceptionTypes={exceptionTypes}
+                  batchVersions={batchVersions}
+                  configUsers={configUsers}
+                  configUser={filters.configUser}
+                  batchVersion={filters.batchVersion}
                 />
               </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>

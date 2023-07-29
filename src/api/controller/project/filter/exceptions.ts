@@ -12,7 +12,7 @@ export default async function filteredExceptions({
   project?: ObjectId;
   res: any;
 }) {
-  const { page, asc, types, path, batchVersion } = body;
+  const { page, asc, types, path, batchVersion, configUser } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const batchCollection = await db.collection(`batches-${project}`);
@@ -51,6 +51,8 @@ export default async function filteredExceptions({
         $match: {
           "batch.config.appVersion":
             batchVersion == "all" ? { $exists: true } : batchVersion,
+          //"batch.config.user":
+          //configUser == "all" ? { $exists: true } : configUser,
         },
       },
       {
@@ -90,6 +92,8 @@ export default async function filteredExceptions({
         $match: {
           "batch.config.appVersion":
             batchVersion == "all" ? { $exists: true } : batchVersion,
+          //"batch.config.user":
+          //configUser == "all" ? { $exists: true } : configUser,
         },
       },
       {
@@ -162,6 +166,8 @@ export default async function filteredExceptions({
         $match: {
           "batch.config.appVersion":
             batchVersion == "all" ? { $exists: true } : batchVersion,
+          //"batch.config.user":
+          //configUser == "all" ? { $exists: true } : configUser,
         },
       },
       {

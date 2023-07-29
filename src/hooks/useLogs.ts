@@ -22,6 +22,8 @@ interface useLogsParams {
   search?: string;
   types?: string[];
   path?: string;
+  action?: "all" | string;
+  configUser?: "all" | string;
 }
 
 export default function useLogs({
@@ -32,6 +34,8 @@ export default function useLogs({
   types,
   path = "all",
   batchVersion = "all",
+  action = "all",
+  configUser = "all",
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
@@ -40,7 +44,7 @@ export default function useLogs({
     if (logs.data?.data) {
       logs.mutate();
     }
-  }, [page, asc, path]);
+  }, [page, asc, path, action, configUser]);
 
   const logs = useSWR(
     [`api/dash/project/${type}/${project?._id}/${page}/${asc}/${search}`],
@@ -62,6 +66,8 @@ export default function useLogs({
           search,
           path,
           batchVersion,
+          action,
+          configUser,
         }),
       })
         .then(async (res) => {
