@@ -6,6 +6,7 @@ import { Log } from "@/utils";
 import { ProjectTypes } from "@/types";
 import { LIMITS } from "@/constants";
 import { createSearchIndex } from "@/api/utils";
+import { SendTelegramMessage } from "@/utils/telegram";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type NextApiRequestWithQuery = NextApiRequest & {
@@ -22,6 +23,8 @@ export default async function handler(
   res.setHeader("Access-Control-Allow-Origin", "*");
   // Allow content-type header in access control
   res.setHeader("Access-Control-Allow-Headers", "content-type");
+
+  const ip = req.headers["x-forwarded-for"] || req?.socket?.remoteAddress;
 
   if (req.method === "OPTIONS") return accept({ res });
   if (req.method !== "POST") return reject({ res });
@@ -107,6 +110,7 @@ export default async function handler(
     ...rest,
     createdAt: Date.now(),
     logTypes,
+    ip,
   });
 
   const logInsert = await logsCollection.insertMany(
@@ -140,6 +144,19 @@ export default async function handler(
   );
 
   //await createSearchIndex(new ObjectId(project._id));
+
+  await SendTelegramMessage({
+    message: `
+RECIEVED REPORT
+
+📈 ${project.name} (${project.domain})
+
+📊 ${logs.length} logs
+
+📅 ${new Date().toLocaleString()}
+
+Limit: ${logUsage + 1}/${logUsageLimit}`,
+  });
 
   return accept({
     res,

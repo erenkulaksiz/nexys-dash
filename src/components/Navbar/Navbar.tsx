@@ -46,6 +46,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
                   width={90}
                   priority
                   placeholder="blur"
+                  quality={100}
                   blurDataURL={
                     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                   }

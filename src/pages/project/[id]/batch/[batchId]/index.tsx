@@ -43,6 +43,9 @@ export default function BatchPage(props: NexysComponentProps) {
 
   const totalPages = Math.ceil(batch.data?.data?.logsLength / 10);
   const logId = router.query.log as string;
+  const projectId = router.query.id;
+  const batchId = router.query.batchId;
+  const tab = router.query.page?.toString() || "";
 
   return (
     <Layout {...props} withoutLayout>
@@ -94,7 +97,21 @@ export default function BatchPage(props: NexysComponentProps) {
                     </div>
                   </View.If>
                   <View.Else>
-                    <Tab id="batchpage">
+                    <Tab
+                      id="batchpage"
+                      defaultTab={props?.query?.page}
+                      onTabChange={({ id }) =>
+                        router.push(
+                          {
+                            pathname: `/project/[id]/batch/[batchId]`,
+                            query: { ...router.query, page: id },
+                          },
+                          `/project/${projectId}/batch/${batchId}?page=${id}`,
+                          { shallow: true }
+                        )
+                      }
+                      tabChange={tab}
+                    >
                       <Tab.TabView
                         activeTitle={
                           <div className="flex flex-row items-center gap-1">
@@ -108,7 +125,7 @@ export default function BatchPage(props: NexysComponentProps) {
                             <span>Batch</span>
                           </div>
                         }
-                        id="Batch"
+                        id="batch"
                       >
                         <div className="flex flex-col">
                           <View.If
@@ -161,33 +178,49 @@ export default function BatchPage(props: NexysComponentProps) {
                           </div>
                         }
                         id="user"
+                        disabled={
+                          !batch?.data?.data?.user &&
+                          !batch?.data?.data?.config?.client &&
+                          !batch?.data?.data?.config?.appVersion
+                        }
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="configUser">User</label>
-                              <Codeblock data={batch?.data?.data?.config?.user}>
-                                {batch?.data?.data?.config?.user}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="configClient">Client</label>
-                              <Codeblock
-                                data={batch?.data?.data?.config?.client}
-                              >
-                                {batch?.data?.data?.config?.client}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="version">App Version</label>
-                              <Codeblock
-                                data={batch?.data?.data?.config?.appVersion}
-                              >
-                                {batch?.data?.data?.config?.appVersion}
-                              </Codeblock>
-                            </div>
+                            <View.If hidden={!batch?.data?.data?.user}>
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="configUser">User</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.config?.user}
+                                >
+                                  {batch?.data?.data?.config?.user}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.config?.client}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="configClient">Client</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.config?.client}
+                                >
+                                  {batch?.data?.data?.config?.client}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.config?.appVersion}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="version">App Version</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.config?.appVersion}
+                                >
+                                  {batch?.data?.data?.config?.appVersion}
+                                </Codeblock>
+                              </div>
+                            </View.If>
                           </div>
-                          <div></div>
                         </div>
                       </Tab.TabView>
                       <Tab.TabView
@@ -205,66 +238,95 @@ export default function BatchPage(props: NexysComponentProps) {
                         }
                         id="device"
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="userAgent">User Agent</label>
-                              <Codeblock
-                                data={batch?.data?.data?.deviceData?.userAgent}
-                              >
-                                {batch?.data?.data?.deviceData?.userAgent}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="language">Language</label>
-                              <Codeblock
-                                data={batch?.data?.data?.deviceData?.language}
-                              >
-                                {batch?.data?.data?.deviceData?.language}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="platform">Platform</label>
-                              <Codeblock
-                                data={batch?.data?.data?.deviceData?.platform}
-                              >
-                                {batch?.data?.data?.deviceData?.platform}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="platform">Screen</label>
-                              <Codeblock
-                                data={batch?.data?.data?.deviceData?.screen}
-                              >
-                                <div className="text-xs">
-                                  <JSONPretty
-                                    data={batch?.data?.data?.deviceData?.screen}
-                                  />
-                                </div>
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="deviceMemory">
-                                Device Memory
-                              </label>
-                              <Codeblock
-                                data={
-                                  batch?.data?.data?.deviceData?.deviceMemory
-                                }
-                              >
-                                {batch?.data?.data?.deviceData?.deviceMemory}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="deviceMemory">Vendor</label>
-                              <Codeblock
-                                data={batch?.data?.data?.deviceData?.vendor}
-                              >
-                                {batch?.data?.data?.deviceData?.vendor}
-                              </Codeblock>
-                            </div>
+                            <View.If
+                              hidden={!batch?.data?.data?.deviceData?.userAgent}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="userAgent">User Agent</label>
+                                <Codeblock
+                                  data={
+                                    batch?.data?.data?.deviceData?.userAgent
+                                  }
+                                >
+                                  {batch?.data?.data?.deviceData?.userAgent}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.deviceData?.language}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="language">Language</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.deviceData?.language}
+                                >
+                                  {batch?.data?.data?.deviceData?.language}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.deviceData?.platform}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="platform">Platform</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.deviceData?.platform}
+                                >
+                                  {batch?.data?.data?.deviceData?.platform}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.deviceData?.screen}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="platform">Screen</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.deviceData?.screen}
+                                >
+                                  <div className="text-xs">
+                                    <JSONPretty
+                                      data={
+                                        batch?.data?.data?.deviceData?.screen
+                                      }
+                                    />
+                                  </div>
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={
+                                !batch?.data?.data?.deviceData?.deviceMemory
+                              }
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="deviceMemory">
+                                  Device Memory
+                                </label>
+                                <Codeblock
+                                  data={
+                                    batch?.data?.data?.deviceData?.deviceMemory
+                                  }
+                                >
+                                  {batch?.data?.data?.deviceData?.deviceMemory}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.deviceData?.vendor}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="deviceMemory">Vendor</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.deviceData?.vendor}
+                                >
+                                  {batch?.data?.data?.deviceData?.vendor}
+                                </Codeblock>
+                              </div>
+                            </View.If>
                           </div>
-                          <div></div>
                         </div>
                       </Tab.TabView>
                       <Tab.TabView
@@ -282,31 +344,37 @@ export default function BatchPage(props: NexysComponentProps) {
                         }
                         id="env"
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="type">Type</label>
-                              <Codeblock data={batch?.data?.data?.env?.type}>
-                                {batch?.data?.data?.env?.type}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="p_version">Version</label>
-                              <Codeblock data={batch?.data?.data?.env?.ver}>
-                                {batch?.data?.data?.env?.ver}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="isClient">Is Client</label>
-                              <Codeblock
-                                data={batch?.data?.data?.env?.isClient}
-                              >
-                                {batch?.data?.data?.env?.isClient
-                                  ? "true"
-                                  : "false"}
-                              </Codeblock>
-                            </div>
-                            {batch?.data?.data?.env?.el && (
+                            <View.If hidden={!batch?.data?.data?.env?.type}>
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="type">Type</label>
+                                <Codeblock data={batch?.data?.data?.env?.type}>
+                                  {batch?.data?.data?.env?.type}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If hidden={!batch?.data?.data?.env?.ver}>
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="p_version">Version</label>
+                                <Codeblock data={batch?.data?.data?.env?.ver}>
+                                  {batch?.data?.data?.env?.ver}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If hidden={!batch?.data?.data?.env?.isClient}>
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="isClient">Is Client</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.env?.isClient}
+                                >
+                                  {batch?.data?.data?.env?.isClient
+                                    ? "true"
+                                    : "false"}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If hidden={!batch?.data?.data?.env?.el}>
                               <div className="flex flex-col gap-2 w-full">
                                 <label htmlFor="isClient">
                                   Body Element Count
@@ -315,7 +383,7 @@ export default function BatchPage(props: NexysComponentProps) {
                                   {batch?.data?.data?.env?.el}
                                 </Codeblock>
                               </div>
-                            )}
+                            </View.If>
                           </div>
                         </div>
                       </Tab.TabView>
@@ -334,24 +402,32 @@ export default function BatchPage(props: NexysComponentProps) {
                         }
                         id="package"
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="package">Package</label>
-                              <Codeblock
-                                data={batch?.data?.data?.package?.libraryName}
-                              >
-                                {batch?.data?.data?.package?.libraryName}
-                              </Codeblock>
-                            </div>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="version">Version</label>
-                              <Codeblock
-                                data={batch?.data?.data?.package?.version}
-                              >
-                                {batch?.data?.data?.package?.version}
-                              </Codeblock>
-                            </div>
+                            <View.If
+                              hidden={!batch?.data?.data?.package?.libraryName}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="package">Package</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.package?.libraryName}
+                                >
+                                  {batch?.data?.data?.package?.libraryName}
+                                </Codeblock>
+                              </div>
+                            </View.If>
+                            <View.If
+                              hidden={!batch?.data?.data?.package?.version}
+                            >
+                              <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="version">Version</label>
+                                <Codeblock
+                                  data={batch?.data?.data?.package?.version}
+                                >
+                                  {batch?.data?.data?.package?.version}
+                                </Codeblock>
+                              </div>
+                            </View.If>
                           </div>
                         </div>
                       </Tab.TabView>
@@ -370,13 +446,13 @@ export default function BatchPage(props: NexysComponentProps) {
                         }
                         id="options"
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
                             <div className="flex flex-col gap-2 w-full">
                               <div className="flex flex-col">
                                 <label htmlFor="poptions">Options</label>
                                 <span className="text-sm text-neutral-400">
-                                  Package options.
+                                  Configured library options.
                                 </span>
                               </div>
                               <Codeblock data={batch?.data?.data?.options}>

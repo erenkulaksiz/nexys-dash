@@ -61,11 +61,12 @@ export default function BatchCard({ batch }: { batch: any }) {
         </div>
         <View.If visible={isProduction || gitBranch || gitCommit}>
           <div className="flex flex-row gap-2 items-start">
-            <View.If visible={isProduction}>
-              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
-                Production
-              </span>
-            </View.If>
+            <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+              <View viewIf={isProduction}>
+                <View.If>Production</View.If>
+                <View.Else>Development</View.Else>
+              </View>
+            </span>
             <View.If visible={!!gitBranch}>
               <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
                 {gitBranch}
@@ -130,17 +131,11 @@ export default function BatchCard({ batch }: { batch: any }) {
               })}
           </ul>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-row gap-2 flex-wrap">
           <View.If visible={!!batch?.config?.appVersion}>
             <LogCardEntry
               title="App Version"
               value={batch?.config?.appVersion}
-            />
-          </View.If>
-          <View.If visible={!!batch?.package?.version}>
-            <LogCardEntry
-              title="Nexys Package Version"
-              value={batch?.package?.version}
             />
           </View.If>
           <View.If visible={!!batch?.config?.user}>

@@ -85,7 +85,8 @@ export default function useLogs({
         .catch((error) => {
           return { success: false, error: error.message, data: null };
         });
-    }
+    },
+    { revalidateIfStale: false }
   );
 
   useEffect(() => {
@@ -128,13 +129,13 @@ export default function useLogs({
   }, [logs.data]);
 
   useEffect(() => {
-    if (logs.isValidating) {
+    if (logs.isLoading) {
       setLoading(true);
     } else {
       if (logs?.data?.success == false) return;
       setLoading(false);
     }
-  }, [logs.isValidating]);
+  }, [logs.isLoading]);
 
   function setLoading(loading: boolean) {
     if (type == "logs") setLogsLoading(loading);

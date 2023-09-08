@@ -44,7 +44,7 @@ export default function Project() {
     <div className="grid grid-cols-1 sm:grid-cols-2 pt-2 gap-2 sm:gap-4">
       <div className="flex flex-col gap-2 items-start">
         <div className="flex flex-col w-full">
-          <label htmlFor="projectName">Project Name</label>
+          <label htmlFor="projectName">Project Name (appName)</label>
           <Codeblock data={project?.name}>{project?.name}</Codeblock>
         </div>
         <div className="flex flex-col w-full">

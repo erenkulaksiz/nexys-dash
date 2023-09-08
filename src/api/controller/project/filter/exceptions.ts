@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import { accept, reject } from "@/api/utils";
+import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 
 export default async function filteredExceptions({
@@ -47,14 +48,11 @@ export default async function filteredExceptions({
           preserveNullAndEmptyArrays: true,
         },
       },
-      {
-        $match: {
-          "batch.config.appVersion":
-            batchVersion == "all" ? { $exists: true } : batchVersion,
-          //"batch.config.user":
-          //configUser == "all" ? { $exists: true } : configUser,
-        },
-      },
+      batchVersion == "all"
+        ? {
+            $match: {},
+          }
+        : { $match: { "batch.config.appVersion": batchVersion } },
       {
         $count: "count",
       },
@@ -88,14 +86,11 @@ export default async function filteredExceptions({
           preserveNullAndEmptyArrays: true,
         },
       },
-      {
-        $match: {
-          "batch.config.appVersion":
-            batchVersion == "all" ? { $exists: true } : batchVersion,
-          //"batch.config.user":
-          //configUser == "all" ? { $exists: true } : configUser,
-        },
-      },
+      batchVersion == "all"
+        ? {
+            $match: {},
+          }
+        : { $match: { "batch.config.appVersion": batchVersion } },
       {
         $group: {
           _id: "$options.type",
@@ -162,14 +157,11 @@ export default async function filteredExceptions({
           preserveNullAndEmptyArrays: true,
         },
       },
-      {
-        $match: {
-          "batch.config.appVersion":
-            batchVersion == "all" ? { $exists: true } : batchVersion,
-          //"batch.config.user":
-          //configUser == "all" ? { $exists: true } : configUser,
-        },
-      },
+      batchVersion == "all"
+        ? {
+            $match: {},
+          }
+        : { $match: { "batch.config.appVersion": batchVersion } },
       {
         $sort: {
           ts: asc ? 1 : -1,

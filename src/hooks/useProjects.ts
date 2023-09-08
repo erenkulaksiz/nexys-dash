@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import useSWR from "swr";
 import Cookies from "js-cookie";
 
@@ -12,33 +13,38 @@ interface useProjectsParams {
 export default function useProjects({ uid }: useProjectsParams) {
   const user = useAuthStore((state) => state.user);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  const projects = useSWR(["api/dash/projects"], async () => {
-    const token = Cookies.get("auth");
-    return fetch(`${server}/api/dash/projects`, {
-      headers: new Headers({
-        "content-type": "application/json",
-        Authorization: `Bearer ${token || ""}`,
-      }),
-      method: "POST",
-      body: JSON.stringify({ uid: uid || user?.uid }),
-    })
-      .then(async (res) => {
-        let json = null;
-        try {
-          json = await res.json();
-        } catch (error) {
-          Log.error("LogPage error json", error);
-        }
-        if (res.ok) {
-          return { success: true, data: json.data };
-        }
-        return { success: false, error: json.error, data: null };
+  const projects = useSWR(
+    ["api/dash/projects"],
+    async () => {
+      const token = Cookies.get("auth");
+      return fetch(`${server}/api/dash/projects`, {
+        headers: new Headers({
+          "content-type": "application/json",
+          Authorization: `Bearer ${token || ""}`,
+        }),
+        method: "POST",
+        body: JSON.stringify({ uid: uid || user?.uid }),
       })
-      .catch((error) => {
-        return { success: false, error: error.message, data: null };
-      });
-  });
+        .then(async (res) => {
+          let json = null;
+          try {
+            json = await res.json();
+          } catch (error) {
+            Log.error("LogPage error json", error);
+          }
+          if (res.ok) {
+            return { success: true, data: json.data };
+          }
+          return { success: false, error: json.error, data: null };
+        })
+        .catch((error) => {
+          return { success: false, error: error.message, data: null };
+        });
+    },
+    { revalidateOnFocus: false, revalidateIfStale: false }
+  );
 
   useEffect(() => {
     if (projects?.data?.success == false) {
@@ -46,7 +52,7 @@ export default function useProjects({ uid }: useProjectsParams) {
       (async () => {
         await refreshToken(true);
         await projects.mutate();
-        //router.reload();
+        router.replace(router.asPath);
       })();
       return;
     } else {
@@ -55,13 +61,13 @@ export default function useProjects({ uid }: useProjectsParams) {
   }, [projects.data]);
 
   useEffect(() => {
-    if (projects.isValidating) {
+    if (projects.isLoading) {
       setLoading(true);
     } else {
       if (projects?.data?.success == false) return;
       setLoading(false);
     }
-  }, [projects.isValidating]);
+  }, [projects.isLoading]);
 
   return { projects, loading };
 }

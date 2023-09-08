@@ -85,10 +85,13 @@ export default function AddProject() {
       });
       return;
     }
-    if (!isValidURL(`https://${state.domain}`)) {
+    if (
+      !isValidURL(`https://${state.domain}`) ||
+      state.domain.split(".").length != 2
+    ) {
       dispatch({
         type: AddProjectActionType.SET_DOMAIN_ERROR,
-        payload: `Project domain must be valid.`,
+        payload: "Project domain must be valid.",
       });
       return;
     }
@@ -124,6 +127,7 @@ export default function AddProject() {
       },
       { action: "CREATE_PROJECT" }
     );
+
     onAddProject({ name: state.name, domain: state.domain });
   }
 

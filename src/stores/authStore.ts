@@ -60,7 +60,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authLoading: loading });
     },
     refreshToken: async function (force: boolean) {
-      const user = useAuthStore.getState().user;
+      const user = await getAuth().currentUser;
 
       if (user) {
         try {

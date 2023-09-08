@@ -54,7 +54,6 @@ export default function useProject({ uid }: useProjectParams) {
     },
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     }
   );
 
@@ -65,7 +64,7 @@ export default function useProject({ uid }: useProjectParams) {
       (async () => {
         await refreshToken(true);
         await project.mutate();
-        //router.reload();
+        router.replace(router.asPath);
       })();
       setNotFound(true);
       return;
@@ -81,13 +80,13 @@ export default function useProject({ uid }: useProjectParams) {
   }, [project.data]);
 
   useEffect(() => {
-    if (project.isValidating) {
+    if (project.isLoading) {
       setProjectLoading(true);
     } else {
       if (project?.data?.success == false) return;
       setProjectLoading(false);
     }
-  }, [project.isValidating]);
+  }, [project.isLoading]);
 
   return project;
 }

@@ -1,9 +1,10 @@
 import { ObjectId } from "mongodb";
 
-import { Log, formatString } from "@/utils";
+import { Log, formatString, formatDateToHuman, server, version } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
 import { ValidateUser } from "./validateUser";
 import { generateRandomUsername } from "@/api/utils";
+import { SendTelegramMessage } from "@/utils/telegram";
 import { UserTypes } from "@/types";
 
 export interface ValidateTokenReturnType {
@@ -49,7 +50,7 @@ export async function ValidateToken({
     let generated = false;
 
     while (!generated) {
-      Log.debug("validateUser:", validateUser);
+      //Log.debug("validateUser:", validateUser);
       generatedUsername = formatString(
         generateRandomUsername({
           email: validateUser.decodedToken.email ?? "error",
@@ -79,6 +80,23 @@ export async function ValidateToken({
 
     Log.debug("USER NOT FOUND | GENERATED USER:", newUser);
 
+    SendTelegramMessage({
+      message: `REGISTER
+USERNAME: @${newUser?.username}
+EMAIL: ${validateUser.decodedToken.email}
+UID: ${validateUser.decodedToken.user_id}
+TIME: ${formatDateToHuman({
+        date: Date.now(),
+        output: "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+      })}
+TS: ${Date.now()}
+URL: ${server}
+ENV: ${process.env.NODE_ENV}
+VER: ${version}
+PROVIDER: ${validateUser.decodedToken.firebase.sign_in_provider}
+PLATFORM: web`,
+    });
+
     await usersCollection
       .insertOne({
         ...newUser,
@@ -106,15 +124,24 @@ export async function ValidateToken({
     }
   }
 
+  let data = {
+    username: user?.username ?? null,
+    uid: user?.uid,
+    fullname: user?.fullname ?? null,
+    avatar: user?.avatar ?? null,
+    email: user?.email ?? null,
+    emailVerified: user?.emailVerified ?? null,
+  } as { [key: string]: any };
+
+  if (user?.isAdmin) {
+    data = {
+      ...data,
+      isAdmin: true,
+    };
+  }
+
   return {
     success: true,
-    data: {
-      username: user?.username ?? null,
-      uid: user?.uid,
-      fullname: user?.fullname ?? null,
-      avatar: user?.avatar ?? null,
-      email: user?.email ?? null,
-      emailVerified: user?.emailVerified ?? null,
-    },
+    data,
   };
 }

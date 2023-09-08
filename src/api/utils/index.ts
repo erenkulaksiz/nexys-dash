@@ -25,11 +25,11 @@ export function accept({
   action = "defaultAction",
   res,
 }: acceptProps) {
-  Log.debug("accept: ", data, status, action);
+  Log.debug("accept: ", /*data,*/ status, action);
   if (data) {
     return res.status(status).json({ data });
   }
-  res.status(status).send(null);
+  return res.status(status).send(null);
 }
 
 export function reject({
@@ -76,7 +76,7 @@ export async function checkUserAuth({
   const bearer = getTokenFromHeader(req);
   if (!bearer) return reject({ res, reason: "no-auth" });
   const validateUser = await ValidateUser({ token: bearer });
-  Log.debug("validateUser: ", validateUser);
+  //Log.debug("validateUser: ", validateUser);
   if (validateUser && !validateUser.decodedToken)
     return reject({ reason: validateUser.errorCode, res });
   if (validateUser.decodedToken.uid !== uid)

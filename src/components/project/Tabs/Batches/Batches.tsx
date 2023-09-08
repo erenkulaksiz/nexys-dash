@@ -3,7 +3,6 @@ import { useState } from "react";
 import { RiFilePaperFill } from "react-icons/ri";
 import BatchCard from "../../BatchCard";
 import { useProjectStore } from "@/stores/projectStore";
-import { Log } from "@/utils";
 import useLogs from "@/hooks/useLogs";
 import View from "@/components/View";
 import Pager from "@/components/Pager";
@@ -37,7 +36,7 @@ export default function Batches() {
               />
             </View.If>
           </div>
-          {!batchesLoading && totalPages > 10 && (
+          <View.If visible={!batchesLoading && totalPages > 1}>
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager
                 currentPage={page}
@@ -48,28 +47,38 @@ export default function Batches() {
                 onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
               />
             </div>
-          )}
+          </View.If>
           <div className="flex flex-col gap-2 p-4">
-            {batchesLoading &&
-              Array.from(Array(3)).map((_, index) => (
+            <View.If visible={batchesLoading}>
+              {Array.from(Array(3)).map((_, index) => (
                 <div
                   key={index}
                   className="animate-pulse bg-neutral-100 dark:bg-neutral-900 py-20 px-10"
                 ></div>
               ))}
-            {!batchesLoading && batches?.data?.data?.batches?.length == 0 && (
+            </View.If>
+            <View.If
+              visible={
+                !batchesLoading && batches?.data?.data?.batches?.length == 0
+              }
+            >
               <div>No batches found.</div>
-            )}
-            {!batchesLoading &&
-              project &&
-              Array.isArray(batches?.data?.data?.batches) &&
-              batches?.data?.data?.batches &&
-              batches?.data?.data?.batches?.length > 0 &&
-              batches?.data?.data?.batches
+            </View.If>
+            <View.If
+              visible={
+                !batchesLoading &&
+                project &&
+                Array.isArray(batches?.data?.data?.batches) &&
+                batches?.data?.data?.batches &&
+                batches?.data?.data?.batches?.length > 0
+              }
+            >
+              {batches?.data?.data?.batches
                 ?.sort((a: any, b: any) => b.ts - a.ts)
                 .map((batch: any) => {
                   return <BatchCard key={batch._id} batch={batch} />;
                 })}
+            </View.If>
           </div>
         </div>
       </div>

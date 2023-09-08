@@ -14,6 +14,7 @@ import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import useProject from "@/hooks/useProject";
+import Admin from "@/components/project/Tabs/Admin";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { GetServerSidePropsContext } from "next";
 import type { NexysComponentProps } from "@/types";
@@ -22,6 +23,7 @@ export default function ProjectPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const authUser = useAuthStore((state) => state.user);
+  const validatedUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
 
@@ -90,17 +92,29 @@ export default function ProjectPage(props: NexysComponentProps) {
                       }
                       tabChange={tab}
                     >
-                      {Tabs.map((tab) => (
-                        <Tab.TabView
-                          activeTitle={tab.activeTitle}
-                          nonActiveTitle={tab.nonActiveTitle}
-                          id={tab.id}
-                          key={tab.id}
-                          disabled={tab?.disabled}
-                        >
-                          {tab.children}
-                        </Tab.TabView>
-                      ))}
+                      {[
+                        ...Tabs,
+                        validatedUser?.isAdmin && {
+                          activeTitle: "admin",
+                          nonActiveTitle: "admin",
+                          id: "admin",
+                          children: <Admin />,
+                          disabled: false,
+                        },
+                      ].map((tab) => {
+                        if (!tab) return;
+                        return (
+                          <Tab.TabView
+                            activeTitle={tab.activeTitle}
+                            nonActiveTitle={tab.nonActiveTitle}
+                            id={tab.id}
+                            key={tab.id}
+                            disabled={tab?.disabled}
+                          >
+                            {tab.children}
+                          </Tab.TabView>
+                        );
+                      })}
                     </Tab>
                   </View.Else>
                 </View>

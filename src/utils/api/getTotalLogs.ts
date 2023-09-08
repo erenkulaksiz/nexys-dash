@@ -44,8 +44,6 @@ export default async function getTotalLogs() {
 
   const totalErrorCount = totalErrors.reduce((a, b) => a + b, 0);
   const totalLogCount = totalLogs.reduce((a, b) => a + b, 0);
-  const totalLogCeil = Math.ceil(totalLogCount / 1000) * 1000;
-  const totalErrorCeil = Math.ceil(totalErrorCount / 1000) * 1000;
 
-  return [totalLogCeil, totalErrorCeil];
+  return [totalLogCount, totalErrorCount];
 }

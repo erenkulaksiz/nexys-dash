@@ -62,7 +62,7 @@ function Tab({
             return (
               <label
                 htmlFor={props.id}
-                className="group h-8 flex items-center justify-center relative px-2 cursor-pointer"
+                className="w-full group h-8 flex items-center justify-center relative px-2 cursor-pointer"
                 key={props.id}
               >
                 <input
@@ -81,7 +81,7 @@ function Tab({
                     <View.Else>{props.nonActiveTitle}</View.Else>
                   </View>
                 </div>
-                <div className="absolute -bottom-1 left-0 right-0 h-[2px] dark:bg-white bg-black transition-all duration-300 ease-in-out peer-checked:opacity-100 opacity-0" />
+                <div className="absolute -bottom-1 left-0 right-0 peer-checked:h-[2px] h-[1px] dark:bg-white bg-black transition-all duration-300 ease-in-out peer-checked:opacity-100 opacity-10" />
               </label>
             );
           })}

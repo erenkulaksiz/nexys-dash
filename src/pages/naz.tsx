@@ -24,7 +24,9 @@ export default function Naz(props: NexysComponentProps) {
             <h1 className="text-6xl font-bold">{"Sevgilim."}</h1>
           </div>
 
-          <button onClick={() => nexys.error("test error")}>crash</button>
+          <button onClick={() => nexys.error({ message: "test error" })}>
+            crash
+          </button>
 
           <ConfettiExplosion
             force={0.8}

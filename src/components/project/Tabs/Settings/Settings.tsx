@@ -21,14 +21,14 @@ export default function Settings() {
   const project = useProjectStore((state) => state.currentProject);
 
   return (
-    <div className="grid gap-2 py-2 pt-2 items-start w-full">
+    <div className="grid gap-2 py-2 pt-2 items-start">
       <div className="border-[1px] sm:order-first order-last border-neutral-200 dark:border-neutral-900 rounded-lg items-start flex flex-col">
         <div className="w-full">
           <div className="flex flex-row gap-2 items-center p-4 text-lg font-semibold border-b-[1px] border-neutral-200 dark:border-neutral-900">
             <IoMdSettings />
             <span>Settings</span>
           </div>
-          <div className="flex p-4 pt-1 flex-col">
+          <div className="flex p-4 pt-1 flex-col w-full">
             <Tab id="settings">
               <Tab.TabView
                 activeTitle={
@@ -137,8 +137,8 @@ export default function Settings() {
                     <span>Telegram</span>
                   </div>
                 }
-                id="delete"
-                //disabled={true}
+                id="telegram"
+                disabled={true}
               >
                 <Telegram />
               </Tab.TabView>

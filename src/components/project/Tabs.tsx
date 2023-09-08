@@ -163,23 +163,6 @@ export default [
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
-        <HiFolderAdd />
-        <div className="break-keep">Add Channel</div>
-      </div>
-    ),
-    nonActiveTitle: (
-      <div className="flex flex-row items-center gap-1">
-        <HiOutlineFolderAdd />
-        <div className="break-keep">Add Channel</div>
-      </div>
-    ),
-    id: "add-channel",
-    children: <div>Under construction.</div>,
-    disabled: true,
-  },
-  {
-    activeTitle: (
-      <div className="flex flex-row items-center gap-1">
         <IoMdSettings />
         <span>Settings</span>
       </div>

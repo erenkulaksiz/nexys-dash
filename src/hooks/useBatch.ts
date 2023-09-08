@@ -24,37 +24,44 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
     }
   }, [page]);
 
-  const batch = useSWR([`api/dash/project/batch/${batchId}`], async () => {
-    const token = Cookies.get("auth");
-    return fetch(`${server}/api/dash/project/batch`, {
-      headers: new Headers({
-        "content-type": "application/json",
-        Authorization: `Bearer ${token || ""}`,
-      }),
-      method: "POST",
-      body: JSON.stringify({
-        uid: uid || user?.uid,
-        project: id,
-        id: batchId,
-        page,
-      }),
-    })
-      .then(async (res) => {
-        let json = null;
-        try {
-          json = await res.json();
-        } catch (error) {
-          Log.error("useBatch error json", error);
-        }
-        if (res.ok) {
-          return { success: true, data: json.data };
-        }
-        return { success: false, error: json.error, data: null };
+  const batch = useSWR(
+    [`api/dash/project/batch/${batchId}`],
+    async () => {
+      const token = Cookies.get("auth");
+      return fetch(`${server}/api/dash/project/batch`, {
+        headers: new Headers({
+          "content-type": "application/json",
+          Authorization: `Bearer ${token || ""}`,
+        }),
+        method: "POST",
+        body: JSON.stringify({
+          uid: uid || user?.uid,
+          project: id,
+          id: batchId,
+          page,
+        }),
       })
-      .catch((error) => {
-        return { success: false, error: error.message, data: null };
-      });
-  });
+        .then(async (res) => {
+          let json = null;
+          try {
+            json = await res.json();
+          } catch (error) {
+            Log.error("useBatch error json", error);
+          }
+          if (res.ok) {
+            return { success: true, data: json.data };
+          }
+          return { success: false, error: json.error, data: null };
+        })
+        .catch((error) => {
+          return { success: false, error: error.message, data: null };
+        });
+    },
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    }
+  );
 
   useEffect(() => {
     setBatchLoading(true);

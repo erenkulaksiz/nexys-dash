@@ -82,6 +82,11 @@ export interface ProjectTypes {
     };
   };
   plan?: "free" | "pro" | "enterprise";
+  planExpireAt?: number;
+  telegram?: {
+    botId: string;
+    targetId: string;
+  };
 }
 
 export interface NexysComponentProps extends PropsWithChildren {
@@ -108,4 +113,5 @@ export interface UserTypes {
   provider?: string;
   emailVerified?: boolean;
   _id?: ObjectId;
+  isAdmin?: boolean;
 }
