@@ -8,6 +8,7 @@ import LogCard from "@/components/project/LogCard";
 import Pager from "@/components/Pager";
 import View from "@/components/View";
 import Button from "@/components/Button";
+import Loading from "@/components/Loading";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import LogFilters, { LogFiltersProps } from "@/components/project/LogFilters";
 
@@ -45,6 +46,7 @@ export default function Logs() {
             <div className="flex flex-row gap-2 items-center">
               <VscDebugBreakpointLog />
               <span>Logs</span>
+              {logs.isValidating && <Loading />}
             </div>
             <View.If visible={!logsLoading && !!logs.data?.data?.logsLength}>
               <CurrentCountText

@@ -79,6 +79,12 @@ export default function Project() {
               })}
             </time>
           </div>
+          <div className="flex flex-row gap-2 items-start">
+            <span>Project ID</span>
+            <span className="dark:text-neutral-600 text-neutral-400">
+              {project?._id?.toString()}
+            </span>
+          </div>
         </div>
         {/*<Tooltip content="Will be activated soon.">
           <Button className="px-2" onClick={() => {}}>

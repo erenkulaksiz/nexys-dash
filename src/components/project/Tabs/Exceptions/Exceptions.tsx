@@ -6,6 +6,7 @@ import { MdError } from "react-icons/md";
 import useLogs from "@/hooks/useLogs";
 import LogCard from "@/components/project/LogCard";
 import Button from "@/components/Button";
+import Loading from "@/components/Loading";
 import Pager from "@/components/Pager";
 import ExceptionFilters from "@/components/project/ExceptionFilters";
 import CurrentCountText from "@/components/project/CurrentCountText";
@@ -81,6 +82,7 @@ export default function Exceptions() {
             <div className="flex flex-row gap-2 items-center">
               <MdError />
               <span>Exceptions</span>
+              {exceptions.isValidating && <Loading />}
             </div>
             <View.If
               visible={

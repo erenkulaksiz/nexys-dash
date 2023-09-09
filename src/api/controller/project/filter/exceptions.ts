@@ -27,210 +27,228 @@ export default async function filteredExceptions({
       ];
 
   const exceptionsLength = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $or: selectTypes,
-          path: path == "all" ? { $exists: true } : path,
+    .aggregate(
+      [
+        {
+          $match: {
+            $or: selectTypes,
+            path: path == "all" ? { $exists: true } : path,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: `batches-${project}`,
-          localField: "batchId",
-          foreignField: "_id",
-          as: "batch",
+        {
+          $lookup: {
+            from: `batches-${project}`,
+            localField: "batchId",
+            foreignField: "_id",
+            as: "batch",
+          },
         },
-      },
-      {
-        $unwind: {
-          path: "$batch",
-          preserveNullAndEmptyArrays: true,
+        {
+          $unwind: {
+            path: "$batch",
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      },
-      batchVersion == "all"
-        ? {
-            $match: {},
-          }
-        : { $match: { "batch.config.appVersion": batchVersion } },
-      {
-        $count: "count",
-      },
-    ])
+        batchVersion == "all"
+          ? {
+              $match: {},
+            }
+          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $count: "count",
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const exceptionTypes = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $or: [
-            { "options.type": "ERROR" },
-            { "options.type": "AUTO:ERROR" },
-            { "options.type": "AUTO:UNHANDLEDREJECTION" },
-          ],
-          path: path == "all" ? { $exists: true } : path,
+    .aggregate(
+      [
+        {
+          $match: {
+            $or: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+            ],
+            path: path == "all" ? { $exists: true } : path,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: `batches-${project}`,
-          localField: "batchId",
-          foreignField: "_id",
-          as: "batch",
+        {
+          $lookup: {
+            from: `batches-${project}`,
+            localField: "batchId",
+            foreignField: "_id",
+            as: "batch",
+          },
         },
-      },
 
-      {
-        $unwind: {
-          path: "$batch",
-          preserveNullAndEmptyArrays: true,
+        {
+          $unwind: {
+            path: "$batch",
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      },
-      batchVersion == "all"
-        ? {
-            $match: {},
-          }
-        : { $match: { "batch.config.appVersion": batchVersion } },
-      {
-        $group: {
-          _id: "$options.type",
-          count: { $sum: 1 },
+        batchVersion == "all"
+          ? {
+              $match: {},
+            }
+          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $group: {
+            _id: "$options.type",
+            count: { $sum: 1 },
+          },
         },
-      },
-      {
-        $sort: {
-          count: -1,
+        {
+          $sort: {
+            count: -1,
+          },
         },
-      },
-    ])
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const exceptionPaths = await logCollection
-    .aggregate([
-      {
-        $group: {
-          _id: "$path",
-          count: {
-            $sum: {
-              $cond: [
-                {
-                  $or: [
-                    { $eq: ["$options.type", "ERROR"] },
-                    { $eq: ["$options.type", "AUTO:ERROR"] },
-                    { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
-                  ],
-                },
-                1,
-                0,
-              ],
+    .aggregate(
+      [
+        {
+          $group: {
+            _id: "$path",
+            count: {
+              $sum: {
+                $cond: [
+                  {
+                    $or: [
+                      { $eq: ["$options.type", "ERROR"] },
+                      { $eq: ["$options.type", "AUTO:ERROR"] },
+                      { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
             },
           },
         },
-      },
-      {
-        $sort: {
-          count: -1,
+        {
+          $sort: {
+            count: -1,
+          },
         },
-      },
-    ])
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const exceptions = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $or: selectTypes,
-          path: path == "all" ? { $exists: true } : path,
+    .aggregate(
+      [
+        {
+          $match: {
+            $or: selectTypes,
+            path: path == "all" ? { $exists: true } : path,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: `batches-${project}`,
-          localField: "batchId",
-          foreignField: "_id",
-          as: "batch",
+        {
+          $lookup: {
+            from: `batches-${project}`,
+            localField: "batchId",
+            foreignField: "_id",
+            as: "batch",
+          },
         },
-      },
-      {
-        $unwind: {
-          path: "$batch",
-          preserveNullAndEmptyArrays: true,
+        {
+          $unwind: {
+            path: "$batch",
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      },
-      batchVersion == "all"
-        ? {
-            $match: {},
-          }
-        : { $match: { "batch.config.appVersion": batchVersion } },
-      {
-        $sort: {
-          ts: asc ? 1 : -1,
+        batchVersion == "all"
+          ? {
+              $match: {},
+            }
+          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $sort: {
+            ts: asc ? 1 : -1,
+          },
         },
-      },
-      {
-        $skip: Math.floor(page ? page * 10 : 0),
-      },
-      {
-        $limit: 10,
-      },
-    ])
+        {
+          $skip: Math.floor(page ? page * 10 : 0),
+        },
+        {
+          $limit: 10,
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const batchConfigUsers = await batchCollection
-    .aggregate([
-      {
-        $match: {
-          "config.user": { $exists: true },
+    .aggregate(
+      [
+        {
+          $match: {
+            "config.user": { $exists: true },
+          },
         },
-      },
-      {
-        $group: {
-          _id: "$config.user",
-          count: { $sum: 1 },
+        {
+          $group: {
+            _id: "$config.user",
+            count: { $sum: 1 },
+          },
         },
-      },
-      {
-        $sort: {
-          count: -1,
+        {
+          $sort: {
+            count: -1,
+          },
         },
-      },
-    ])
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const batchVersions = await batchCollection
-    .aggregate([
-      {
-        $match: {
-          "config.appVersion": { $exists: true },
-        },
-      },
-      {
-        $group: {
-          _id: "$config.appVersion",
-          count: { $sum: 1 },
-          ERROR: {
-            $sum: "$logTypes.ERROR",
-          },
-          "AUTO:ERROR": {
-            $sum: "$logTypes.AUTO:ERROR",
-          },
-          "AUTO:UNHANDLEDREJECTION": {
-            $sum: "$logTypes.AUTO:UNHANDLEDREJECTION",
-          },
-          METRIC: {
-            $sum: "$logTypes.METRIC",
-          },
-          OTHER: {
-            $sum: "$logTypes.undefined",
+    .aggregate(
+      [
+        {
+          $match: {
+            "config.appVersion": { $exists: true },
           },
         },
-      },
-      {
-        $sort: {
-          _id: -1,
+        {
+          $group: {
+            _id: "$config.appVersion",
+            count: { $sum: 1 },
+            ERROR: {
+              $sum: "$logTypes.ERROR",
+            },
+            "AUTO:ERROR": {
+              $sum: "$logTypes.AUTO:ERROR",
+            },
+            "AUTO:UNHANDLEDREJECTION": {
+              $sum: "$logTypes.AUTO:UNHANDLEDREJECTION",
+            },
+            METRIC: {
+              $sum: "$logTypes.METRIC",
+            },
+            OTHER: {
+              $sum: "$logTypes.undefined",
+            },
+          },
         },
-      },
-    ])
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   return accept({

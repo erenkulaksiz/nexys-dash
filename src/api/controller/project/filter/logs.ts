@@ -44,88 +44,97 @@ export default async function filteredLogs({
     .toArray();
 
   const logPaths = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $nor: [
-            { "options.type": "ERROR" },
-            { "options.type": "AUTO:ERROR" },
-            { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            { "options.type": "METRIC" },
-          ],
+    .aggregate(
+      [
+        {
+          $match: {
+            $nor: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+              { "options.type": "METRIC" },
+            ],
+          },
         },
-      },
-      {
-        $group: {
-          _id: "$path",
-          count: { $sum: 1 },
-          actions: { $addToSet: "$options.action" },
+        {
+          $group: {
+            _id: "$path",
+            count: { $sum: 1 },
+            actions: { $addToSet: "$options.action" },
+          },
         },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ])
+        {
+          $sort: { count: -1 },
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const logsLength = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $nor: [
-            { "options.type": "ERROR" },
-            { "options.type": "AUTO:ERROR" },
-            { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            { "options.type": "METRIC" },
-          ],
-          path: path == "all" ? { $exists: true } : path,
-          "options.action": action == "all" ? { $exists: true } : action,
+    .aggregate(
+      [
+        {
+          $match: {
+            $nor: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+              { "options.type": "METRIC" },
+            ],
+            path: path == "all" ? { $exists: true } : path,
+            "options.action": action == "all" ? { $exists: true } : action,
+          },
         },
-      },
-      {
-        $count: "count",
-      },
-    ])
+        {
+          $count: "count",
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   const logs = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $nor: [
-            { "options.type": "ERROR" },
-            { "options.type": "AUTO:ERROR" },
-            { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            { "options.type": "METRIC" },
-          ],
-          path: path == "all" ? { $exists: true } : path,
-          "options.action": action == "all" ? { $exists: true } : action,
+    .aggregate(
+      [
+        {
+          $match: {
+            $nor: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+              { "options.type": "METRIC" },
+            ],
+            path: path == "all" ? { $exists: true } : path,
+            "options.action": action == "all" ? { $exists: true } : action,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: `batches-${project}`,
-          localField: "batchId",
-          foreignField: "_id",
-          as: "batch",
+        {
+          $lookup: {
+            from: `batches-${project}`,
+            localField: "batchId",
+            foreignField: "_id",
+            as: "batch",
+          },
         },
-      },
-      {
-        $unwind: {
-          path: "$batch",
-          preserveNullAndEmptyArrays: true,
+        {
+          $unwind: {
+            path: "$batch",
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      },
-      {
-        $sort: { ts: asc ? 1 : -1 },
-      },
-      {
-        $skip: Math.floor(page ? page * 10 : 0),
-      },
-      {
-        $limit: 10,
-      },
-    ])
+        {
+          $sort: { ts: asc ? 1 : -1 },
+        },
+        {
+          $skip: Math.floor(page ? page * 10 : 0),
+        },
+        {
+          $limit: 10,
+        },
+      ],
+      { allowDiskUse: true }
+    )
     .toArray();
 
   return accept({
