@@ -4,16 +4,6 @@ import { Log } from "@/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
-import { getMetric } from "./metrics";
-import {
-  getExceptionRate,
-  getLogRate,
-  getLastWeekLogRate,
-  getErrorTypes,
-  getLogPaths,
-  getCoreData,
-  getLogpoolSendallMetric,
-} from "./statistics";
 
 export default async function data(
   req: NextApiRequest,
@@ -44,41 +34,406 @@ export default async function data(
   const logCollection = await db.collection(`logs-${_project._id}`);
 
   const batchCount = await batchCollection.countDocuments();
-  const logCount = await logCollection.countDocuments();
 
-  const errorCount = await logCollection
-    .find({
-      $or: [
-        { "options.type": "ERROR" },
-        { "options.type": "AUTO:ERROR" },
-        { "options.type": "AUTO:UNHANDLEDREJECTION" },
+  const LogAggregation = await logCollection
+    .aggregate(
+      [
+        {
+          $facet: {
+            logCount: [
+              {
+                $count: "value",
+              },
+            ],
+            errorCount: [
+              {
+                $match: {
+                  $or: [
+                    { "options.type": "ERROR" },
+                    { "options.type": "AUTO:ERROR" },
+                    { "options.type": "AUTO:UNHANDLEDREJECTION" },
+                  ],
+                },
+              },
+              {
+                $count: "value",
+              },
+            ],
+            metrics: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.value": { $gt: 0 } },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: "$data.name",
+                  value: { $avg: "$data.value" },
+                },
+              },
+            ],
+            coreInitMetrics: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.type": "CORE:INIT" },
+                    { "data.diff": { $gt: 0 } },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  value: { $avg: "$data.diff" },
+                },
+              },
+            ],
+            coreInitMetricsLast100: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.type": "CORE:INIT" },
+                    { "data.diff": { $gt: 0 } },
+                  ],
+                },
+              },
+              { $limit: 100 },
+              {
+                $group: {
+                  _id: null,
+                  value: { $avg: "$data.diff" },
+                },
+              },
+            ],
+            last100: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.value": { $gt: 0 } },
+                  ],
+                },
+              },
+              { $limit: 100 },
+              {
+                $group: {
+                  _id: "$data.name",
+                  value: { $avg: "$data.value" },
+                },
+              },
+            ],
+            totalMetricLogs: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.value": { $gt: 0 } },
+                  ],
+                },
+              },
+              {
+                $count: "value",
+              },
+            ],
+            logPoolSendAllMetric: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.type": "LOGPOOL:SENDALL" },
+                    { "data.diff": { $gt: 0 } },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  value: { $avg: "$data.diff" },
+                },
+              },
+            ],
+            logPoolSendAllLast100Metric: [
+              {
+                $match: {
+                  $and: [
+                    { "options.type": "METRIC" },
+                    { "data.type": "LOGPOOL:SENDALL" },
+                    { "data.diff": { $gt: 0 } },
+                  ],
+                },
+              },
+              { $limit: 100 },
+              {
+                $group: {
+                  _id: null,
+                  value: { $avg: "$data.diff" },
+                },
+              },
+            ],
+            exceptionRate: [
+              {
+                $match: {
+                  $or: [
+                    { "options.type": "ERROR" },
+                    { "options.type": "AUTO:ERROR" },
+                    { "options.type": "AUTO:UNHANDLEDREJECTION" },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: {
+                        $toDate: "$ts",
+                      },
+                    },
+                  },
+                  count: {
+                    $sum: 1,
+                  },
+                },
+              },
+              {
+                $sort: {
+                  _id: 1,
+                },
+              },
+            ],
+            logRate: [
+              {
+                $group: {
+                  _id: {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: {
+                        $toDate: "$ts",
+                      },
+                    },
+                  },
+                  count: {
+                    $sum: 1,
+                  },
+                  // get each type of log
+                  ERROR: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:ERROR": {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "AUTO:ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:UNHANDLEDREJECTION": {
+                    $sum: {
+                      $cond: [
+                        { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                  METRIC: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "METRIC"] }, 1, 0],
+                    },
+                  },
+                  OTHER: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $and: [
+                            { $ne: ["$options.type", "ERROR"] },
+                            { $ne: ["$options.type", "AUTO:ERROR"] },
+                            {
+                              $ne: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
+                            },
+                            { $ne: ["$options.type", "METRIC"] },
+                          ],
+                        },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                },
+              },
+              {
+                $sort: {
+                  _id: 1,
+                },
+              },
+            ],
+            lastWeekLogRate: [
+              {
+                $match: {
+                  ts: {
+                    $gte: Date.now() - 604800000,
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: {
+                        $toDate: "$ts",
+                      },
+                    },
+                  },
+                  count: {
+                    $sum: 1,
+                  },
+                  // get each type of log
+                  ERROR: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:ERROR": {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "AUTO:ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:UNHANDLEDREJECTION": {
+                    $sum: {
+                      $cond: [
+                        { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                  METRIC: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "METRIC"] }, 1, 0],
+                    },
+                  },
+                  OTHER: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $and: [
+                            { $ne: ["$options.type", "ERROR"] },
+                            { $ne: ["$options.type", "AUTO:ERROR"] },
+                            {
+                              $ne: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
+                            },
+                            { $ne: ["$options.type", "METRIC"] },
+                          ],
+                        },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                },
+              },
+              {
+                $sort: {
+                  _id: 1,
+                },
+              },
+            ],
+            errorTypes: [
+              {
+                $match: {
+                  $or: [
+                    { "options.type": "ERROR" },
+                    { "options.type": "AUTO:ERROR" },
+                    { "options.type": "AUTO:UNHANDLEDREJECTION" },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: "$options.type",
+                  count: { $sum: 1 },
+                },
+              },
+              {
+                $sort: {
+                  count: -1,
+                },
+              },
+            ],
+            logPaths: [
+              {
+                $group: {
+                  _id: "$path",
+                  count: {
+                    $sum: 1,
+                  },
+                  // get each type of log
+                  ERROR: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:ERROR": {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "AUTO:ERROR"] }, 1, 0],
+                    },
+                  },
+                  "AUTO:UNHANDLEDREJECTION": {
+                    $sum: {
+                      $cond: [
+                        { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                  METRIC: {
+                    $sum: {
+                      $cond: [{ $eq: ["$options.type", "METRIC"] }, 1, 0],
+                    },
+                  },
+                  OTHER: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $and: [
+                            { $ne: ["$options.type", "ERROR"] },
+                            { $ne: ["$options.type", "AUTO:ERROR"] },
+                            {
+                              $ne: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
+                            },
+                            { $ne: ["$options.type", "METRIC"] },
+                          ],
+                        },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                },
+              },
+              { $sort: { count: -1 } },
+            ],
+          },
+        },
       ],
-    })
-    .count();
+      { allowDiskUse: true, cursor: {} }
+    )
+    .toArray();
 
-  const FCPMetric = await getMetric(_project._id, "FCP");
-  const LCPMetric = await getMetric(_project._id, "LCP");
-  const CLSMetric = await getMetric(_project._id, "CLS");
-  const FIDMetric = await getMetric(_project._id, "FID");
-  const TTFBMetric = await getMetric(_project._id, "TTFB");
-
-  const [CORE_INIT, CORE_INIT_LAST_100] = await getCoreData(_project._id);
-  const [LOGPOOLMetric, LOGPOOL_LAST_100] = await getLogpoolSendallMetric(
-    _project._id
-  );
-
-  // Get total amount of entries in the database for metrics
-  const totalMetricLogs = await logCollection
-    .find({
-      $and: [{ "options.type": "METRIC" }, { "data.value": { $gt: 0 } }],
-    })
-    .count();
-
-  const exceptionRate = await getExceptionRate(_project._id);
-  const logRate = await getLogRate(_project._id);
-  const lastWeekLogRate = await getLastWeekLogRate(_project._id);
-  const errorTypes = await getErrorTypes(_project._id);
-  const logPaths = await getLogPaths(_project._id);
+  let metrics: any = {};
+  let last100Metrics: any = {};
+  LogAggregation[0]?.metrics?.forEach((metric: any) => {
+    metrics[metric._id] = metric.value;
+  });
+  LogAggregation[0]?.last100?.forEach((metric: any) => {
+    last100Metrics[metric._id] = metric.value;
+  });
 
   const forwarded = req.headers["x-forwarded-for"];
   const ip = Array.isArray(forwarded)
@@ -103,30 +458,31 @@ export default async function data(
     logUsage: _project?.logUsage,
     logUsageLimit: _project?.logUsageLimit,
     batchCount,
-    logCount,
-    errorCount,
-    exceptionRate,
-    logRate,
-    lastWeekLogRate,
-    errorTypes,
-    logPaths,
+    logCount: LogAggregation[0].logCount[0]?.value || 0,
+    errorCount: LogAggregation[0].errorCount[0]?.value || 0,
+    exceptionRate: LogAggregation[0].exceptionRate,
+    logRate: LogAggregation[0].logRate,
+    lastWeekLogRate: LogAggregation[0].lastWeekLogRate,
+    errorTypes: LogAggregation[0].errorTypes,
+    logPaths: LogAggregation[0].logPaths,
     metrics: {
-      FCP: FCPMetric[0] || 0,
-      LCP: LCPMetric[0] || 0,
-      CLS: CLSMetric[0] || 0,
-      FID: FIDMetric[0] || 0,
-      TTFB: TTFBMetric[0] || 0,
-      CORE_INIT: CORE_INIT[0]?.value || 0,
-      LOGPOOL_SENDALL: LOGPOOLMetric[0]?.value || 0,
-      totalMetricLogs,
+      FCP: metrics["FCP"] || 0,
+      LCP: metrics["LCP"] || 0,
+      CLS: metrics["CLS"] || 0,
+      FID: metrics["FID"] || 0,
+      TTFB: metrics["TTFB"] || 0,
+      CORE_INIT: LogAggregation[0]?.coreInitMetrics[0]?.value || 0,
+      LOGPOOL_SENDALL: LogAggregation[0]?.logPoolSendAllMetric[0]?.value || 0,
+      totalMetricLogs: LogAggregation[0]?.totalMetricLogs[0]?.value || 0,
       last100: {
-        FCP: FCPMetric[1] || 0,
-        LCP: LCPMetric[1] || 0,
-        CLS: CLSMetric[1] || 0,
-        FID: FIDMetric[1] || 0,
-        TTFB: TTFBMetric[1] || 0,
-        CORE_INIT: CORE_INIT_LAST_100[0]?.value || 0,
-        LOGPOOL_SENDALL: LOGPOOL_LAST_100[0]?.value || 0,
+        FCP: last100Metrics["FCP"] || 0,
+        LCP: last100Metrics["LCP"] || 0,
+        CLS: last100Metrics["CLS"] || 0,
+        FID: last100Metrics["FID"] || 0,
+        TTFB: last100Metrics["TTFB"] || 0,
+        CORE_INIT: LogAggregation[0]?.coreInitMetricsLast100[0]?.value || 0,
+        LOGPOOL_SENDALL:
+          LogAggregation[0]?.logPoolSendAllLast100Metric[0]?.value || 0,
       },
     },
   };

@@ -43,40 +43,20 @@ export interface ProjectTypes {
   logPaths?: LogMetricTypes[];
   lastWeekLogRate?: LogMetricTypes[];
   metrics?: {
-    FCP?: {
-      value: number;
-    };
-    LCP?: {
-      value: number;
-    };
-    CLS?: {
-      value: number;
-    };
-    FID?: {
-      value: number;
-    };
-    TTFB?: {
-      value: number;
-    };
+    FCP?: number;
+    LCP?: number;
+    CLS?: number;
+    FID?: number;
+    TTFB?: number;
     CORE_INIT?: number;
     LOGPOOL_SENDALL?: number;
     totalMetricLogs?: number;
     last100: {
-      FCP?: {
-        value: number;
-      };
-      LCP?: {
-        value: number;
-      };
-      CLS?: {
-        value: number;
-      };
-      FID?: {
-        value: number;
-      };
-      TTFB?: {
-        value: number;
-      };
+      FCP?: number;
+      LCP?: number;
+      CLS?: number;
+      FID?: number;
+      TTFB?: number;
       CORE_INIT?: number;
       LOGPOOL_SENDALL?: number;
     };
@@ -114,4 +94,14 @@ export interface UserTypes {
   emailVerified?: boolean;
   _id?: ObjectId;
   isAdmin?: boolean;
+}
+
+export interface LogFilterTypes {
+  asc?: boolean;
+  types?: string[];
+  path?: string;
+  batchVersion?: string;
+  configUser?: string;
+  search?: string;
+  action?: string;
 }

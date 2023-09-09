@@ -14,33 +14,38 @@ export default async function filteredLogs({
   page?: number;
   body: any;
 }) {
-  const { asc, path, action } = body;
+  const {
+    filters: { asc, path, action },
+  } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
 
   const logActions = await logCollection
-    .aggregate([
-      {
-        $match: {
-          $nor: [
-            { "options.type": "ERROR" },
-            { "options.type": "AUTO:ERROR" },
-            { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            { "options.type": "METRIC" },
-          ],
+    .aggregate(
+      [
+        {
+          $match: {
+            $nor: [
+              { "options.type": "ERROR" },
+              { "options.type": "AUTO:ERROR" },
+              { "options.type": "AUTO:UNHANDLEDREJECTION" },
+              { "options.type": "METRIC" },
+            ],
+          },
         },
-      },
-      {
-        $group: {
-          _id: "$options.action",
-          count: { $sum: 1 },
-          pathes: { $addToSet: "$path" },
+        {
+          $group: {
+            _id: "$options.action",
+            count: { $sum: 1 },
+            pathes: { $addToSet: "$path" },
+          },
         },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ])
+        {
+          $sort: { count: -1 },
+        },
+      ],
+      { allowDiskUse: true, cursor: {} }
+    )
     .toArray();
 
   const logPaths = await logCollection
@@ -67,13 +72,16 @@ export default async function filteredLogs({
           $sort: { count: -1 },
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
   const logsLength = await logCollection
     .aggregate(
       [
+        action == "all"
+          ? { $match: {} }
+          : { $match: { "options.action": action } },
         {
           $match: {
             $nor: [
@@ -83,20 +91,22 @@ export default async function filteredLogs({
               { "options.type": "METRIC" },
             ],
             path: path == "all" ? { $exists: true } : path,
-            "options.action": action == "all" ? { $exists: true } : action,
           },
         },
         {
           $count: "count",
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
   const logs = await logCollection
     .aggregate(
       [
+        action == "all"
+          ? { $match: {} }
+          : { $match: { "options.action": action } },
         {
           $match: {
             $nor: [
@@ -106,7 +116,6 @@ export default async function filteredLogs({
               { "options.type": "METRIC" },
             ],
             path: path == "all" ? { $exists: true } : path,
-            "options.action": action == "all" ? { $exists: true } : action,
           },
         },
         {
@@ -133,7 +142,7 @@ export default async function filteredLogs({
           $limit: 10,
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 

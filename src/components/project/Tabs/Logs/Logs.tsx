@@ -10,33 +10,30 @@ import View from "@/components/View";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import CurrentCountText from "@/components/project/CurrentCountText";
-import LogFilters, { LogFiltersProps } from "@/components/project/LogFilters";
+import LogFilters from "@/components/project/Filters/LogFilters";
+import type { LogFilterTypes } from "@/types";
 
 export default function Logs() {
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
-  const [filters, setFilters] = useState<LogFiltersProps>({
+  const [filters, setFilters] = useState<LogFilterTypes>({
     asc: false,
     path: "all",
+    action: "all",
   });
   const project = useProjectStore((state) => state.currentProject);
   const logs = useLogs({
     type: "logs",
     page,
-    types: [],
-    path: filters.path,
-    asc: filters.asc,
-    action: filters.action,
+    filters: {
+      types: filters.types,
+      asc: filters.asc,
+      path: filters.path,
+      action: filters.action,
+    },
   });
   const logsLoading = useProjectStore((state) => state.logsLoading);
   const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);
-
-  const logPaths = logs.data?.data?.logPaths
-    ? [...logs.data?.data?.logPaths]
-    : [];
-  const logActions = logs.data?.data?.logActions
-    ? [...logs.data?.data?.logActions]
-    : [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -78,8 +75,7 @@ export default function Logs() {
                 <LogFilters
                   filters={filters}
                   setFilters={setFilters}
-                  logPaths={logPaths}
-                  logActions={logActions}
+                  logs={logs}
                 />
               </View.If>
               <View.If visible={!logsLoading && totalPages > 1}>

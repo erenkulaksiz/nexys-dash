@@ -13,29 +13,18 @@ import {
   useProjectStore,
 } from "@/stores/projectStore";
 import { Log, server } from "@/utils";
+import type { LogFilterTypes } from "@/types";
 
 interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
-  batchVersion?: "all" | string;
   page?: number;
-  asc?: boolean;
-  search?: string;
-  types?: string[];
-  path?: string;
-  action?: "all" | string;
-  configUser?: "all" | string;
+  filters?: LogFilterTypes;
 }
 
 export default function useLogs({
   type = "logs",
   page = 0,
-  asc = false,
-  search = "",
-  types,
-  path = "all",
-  batchVersion = "all",
-  action = "all",
-  configUser = "all",
+  filters,
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
@@ -44,10 +33,12 @@ export default function useLogs({
     if (logs.data?.data) {
       logs.mutate();
     }
-  }, [page, asc, path, action, configUser]);
+  }, [page, filters?.asc, filters?.path, filters?.configUser, filters?.action]);
 
   const logs = useSWR(
-    [`api/dash/project/${type}/${project?._id}/${page}/${asc}/${search}`],
+    [
+      `api/dash/project/${type}/${project?._id}/${page}/${filters?.asc}/${filters?.search}`,
+    ],
     async () => {
       const token = Cookies.get("auth");
       return fetch(`${server}/api/dash/project/logs`, {
@@ -61,13 +52,15 @@ export default function useLogs({
           id: project?._id,
           type,
           page,
-          asc,
-          types,
-          search,
-          path,
-          batchVersion,
-          action,
-          configUser,
+          filters: {
+            asc: filters?.asc,
+            types: filters?.types,
+            search: filters?.search,
+            path: filters?.path,
+            batchVersion: filters?.batchVersion,
+            configUser: filters?.configUser,
+            action: filters?.action,
+          },
         }),
       })
         .then(async (res) => {
@@ -145,15 +138,6 @@ export default function useLogs({
       setLogsLoading(loading);
       setBatchesLoading(loading);
       setExceptionsLoading(loading);
-    }
-  }
-
-  function setData(data: any) {
-    if (type == "logs") setLogs(data);
-    else if (type == "batches") setBatches(data);
-    else if (type == "exceptions") setExceptions(data);
-    else {
-      setLogs(data);
     }
   }
 

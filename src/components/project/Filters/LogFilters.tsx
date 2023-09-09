@@ -3,23 +3,26 @@ import Checkbox from "@/components/Checkbox";
 import View from "@/components/View";
 import { Log } from "@/utils";
 import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
+import type { LogFilterTypes } from "@/types";
 
 export interface LogFiltersProps {
-  asc?: boolean;
-  path?: string;
-  action?: string;
-  filters?: any;
-  setFilters?: any;
-  logPaths?: any;
-  logActions?: any;
+  filters: LogFilterTypes;
+  setFilters: (filters: LogFilterTypes) => void;
+  logs: any;
 }
 
 export default function LogFilters({
   filters,
   setFilters,
-  logPaths,
-  logActions,
+  logs,
 }: LogFiltersProps) {
+  const logPaths = logs.data?.data?.logPaths
+    ? [...logs.data?.data?.logPaths]
+    : [];
+  const logActions = logs.data?.data?.logActions
+    ? [...logs.data?.data?.logActions]
+    : [];
+
   return (
     <div className="flex flex-row gap-2 items-center">
       <Select

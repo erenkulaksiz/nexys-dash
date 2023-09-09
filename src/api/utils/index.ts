@@ -90,4 +90,25 @@ export async function createSearchIndex(project: ObjectId | null) {
   const logCollection = await db.collection(`logs-${project}`);
 
   await logCollection.createIndex({ "data.message": "text", path: "text" });
+  Log.debug("Created search index!");
+}
+
+export async function createIndex(project: ObjectId | null) {
+  const { db } = await connectToDatabase();
+  const logCollection = await db.collection(`logs-${project}`);
+  const batchCollection = await db.collection(`batches-${project}`);
+  const usersCollection = await db.collection(`users-${project}`);
+
+  await logCollection.createIndex({
+    "options.type": 1,
+    "data.value": 1,
+    "options.action": 1,
+    ts: 1,
+  });
+  await batchCollection.createIndex({
+    "config.appVersion": 1,
+    "config.user": "text",
+  });
+  await usersCollection.createIndex({ email: 1, username: 1, uid: 1 });
+  Log.debug("Created indexes!");
 }

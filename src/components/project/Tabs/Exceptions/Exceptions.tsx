@@ -8,60 +8,46 @@ import LogCard from "@/components/project/LogCard";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Pager from "@/components/Pager";
-import ExceptionFilters from "@/components/project/ExceptionFilters";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
 import { Log } from "@/utils";
 import useDebounce from "@/hooks/useDebounce";
-import type { ExceptionFiltersProps } from "@/components/project/ExceptionFilters";
+import ExceptionFilters from "@/components/project/Filters/ExceptionFilters";
+import type { LogFilterTypes } from "@/types";
 
 export default function Exceptions() {
+  const [page, setPage] = useState<number>(0);
+  const project = useProjectStore((state) => state.currentProject);
+  const [search, setSearch] = useState<string>("");
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<ExceptionFiltersProps>({
+  const [filters, setFilters] = useState<LogFilterTypes>({
     asc: false,
     types: [],
     path: "all",
+    batchVersion: "all",
+    configUser: "all",
+    search: "",
   });
-  const [page, setPage] = useState<number>(0);
-  const project = useProjectStore((state) => state.currentProject);
   const exceptions = useLogs({
     type: "exceptions",
     page,
-    path: filters.path,
-    batchVersion: filters.batchVersion,
-    asc: filters.asc,
-    types: filters.types,
-    configUser: filters.configUser,
-    search: filters.search,
+    filters: {
+      path: filters.path,
+      batchVersion: filters.batchVersion,
+      asc: filters.asc,
+      types: filters.types,
+      configUser: filters.configUser,
+      search: filters.search,
+    },
   });
-  const [search, setSearch] = useState<string>("");
 
   const debouncedSearch = useDebounce(
     () => {
-      setFilters({
-        ...filters,
-        search,
-      });
+      setFilters({ ...filters, search });
     },
     [search],
     1500
   );
-
-  const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
-  const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
-
-  const exceptionPaths = exceptions.data?.data?.exceptionPaths
-    ? [...exceptions.data?.data?.exceptionPaths]
-    : [];
-  const exceptionTypes = exceptions.data?.data?.exceptionTypes
-    ? [...exceptions.data?.data?.exceptionTypes]
-    : [];
-  const batchVersions = exceptions.data?.data?.batchVersions
-    ? [...exceptions.data?.data?.batchVersions]
-    : [];
-  const configUsers = exceptions.data?.data?.batchConfigUsers
-    ? [...exceptions.data?.data?.batchConfigUsers]
-    : [];
 
   useEffect(() => {
     setPage(0);
@@ -87,6 +73,9 @@ export default function Exceptions() {
       path: "all",
     });
   }, [filters.batchVersion]);
+
+  const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
+  const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -131,18 +120,11 @@ export default function Exceptions() {
               </div>
               <View.If visible={filtersOpen}>
                 <ExceptionFilters
-                  setFilters={setFilters}
+                  exceptions={exceptions}
                   filters={filters}
-                  exceptionPaths={exceptionPaths}
-                  exceptionTypes={exceptionTypes}
-                  batchVersions={batchVersions}
-                  configUsers={configUsers}
-                  configUser={filters.configUser}
-                  batchVersion={filters.batchVersion}
+                  setFilters={setFilters}
                   search={search}
-                  onSearchChange={(search) => {
-                    setSearch(search);
-                  }}
+                  onSearchTextChange={(value) => setSearch(value)}
                 />
               </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>

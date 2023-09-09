@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import { connectToDatabase } from "@/mongodb";
-import { accept, reject } from "@/api/utils";
+import { accept, createIndex, reject } from "@/api/utils";
 import { Log } from "@/utils";
 import { ProjectTypes } from "@/types";
 import { LIMITS } from "@/constants";
@@ -144,6 +144,7 @@ export default async function handler(
   );
 
   await createSearchIndex(new ObjectId(project._id));
+  await createIndex(new ObjectId(project._id));
 
   await SendTelegramMessage({
     message: `

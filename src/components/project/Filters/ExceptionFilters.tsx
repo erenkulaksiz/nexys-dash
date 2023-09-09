@@ -5,36 +5,38 @@ import Input from "@/components/Input";
 import Tooltip from "@/components/Tooltip";
 import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
+import { LIMITS } from "@/constants";
 import { MdInfoOutline } from "react-icons/md";
+import type { LogFilterTypes } from "@/types";
 
-export interface ExceptionFiltersProps {
-  asc?: boolean;
-  types?: string[];
-  batchVersion?: string;
-  batchVersions?: any;
-  filters?: any;
-  setFilters?: any;
-  path?: string;
-  exceptionPaths?: any;
-  exceptionTypes?: any;
-  configUsers?: any;
-  configUser?: any;
-  search?: string;
-  onSearchChange?: (search: string) => void;
+interface LogFiltersProps {
+  exceptions: any;
+  filters: LogFilterTypes;
+  setFilters: (filters: LogFilterTypes) => void;
+  onSearchTextChange?: (text: string) => void;
+  search: string;
 }
 
 export default function ExceptionFilters({
-  exceptionPaths,
-  exceptionTypes,
+  exceptions,
   filters,
   setFilters,
-  batchVersion,
-  batchVersions,
-  configUsers,
-  configUser,
+  onSearchTextChange,
   search,
-  onSearchChange,
-}: ExceptionFiltersProps) {
+}: LogFiltersProps) {
+  const exceptionPaths = exceptions.data?.data?.exceptionPaths
+    ? [...exceptions.data?.data?.exceptionPaths]
+    : [];
+  const exceptionTypes = exceptions.data?.data?.exceptionTypes
+    ? [...exceptions.data?.data?.exceptionTypes]
+    : [];
+  const batchVersions = exceptions.data?.data?.batchVersions
+    ? [...exceptions.data?.data?.batchVersions]
+    : [];
+  const configUsers = exceptions.data?.data?.batchConfigUsers
+    ? [...exceptions.data?.data?.batchConfigUsers]
+    : [];
+
   const _batchVersions = Array.isArray(batchVersions)
     ? batchVersions
         ?.filter((el: any) => el.count > 0)
@@ -46,7 +48,7 @@ export default function ExceptionFilters({
     : [];
 
   const _configUsers = configUsers.map((el: any) => {
-    return { id: el._id, text: el._id };
+    return { id: el._id, text: `${el._id} - ${el.count} logs` };
   });
 
   return (
@@ -81,7 +83,11 @@ export default function ExceptionFilters({
           {exceptionTypes?.map(
             (exceptionType: { _id: string; count: number }) => (
               <Checkbox
-                checked={filters?.types?.includes(exceptionType._id)}
+                checked={
+                  !filters?.types
+                    ? false
+                    : filters?.types?.includes(exceptionType._id)
+                }
                 onChange={() => {
                   if (filters?.types?.includes(exceptionType._id)) {
                     setFilters({
@@ -93,7 +99,7 @@ export default function ExceptionFilters({
                   } else {
                     setFilters({
                       ...filters,
-                      types: [...filters.types, exceptionType._id],
+                      types: [...(filters.types || []), exceptionType._id],
                     });
                   }
                 }}
@@ -137,7 +143,7 @@ export default function ExceptionFilters({
           });
         }}
         className="h-8"
-        value={batchVersion}
+        value={filters.batchVersion}
         id="select-version"
       />
       <Select
@@ -149,7 +155,7 @@ export default function ExceptionFilters({
           });
         }}
         className="h-8"
-        value={configUser}
+        value={filters.configUser}
         id="select-user"
       />
       <div className="flex flex-row gap-2">
@@ -157,11 +163,12 @@ export default function ExceptionFilters({
           icon={<FaSearch />}
           placeholder="Search"
           onChange={(e) => {
-            typeof onSearchChange == "function" &&
-              onSearchChange(e.target.value);
+            typeof onSearchTextChange == "function" &&
+              onSearchTextChange(e.target.value);
           }}
           value={search}
           containerClassName="h-8"
+          maxLength={LIMITS.MAX.PROJECT_LOG_SEARCH_TEXT_LENGTH}
         />
         <Tooltip outline content="Text search works on log path and messages.">
           <MdInfoOutline size={14} />

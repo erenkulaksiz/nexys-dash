@@ -10,6 +10,7 @@ import filteredExceptions from "./filter/exceptions";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ValidateUserReturnType } from "@/utils/api/validateUser";
 import type { ProjectTypes } from "@/types";
+import type { LogFilterTypes } from "@/types";
 
 export default async function logs(
   req: NextApiRequest,
@@ -22,14 +23,8 @@ export default async function logs(
   const body = req.body as {
     id: string;
     type: string;
-    page?: number;
-    asc?: boolean;
-    types?: string[];
-    search?: string;
-    path?: string;
-    batchVersion?: string;
-    action?: string;
-    configUser?: string;
+    page: number;
+    filters: LogFilterTypes;
   };
   if (!body || !body.id || !body.type) return reject({ res });
   const { id, type, page } = body;

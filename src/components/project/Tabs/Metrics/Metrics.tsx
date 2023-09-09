@@ -1,51 +1,10 @@
 import { useProjectStore } from "@/stores/projectStore";
 import { RiDashboard2Fill } from "react-icons/ri";
-import { map_range } from "@/utils/map";
+import MetricScore from "./MetricScore";
 import Metric from "./Metric";
 
 export default function Metrics() {
   const project = useProjectStore((state) => state.currentProject);
-
-  function MetricScore({
-    minScore,
-    maxScore,
-    midScore,
-    score,
-  }: {
-    minScore: number;
-    maxScore: number;
-    midScore: number;
-    score: number;
-  }) {
-    const range = map_range(score, minScore, maxScore + 5, 0, 200);
-
-    return (
-      <div className="flex flex-row w-[200px] h-[20px] rounded-xl relative">
-        <div className="w-full bg-red-600 pl-2 text-xs flex items-center">
-          {maxScore}
-        </div>
-        <div className="w-full bg-yellow-600 text-xs flex items-center justify-center">
-          {midScore}
-        </div>
-        <div className="w-full bg-green-600 flex justify-end pr-2 text-xs items-center">
-          {minScore}
-        </div>
-        <div
-          className="absolute inset-0 flex items-center"
-          style={{
-            transform: `translate(${
-              200 - (range > 200 ? 200 : range)
-            }px, -2px)`,
-          }}
-        >
-          <span className="text-lg font-bold">|</span>
-          <span className="absolute top-6 dark:bg-neutral-800 px-2 rounded-lg">
-            {score || "N/A"}
-          </span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -96,13 +55,13 @@ export default function Metrics() {
               title="FCP"
               smallTitle="First Contentful Paint"
               type="ms"
-              value={Number(project?.metrics?.FCP?.value?.toFixed(2)) || 0}
+              value={Number(project?.metrics?.FCP?.toFixed(2)) || 0}
               tooltipContent={
                 <MetricScore
                   minScore={0}
                   midScore={1800}
                   maxScore={3000}
-                  score={Number(project?.metrics?.FCP?.value?.toFixed(2))}
+                  score={Number(project?.metrics?.FCP?.toFixed(2))}
                 />
               }
             />
@@ -110,26 +69,26 @@ export default function Metrics() {
               title="LCP"
               smallTitle="Largest Contentful Paint"
               type="ms"
-              value={Number(project?.metrics?.LCP?.value?.toFixed(2)) || 0}
+              value={Number(project?.metrics?.LCP?.toFixed(2)) || 0}
               tooltipContent={
                 <MetricScore
                   minScore={0}
                   midScore={2500}
                   maxScore={5000}
-                  score={Number(project?.metrics?.LCP?.value?.toFixed(2))}
+                  score={Number(project?.metrics?.LCP?.toFixed(2))}
                 />
               }
             />
             <Metric
               title="CLS"
               smallTitle="Cumulative Layout Shift"
-              value={Number(project?.metrics?.CLS?.value?.toFixed(2)) || 0}
+              value={Number(project?.metrics?.CLS?.toFixed(2)) || 0}
               tooltipContent={
                 <MetricScore
                   minScore={0}
                   midScore={0.1}
                   maxScore={0.25}
-                  score={Number(project?.metrics?.CLS?.value?.toFixed(2))}
+                  score={Number(project?.metrics?.CLS?.toFixed(2))}
                 />
               }
             />
@@ -137,13 +96,13 @@ export default function Metrics() {
               title="FID"
               smallTitle="First Input Delay"
               type="ms"
-              value={Number(project?.metrics?.FID?.value?.toFixed(2)) || 0}
+              value={Number(project?.metrics?.FID?.toFixed(2)) || 0}
               tooltipContent={
                 <MetricScore
                   minScore={0}
                   midScore={100}
                   maxScore={300}
-                  score={Number(project?.metrics?.FID?.value?.toFixed(2))}
+                  score={Number(project?.metrics?.FID?.toFixed(2))}
                 />
               }
             />
@@ -151,13 +110,13 @@ export default function Metrics() {
               title="TTFB"
               smallTitle="Time to First Byte"
               type="ms"
-              value={Number(project?.metrics?.TTFB?.value?.toFixed(2)) || 0}
+              value={Number(project?.metrics?.TTFB?.toFixed(2)) || 0}
               tooltipContent={
                 <MetricScore
                   minScore={0}
                   midScore={800}
                   maxScore={1800}
-                  score={Number(project?.metrics?.TTFB?.value?.toFixed(2))}
+                  score={Number(project?.metrics?.TTFB?.toFixed(2))}
                 />
               }
             />
@@ -181,13 +140,11 @@ export default function Metrics() {
               title="FCP"
               smallTitle="First Contentful Paint"
               type="ms"
-              value={
-                Number(project?.metrics?.last100?.FCP?.value?.toFixed(2)) || 0
-              }
+              value={Number(project?.metrics?.last100?.FCP?.toFixed(2)) || 0}
               arrow={
-                project?.metrics?.last100?.FCP?.value
-                  ? Number(project?.metrics?.last100?.FCP?.value) <
-                    Number(project?.metrics?.FCP?.value)
+                project?.metrics?.last100?.FCP
+                  ? Number(project?.metrics?.last100?.FCP) <
+                    Number(project?.metrics?.FCP)
                     ? "up"
                     : "down"
                   : null
@@ -197,9 +154,7 @@ export default function Metrics() {
                   minScore={0}
                   midScore={1800}
                   maxScore={3000}
-                  score={Number(
-                    project?.metrics?.last100?.FCP?.value?.toFixed(2)
-                  )}
+                  score={Number(project?.metrics?.last100?.FCP?.toFixed(2))}
                 />
               }
             />
@@ -207,13 +162,11 @@ export default function Metrics() {
               title="LCP"
               smallTitle="Largest Contentful Paint"
               type="ms"
-              value={
-                Number(project?.metrics?.last100?.LCP?.value?.toFixed(2)) || 0
-              }
+              value={Number(project?.metrics?.last100?.LCP?.toFixed(2)) || 0}
               arrow={
-                project?.metrics?.last100?.LCP?.value
-                  ? Number(project?.metrics?.last100?.LCP?.value) <
-                    Number(project?.metrics?.LCP?.value)
+                project?.metrics?.last100?.LCP
+                  ? Number(project?.metrics?.last100?.LCP) <
+                    Number(project?.metrics?.LCP)
                     ? "up"
                     : "down"
                   : null
@@ -223,22 +176,18 @@ export default function Metrics() {
                   minScore={0}
                   midScore={2500}
                   maxScore={5000}
-                  score={Number(
-                    project?.metrics?.last100?.LCP?.value?.toFixed(2)
-                  )}
+                  score={Number(project?.metrics?.last100?.LCP?.toFixed(2))}
                 />
               }
             />
             <Metric
               title="CLS"
               smallTitle="Cumulative Layout Shift"
-              value={
-                Number(project?.metrics?.last100?.CLS?.value?.toFixed(2)) || 0
-              }
+              value={Number(project?.metrics?.last100?.CLS?.toFixed(2)) || 0}
               arrow={
-                project?.metrics?.last100?.CLS?.value
-                  ? Number(project?.metrics?.last100?.CLS?.value) <
-                    Number(project?.metrics?.CLS?.value)
+                project?.metrics?.last100?.CLS
+                  ? Number(project?.metrics?.last100?.CLS) <
+                    Number(project?.metrics?.CLS)
                     ? "up"
                     : "down"
                   : null
@@ -248,9 +197,7 @@ export default function Metrics() {
                   minScore={0}
                   midScore={0.1}
                   maxScore={0.25}
-                  score={Number(
-                    project?.metrics?.last100?.CLS?.value?.toFixed(2)
-                  )}
+                  score={Number(project?.metrics?.last100?.CLS?.toFixed(2))}
                 />
               }
             />
@@ -258,13 +205,11 @@ export default function Metrics() {
               title="FID"
               smallTitle="First Input Delay"
               type="ms"
-              value={
-                Number(project?.metrics?.last100?.FID?.value?.toFixed(2)) || 0
-              }
+              value={Number(project?.metrics?.last100?.FID?.toFixed(2)) || 0}
               arrow={
-                project?.metrics?.last100?.FID?.value
-                  ? Number(project?.metrics?.last100?.FID?.value) <
-                    Number(project?.metrics?.FID?.value)
+                project?.metrics?.last100?.FID
+                  ? Number(project?.metrics?.last100?.FID) <
+                    Number(project?.metrics?.FID)
                     ? "up"
                     : "down"
                   : null
@@ -274,9 +219,7 @@ export default function Metrics() {
                   minScore={0}
                   midScore={100}
                   maxScore={300}
-                  score={Number(
-                    project?.metrics?.last100?.FID?.value?.toFixed(2)
-                  )}
+                  score={Number(project?.metrics?.last100?.FID?.toFixed(2))}
                 />
               }
             />
@@ -284,13 +227,11 @@ export default function Metrics() {
               title="TTFB"
               smallTitle="Time to First Byte"
               type="ms"
-              value={
-                Number(project?.metrics?.last100?.TTFB?.value?.toFixed(2)) || 0
-              }
+              value={Number(project?.metrics?.last100?.TTFB?.toFixed(2)) || 0}
               arrow={
-                project?.metrics?.last100?.TTFB?.value
-                  ? Number(project?.metrics?.last100?.TTFB?.value) <
-                    Number(project?.metrics?.TTFB?.value)
+                project?.metrics?.last100?.TTFB
+                  ? Number(project?.metrics?.last100?.TTFB) <
+                    Number(project?.metrics?.TTFB)
                     ? "up"
                     : "down"
                   : null
@@ -300,9 +241,7 @@ export default function Metrics() {
                   minScore={0}
                   midScore={800}
                   maxScore={1800}
-                  score={Number(
-                    project?.metrics?.last100?.TTFB?.value?.toFixed(2)
-                  )}
+                  score={Number(project?.metrics?.last100?.TTFB?.toFixed(2))}
                 />
               }
             />
@@ -313,7 +252,7 @@ export default function Metrics() {
                 Number(project?.metrics?.last100?.CORE_INIT?.toFixed(2)) || 0
               }
               arrow={
-                project?.metrics?.last100?.TTFB?.value
+                project?.metrics?.last100?.TTFB
                   ? Number(project?.metrics?.last100?.CORE_INIT) <
                     Number(project?.metrics?.CORE_INIT)
                     ? "up"

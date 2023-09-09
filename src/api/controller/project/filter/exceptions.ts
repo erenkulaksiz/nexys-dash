@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { accept, reject } from "@/api/utils";
 import { Log } from "@/utils";
 import { connectToDatabase } from "@/mongodb";
+import { LIMITS } from "@/constants";
 
 export default async function filteredExceptions({
   body,
@@ -13,10 +14,16 @@ export default async function filteredExceptions({
   project?: ObjectId;
   res: any;
 }) {
-  const { page, asc, types, search, path, batchVersion, configUser } = body;
+  const {
+    filters: { page, asc, types, search, path, batchVersion, configUser },
+  } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const batchCollection = await db.collection(`batches-${project}`);
+
+  if (search?.length > LIMITS.MAX.PROJECT_LOG_SEARCH_TEXT_LENGTH) {
+    return reject({ res, reason: "search-maxlength" });
+  }
 
   const selectTypes = types?.length
     ? types?.map((type: any) => ({ "options.type": type }))
@@ -34,149 +41,24 @@ export default async function filteredExceptions({
     "batch.config.appVersion": batchVersion,
   };
 
-  let exceptionMatch = { $match: {} };
+  let exceptionMatch = {};
 
   if (configUser != "all" || batchVersion != "all") {
     if (configUser != "all" && batchVersion != "all") {
       exceptionMatch = {
-        $match: { $and: [exceptionUserMatch, exceptionVersionMatch] },
+        $and: [exceptionUserMatch, exceptionVersionMatch],
       };
     } else if (configUser != "all") {
-      exceptionMatch = { $match: exceptionUserMatch };
+      exceptionMatch = exceptionUserMatch;
     } else if (batchVersion != "all") {
-      exceptionMatch = { $match: exceptionVersionMatch };
+      exceptionMatch = exceptionVersionMatch;
     }
   }
-
-  const exceptionsLength = await logCollection
-    .aggregate(
-      [
-        search.length == 0
-          ? {
-              $match: {},
-            }
-          : {
-              $match: {
-                $text: {
-                  $search: search,
-                },
-              },
-            },
-        {
-          $match: {
-            $or: selectTypes,
-            path: path == "all" ? { $exists: true } : path,
-          },
-        },
-        {
-          $lookup: {
-            from: `batches-${project}`,
-            localField: "batchId",
-            foreignField: "_id",
-            as: "batch",
-          },
-        },
-        {
-          $unwind: {
-            path: "$batch",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $match: exceptionMatch.$match,
-        },
-        {
-          $count: "count",
-        },
-      ],
-      { allowDiskUse: true, cursor: {} }
-    )
-    .toArray();
-
-  const exceptionTypes = await logCollection
-    .aggregate(
-      [
-        {
-          $match: {
-            $or: [
-              { "options.type": "ERROR" },
-              { "options.type": "AUTO:ERROR" },
-              { "options.type": "AUTO:UNHANDLEDREJECTION" },
-            ],
-            path: path == "all" ? { $exists: true } : path,
-          },
-        },
-        {
-          $lookup: {
-            from: `batches-${project}`,
-            localField: "batchId",
-            foreignField: "_id",
-            as: "batch",
-          },
-        },
-
-        {
-          $unwind: {
-            path: "$batch",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $match: exceptionMatch.$match,
-        },
-        {
-          $group: {
-            _id: "$options.type",
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: {
-            count: -1,
-          },
-        },
-      ],
-      { allowDiskUse: true, cursor: {} }
-    )
-    .toArray();
-
-  const exceptionPaths = await logCollection
-    .aggregate(
-      [
-        {
-          $group: {
-            _id: "$path",
-            count: {
-              $sum: {
-                $cond: [
-                  {
-                    $or: [
-                      { $eq: ["$options.type", "ERROR"] },
-                      { $eq: ["$options.type", "AUTO:ERROR"] },
-                      { $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"] },
-                    ],
-                  },
-                  1,
-                  0,
-                ],
-              },
-            },
-          },
-        },
-        {
-          $sort: {
-            count: -1,
-          },
-        },
-      ],
-      { allowDiskUse: true, cursor: {} }
-    )
-    .toArray();
 
   const exceptions = await logCollection
     .aggregate(
       [
-        search.length == 0
+        !search || search?.length == 0
           ? {
               $match: {},
             }
@@ -208,41 +90,97 @@ export default async function filteredExceptions({
           },
         },
         {
-          $match: exceptionMatch.$match,
+          $match: exceptionMatch,
+        },
+        {
+          $facet: {
+            paginatedResults: [
+              { $skip: Math.floor(page ? page * 10 : 0) },
+              { $limit: 10 },
+            ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+            paths: [
+              {
+                $group: {
+                  _id: "$path",
+                  count: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $or: [
+                            { $eq: ["$options.type", "ERROR"] },
+                            { $eq: ["$options.type", "AUTO:ERROR"] },
+                            {
+                              $eq: ["$options.type", "AUTO:UNHANDLEDREJECTION"],
+                            },
+                          ],
+                        },
+                        1,
+                        0,
+                      ],
+                    },
+                  },
+                },
+              },
+              {
+                $sort: {
+                  count: -1,
+                },
+              },
+            ],
+            batchConfigUsers: [
+              {
+                $match: {
+                  "batch.config.user": { $exists: true, $ne: "" },
+                },
+              },
+              {
+                $group: {
+                  _id: "$batch.config.user",
+                  count: { $sum: 1 },
+                },
+              },
+              {
+                $sort: {
+                  count: -1,
+                },
+              },
+            ],
+            exceptionTypes: [
+              {
+                $match: {
+                  $or: [
+                    { "options.type": "ERROR" },
+                    { "options.type": "AUTO:ERROR" },
+                    { "options.type": "AUTO:UNHANDLEDREJECTION" },
+                  ],
+                  path: path == "all" ? { $exists: true } : path,
+                },
+              },
+              {
+                $match: exceptionMatch,
+              },
+              {
+                $group: {
+                  _id: "$options.type",
+                  count: { $sum: 1 },
+                },
+              },
+              {
+                $sort: {
+                  count: -1,
+                },
+              },
+            ],
+          },
         },
         {
           $sort: {
             ts: asc ? 1 : -1,
-          },
-        },
-        {
-          $skip: Math.floor(page ? page * 10 : 0),
-        },
-        {
-          $limit: 10,
-        },
-      ],
-      { allowDiskUse: true, cursor: {} }
-    )
-    .toArray();
-
-  const batchConfigUsers = await batchCollection
-    .aggregate(
-      [
-        {
-          $match: {
-            "config.user": { $exists: true, $ne: "" },
-          },
-        },
-        {
-          $group: {
-            _id: "$config.user",
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: {
-            count: -1,
           },
         },
       ],
@@ -292,12 +230,12 @@ export default async function filteredExceptions({
   return accept({
     res,
     data: {
-      exceptions,
-      exceptionsLength: exceptionsLength[0]?.count || 0,
-      exceptionTypes,
-      exceptionPaths,
-      batchConfigUsers,
-      batchVersions,
+      exceptions: exceptions[0]?.paginatedResults || [],
+      exceptionsLength: exceptions[0]?.totalCount[0]?.count || 0,
+      exceptionTypes: exceptions[0]?.exceptionTypes || [],
+      exceptionPaths: exceptions[0]?.paths || [],
+      batchConfigUsers: exceptions[0]?.batchConfigUsers || [],
+      batchVersions: batchVersions || [],
     },
   });
 }
