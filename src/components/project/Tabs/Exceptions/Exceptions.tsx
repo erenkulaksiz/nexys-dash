@@ -12,6 +12,7 @@ import ExceptionFilters from "@/components/project/ExceptionFilters";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
 import { Log } from "@/utils";
+import useDebounce from "@/hooks/useDebounce";
 import type { ExceptionFiltersProps } from "@/components/project/ExceptionFilters";
 
 export default function Exceptions() {
@@ -31,7 +32,20 @@ export default function Exceptions() {
     asc: filters.asc,
     types: filters.types,
     configUser: filters.configUser,
+    search: filters.search,
   });
+  const [search, setSearch] = useState<string>("");
+
+  const debouncedSearch = useDebounce(
+    () => {
+      setFilters({
+        ...filters,
+        search,
+      });
+    },
+    [search],
+    1500
+  );
 
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
@@ -125,6 +139,10 @@ export default function Exceptions() {
                   configUsers={configUsers}
                   configUser={filters.configUser}
                   batchVersion={filters.batchVersion}
+                  search={search}
+                  onSearchChange={(search) => {
+                    setSearch(search);
+                  }}
                 />
               </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>

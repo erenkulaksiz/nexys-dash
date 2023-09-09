@@ -1,7 +1,11 @@
 import Select from "@/components/Select";
 import Checkbox from "@/components/Checkbox";
 import View from "@/components/View";
+import Input from "@/components/Input";
+import Tooltip from "@/components/Tooltip";
 import { BsSortDownAlt, BsSortDown } from "react-icons/bs";
+import { FaSearch } from "react-icons/fa";
+import { MdInfoOutline } from "react-icons/md";
 
 export interface ExceptionFiltersProps {
   asc?: boolean;
@@ -15,6 +19,8 @@ export interface ExceptionFiltersProps {
   exceptionTypes?: any;
   configUsers?: any;
   configUser?: any;
+  search?: string;
+  onSearchChange?: (search: string) => void;
 }
 
 export default function ExceptionFilters({
@@ -26,6 +32,8 @@ export default function ExceptionFilters({
   batchVersions,
   configUsers,
   configUser,
+  search,
+  onSearchChange,
 }: ExceptionFiltersProps) {
   const _batchVersions = Array.isArray(batchVersions)
     ? batchVersions
@@ -143,8 +151,22 @@ export default function ExceptionFilters({
         className="h-8"
         value={configUser}
         id="select-user"
-        disabled
       />
+      <div className="flex flex-row gap-2">
+        <Input
+          icon={<FaSearch />}
+          placeholder="Search"
+          onChange={(e) => {
+            typeof onSearchChange == "function" &&
+              onSearchChange(e.target.value);
+          }}
+          value={search}
+          containerClassName="h-8"
+        />
+        <Tooltip outline content="Text search works on log path and messages.">
+          <MdInfoOutline size={14} />
+        </Tooltip>
+      </div>
     </div>
   );
 }

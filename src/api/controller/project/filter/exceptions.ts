@@ -13,7 +13,7 @@ export default async function filteredExceptions({
   project?: ObjectId;
   res: any;
 }) {
-  const { page, asc, types, path, batchVersion, configUser } = body;
+  const { page, asc, types, search, path, batchVersion, configUser } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const batchCollection = await db.collection(`batches-${project}`);
@@ -26,9 +26,42 @@ export default async function filteredExceptions({
         { "options.type": "AUTO:UNHANDLEDREJECTION" },
       ];
 
+  const exceptionUserMatch = {
+    "batch.config.user": configUser,
+  };
+
+  const exceptionVersionMatch = {
+    "batch.config.appVersion": batchVersion,
+  };
+
+  let exceptionMatch = { $match: {} };
+
+  if (configUser != "all" || batchVersion != "all") {
+    if (configUser != "all" && batchVersion != "all") {
+      exceptionMatch = {
+        $match: { $and: [exceptionUserMatch, exceptionVersionMatch] },
+      };
+    } else if (configUser != "all") {
+      exceptionMatch = { $match: exceptionUserMatch };
+    } else if (batchVersion != "all") {
+      exceptionMatch = { $match: exceptionVersionMatch };
+    }
+  }
+
   const exceptionsLength = await logCollection
     .aggregate(
       [
+        search.length == 0
+          ? {
+              $match: {},
+            }
+          : {
+              $match: {
+                $text: {
+                  $search: search,
+                },
+              },
+            },
         {
           $match: {
             $or: selectTypes,
@@ -49,16 +82,14 @@ export default async function filteredExceptions({
             preserveNullAndEmptyArrays: true,
           },
         },
-        batchVersion == "all"
-          ? {
-              $match: {},
-            }
-          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $match: exceptionMatch.$match,
+        },
         {
           $count: "count",
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
@@ -90,11 +121,9 @@ export default async function filteredExceptions({
             preserveNullAndEmptyArrays: true,
           },
         },
-        batchVersion == "all"
-          ? {
-              $match: {},
-            }
-          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $match: exceptionMatch.$match,
+        },
         {
           $group: {
             _id: "$options.type",
@@ -107,7 +136,7 @@ export default async function filteredExceptions({
           },
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
@@ -140,13 +169,24 @@ export default async function filteredExceptions({
           },
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
   const exceptions = await logCollection
     .aggregate(
       [
+        search.length == 0
+          ? {
+              $match: {},
+            }
+          : {
+              $match: {
+                $text: {
+                  $search: search,
+                },
+              },
+            },
         {
           $match: {
             $or: selectTypes,
@@ -167,11 +207,9 @@ export default async function filteredExceptions({
             preserveNullAndEmptyArrays: true,
           },
         },
-        batchVersion == "all"
-          ? {
-              $match: {},
-            }
-          : { $match: { "batch.config.appVersion": batchVersion } },
+        {
+          $match: exceptionMatch.$match,
+        },
         {
           $sort: {
             ts: asc ? 1 : -1,
@@ -184,7 +222,7 @@ export default async function filteredExceptions({
           $limit: 10,
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
@@ -208,7 +246,7 @@ export default async function filteredExceptions({
           },
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 
@@ -247,7 +285,7 @@ export default async function filteredExceptions({
           },
         },
       ],
-      { allowDiskUse: true }
+      { allowDiskUse: true, cursor: {} }
     )
     .toArray();
 

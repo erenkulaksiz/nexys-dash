@@ -186,7 +186,7 @@ export default function BatchPage(props: NexysComponentProps) {
                       >
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                           <div className="flex flex-col gap-2">
-                            <View.If hidden={!batch?.data?.data?.user}>
+                            <View.If hidden={!batch?.data?.data?.config?.user}>
                               <div className="flex flex-col gap-2 w-full">
                                 <label htmlFor="configUser">User</label>
                                 <Codeblock

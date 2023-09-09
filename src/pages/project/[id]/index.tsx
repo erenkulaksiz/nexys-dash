@@ -14,7 +14,6 @@ import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import useProject from "@/hooks/useProject";
-import Admin from "@/components/project/Tabs/Admin";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { GetServerSidePropsContext } from "next";
 import type { NexysComponentProps } from "@/types";
@@ -92,29 +91,17 @@ export default function ProjectPage(props: NexysComponentProps) {
                       }
                       tabChange={tab}
                     >
-                      {[
-                        ...Tabs,
-                        validatedUser?.isAdmin && {
-                          activeTitle: "admin",
-                          nonActiveTitle: "admin",
-                          id: "admin",
-                          children: <Admin />,
-                          disabled: false,
-                        },
-                      ].map((tab) => {
-                        if (!tab) return;
-                        return (
-                          <Tab.TabView
-                            activeTitle={tab.activeTitle}
-                            nonActiveTitle={tab.nonActiveTitle}
-                            id={tab.id}
-                            key={tab.id}
-                            disabled={tab?.disabled}
-                          >
-                            {tab.children}
-                          </Tab.TabView>
-                        );
-                      })}
+                      {Tabs.map((tab) => (
+                        <Tab.TabView
+                          activeTitle={tab.activeTitle}
+                          nonActiveTitle={tab.nonActiveTitle}
+                          id={tab.id}
+                          key={tab.id}
+                          disabled={tab?.disabled}
+                        >
+                          {tab.children}
+                        </Tab.TabView>
+                      ))}
                     </Tab>
                   </View.Else>
                 </View>

@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import AddProjectCard from "@/components/home/AddProjectCard";
+import AdminCard from "@/components/home/AdminCard";
 const ProjectCard = dynamic(() => import("@/components/home/ProjectCard"), {});
 import { ValidateToken } from "@/utils/api/validateToken";
 import { RiDashboardFill } from "react-icons/ri";
@@ -94,6 +95,7 @@ export default function HomePage(props: NexysComponentProps) {
                       )}
                     </View.If>
                     <AddProjectCard />
+                    {props?.validate?.data?.isAdmin && <AdminCard />}
                   </div>
                 </Container>
               </div>
