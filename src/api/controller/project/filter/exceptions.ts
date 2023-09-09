@@ -231,7 +231,7 @@ export default async function filteredExceptions({
       [
         {
           $match: {
-            "config.user": { $exists: true },
+            "config.user": { $exists: true, $ne: "" },
           },
         },
         {
