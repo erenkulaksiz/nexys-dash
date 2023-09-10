@@ -15,7 +15,8 @@ export default async function filteredExceptions({
   res: any;
 }) {
   const {
-    filters: { page, asc, types, search, path, batchVersion, configUser },
+    page,
+    filters: { asc, types, search, path, batchVersion, configUser },
   } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);

@@ -146,7 +146,7 @@ export default async function handler(
   await createSearchIndex(new ObjectId(project._id));
   await createIndex(new ObjectId(project._id));
 
-  await SendTelegramMessage({
+  SendTelegramMessage({
     message: `
 RECIEVED REPORT
 

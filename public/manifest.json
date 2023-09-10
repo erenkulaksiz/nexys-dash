@@ -1,0 +1,9 @@
+{
+  "name": "Nexys",
+  "short_name": "nexys",
+  "theme_color": "#DBFF00",
+  "background_color": "#DBFF00",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
