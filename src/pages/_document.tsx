@@ -12,9 +12,6 @@ export default function Document() {
         <meta name="description" content="Log. Track. Improve." />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-config" content="/icons/browserconfig.xml" />
-        <meta name="msapplication-TileColor" content="#2B5797" />
-        <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#000000" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -26,6 +23,10 @@ export default function Document() {
         <meta name="twitter:url" content="https://dash.nexys.app" />
         <meta name="twitter:title" content="Nexys" />
         <meta name="twitter:description" content="Log. Track. Improve." />
+        <meta
+          name="twitter:image"
+          content="https://dash.nexys.app/icons/android-chrome-192x192.png"
+        />
         <meta name="twitter:creator" content="@erencode" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Nexys" />
@@ -34,6 +35,7 @@ export default function Document() {
         <meta property="og:url" content="https://dash.nexys.app" />
       </head>
       <body>
+        <noscript>Please update your browser.</noscript>
         <Main />
         <NextScript />
       </body>

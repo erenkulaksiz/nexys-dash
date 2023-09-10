@@ -76,7 +76,22 @@ export default async function create(
     },
   };
 
-  await projectsCollection.insertOne(project);
+  const { insertedId } = await projectsCollection.insertOne(project);
+
+  await db.createCollection(`logs-${insertedId}`);
+  await db.createCollection(`batches-${insertedId}`);
+
+  // create indexes
+  const logCollection = await db.collection(`logs-${insertedId}`);
+  await logCollection.createIndex({
+    ts: 1,
+    batchId: 1,
+    "data.message": "text",
+    path: "text",
+    "options.type": 1,
+    "options.action": 1,
+    "data.value": 1,
+  });
 
   await SendTelegramMessage({
     message: `PROJECT CREATED

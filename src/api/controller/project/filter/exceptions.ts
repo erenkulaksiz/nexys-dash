@@ -86,7 +86,12 @@ export default async function filteredExceptions({
               { $limit: 10 },
             ],
             totalCount: [
-              { $match: { $or: selectTypes } },
+              {
+                $match: {
+                  $or: selectTypes,
+                  path: path == "all" ? { $exists: true } : path,
+                },
+              },
               {
                 $match: exceptionMatch,
               },
@@ -157,7 +162,7 @@ export default async function filteredExceptions({
               },
               {
                 $sort: {
-                  count: -1,
+                  _id: -1,
                 },
               },
             ],
