@@ -41,9 +41,7 @@ export default function ExceptionFilters({
     ? batchVersions
         ?.filter((el: any) => el.count > 0)
         .map((el: any) => {
-          const errors =
-            el["AUTO:ERROR"] + el["AUTO:UNHANDLEDREJECTION"] + el["ERROR"];
-          return { id: el._id, text: `${el._id} - ${errors} errors` };
+          return { id: el._id, text: `${el._id} - ${el.count} errors` };
         })
     : [];
 

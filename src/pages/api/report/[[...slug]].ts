@@ -87,7 +87,7 @@ export default async function handler(
     });
   }
 
-  const { logs, requests, ...rest } = data;
+  const { logs, requests, config, ...rest } = data;
 
   const logsCollection = await db.collection(`logs-${project._id}`);
   const batchesCollection = await db.collection(`batches-${project._id}`);
@@ -117,6 +117,10 @@ export default async function handler(
     logs.map((log: any) => ({
       ...log,
       batchId: batchInsert?.insertedId,
+      batchConfig: {
+        user: config?.user || null,
+        appVersion: config?.appVersion || null,
+      },
     }))
   );
 
@@ -134,8 +138,12 @@ export default async function handler(
     {
       $set: {
         updatedAt: Date.now(),
-        verified: isDomainHostSame ? true : false,
-        verifiedAt: isDomainHostSame ? Date.now() : 0,
+        verified: project.verified ? true : isDomainHostSame ? true : false,
+        verifiedAt: project.verifiedAt
+          ? true
+          : isDomainHostSame
+          ? Date.now()
+          : 0,
       },
       $inc: {
         logUsage: logs.length,
@@ -143,8 +151,8 @@ export default async function handler(
     }
   );
 
-  await createSearchIndex(new ObjectId(project._id));
-  await createIndex(new ObjectId(project._id));
+  //await createSearchIndex(new ObjectId(project._id));
+  //await createIndex(new ObjectId(project._id));
 
   SendTelegramMessage({
     message: `

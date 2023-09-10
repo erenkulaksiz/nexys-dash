@@ -134,13 +134,13 @@ export default function LogCard({
           <View.If hidden={!log._id}>
             <LogCardEntry title="ID" value={log._id} />
           </View.If>
-          <View.If hidden={!log?.batch?.config?.user}>
-            <LogCardEntry title="User" value={log?.batch?.config?.user} />
+          <View.If hidden={!log?.batchConfig?.user}>
+            <LogCardEntry title="User" value={log?.batchConfig?.user} />
           </View.If>
-          <View.If hidden={!log?.batch?.config?.appVersion}>
+          <View.If hidden={!log?.batchConfig?.appVersion}>
             <LogCardEntry
               title="App Version"
-              value={log?.batch?.config?.appVersion}
+              value={log?.batchConfig?.appVersion}
             />
           </View.If>
           <View.If hidden={!log?.batch?.env?.type}>

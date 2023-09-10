@@ -20,7 +20,6 @@ export default async function filteredExceptions({
   } = body;
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
-  const batchCollection = await db.collection(`batches-${project}`);
 
   if (search?.length > LIMITS.MAX.PROJECT_LOG_SEARCH_TEXT_LENGTH) {
     return reject({ res, reason: "search-maxlength" });
@@ -35,11 +34,11 @@ export default async function filteredExceptions({
       ];
 
   const exceptionUserMatch = {
-    "batch.config.user": configUser,
+    "batchConfig.user": configUser,
   };
 
   const exceptionVersionMatch = {
-    "batch.config.appVersion": batchVersion,
+    "batchConfig.appVersion": batchVersion,
   };
 
   let exceptionMatch = {};
@@ -71,35 +70,26 @@ export default async function filteredExceptions({
               },
             },
         {
-          $match: {
-            $or: selectTypes,
-            path: path == "all" ? { $exists: true } : path,
-          },
-        },
-        {
-          $lookup: {
-            from: `batches-${project}`,
-            localField: "batchId",
-            foreignField: "_id",
-            as: "batch",
-          },
-        },
-        {
-          $unwind: {
-            path: "$batch",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $match: exceptionMatch,
-        },
-        {
           $facet: {
             paginatedResults: [
+              {
+                $match: {
+                  $or: selectTypes,
+                  path: path == "all" ? { $exists: true } : path,
+                },
+              },
+              {
+                $match: exceptionMatch,
+              },
+              { $sort: { ts: asc ? 1 : -1 } },
               { $skip: Math.floor(page ? page * 10 : 0) },
               { $limit: 10 },
             ],
             totalCount: [
+              { $match: { $or: selectTypes } },
+              {
+                $match: exceptionMatch,
+              },
               {
                 $count: "count",
               },
@@ -136,12 +126,32 @@ export default async function filteredExceptions({
             batchConfigUsers: [
               {
                 $match: {
-                  "batch.config.user": { $exists: true, $ne: "" },
+                  "batchConfig.user": { $exists: true, $ne: null },
+                  $or: selectTypes,
                 },
               },
               {
                 $group: {
-                  _id: "$batch.config.user",
+                  _id: "$batchConfig.user",
+                  count: { $sum: 1 },
+                },
+              },
+              {
+                $sort: {
+                  count: -1,
+                },
+              },
+            ],
+            batchVersions: [
+              {
+                $match: {
+                  "batchConfig.appVersion": { $exists: true, $ne: null },
+                  $or: selectTypes,
+                },
+              },
+              {
+                $group: {
+                  _id: "$batchConfig.appVersion",
                   count: { $sum: 1 },
                 },
               },
@@ -179,50 +189,6 @@ export default async function filteredExceptions({
             ],
           },
         },
-        {
-          $sort: {
-            ts: asc ? 1 : -1,
-          },
-        },
-      ],
-      { allowDiskUse: true, cursor: {} }
-    )
-    .toArray();
-
-  const batchVersions = await batchCollection
-    .aggregate(
-      [
-        {
-          $match: {
-            "config.appVersion": { $exists: true },
-          },
-        },
-        {
-          $group: {
-            _id: "$config.appVersion",
-            count: { $sum: 1 },
-            ERROR: {
-              $sum: "$logTypes.ERROR",
-            },
-            "AUTO:ERROR": {
-              $sum: "$logTypes.AUTO:ERROR",
-            },
-            "AUTO:UNHANDLEDREJECTION": {
-              $sum: "$logTypes.AUTO:UNHANDLEDREJECTION",
-            },
-            METRIC: {
-              $sum: "$logTypes.METRIC",
-            },
-            OTHER: {
-              $sum: "$logTypes.undefined",
-            },
-          },
-        },
-        {
-          $sort: {
-            _id: -1,
-          },
-        },
       ],
       { allowDiskUse: true, cursor: {} }
     )
@@ -236,7 +202,7 @@ export default async function filteredExceptions({
       exceptionTypes: exceptions[0]?.exceptionTypes || [],
       exceptionPaths: exceptions[0]?.paths || [],
       batchConfigUsers: exceptions[0]?.batchConfigUsers || [],
-      batchVersions: batchVersions || [],
+      batchVersions: exceptions[0]?.batchVersions || [],
     },
   });
 }
