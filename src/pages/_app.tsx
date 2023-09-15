@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import "@/firebase";
+import { useEffect } from "react";
 import Progress from "nextjs-progressbar";
 import { ThemeProvider } from "next-themes";
 import { version } from "@/utils";
@@ -12,9 +13,15 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   }
 }
 
-nexys.configure((config) => config.setAppVersion(version));
+nexys.configure((config) => {
+  config.setAppVersion(version);
+});
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    nexys.init();
+  }, []);
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <Progress options={{ showSpinner: false }} color="#B5D200" />
