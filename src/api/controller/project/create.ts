@@ -40,6 +40,14 @@ export default async function create(
     return reject({ res, reason: "max-projects" });
   }
 
+  if (domain.length > LIMITS.MAX.PROJECT_DOMAIN_CHARACTER_LENGTH) {
+    return reject({ res, reason: "max-domain-length" });
+  }
+
+  if (domain.includes(" ")) {
+    return reject({ res, reason: "domain-invalid" });
+  }
+
   // Make sure this domain is not taken
   const domainExist = await projectsCollection.findOne({
     domain,
@@ -83,6 +91,7 @@ export default async function create(
 
   // create indexes
   const logCollection = await db.collection(`logs-${insertedId}`);
+  const batchCollection = await db.collection(`batches-${insertedId}`);
   await logCollection.createIndex({
     ts: 1,
     batchId: 1,
@@ -91,6 +100,11 @@ export default async function create(
     "options.type": 1,
     "options.action": 1,
     "data.value": 1,
+  });
+  await batchCollection.createIndex({
+    "config.appVersion": 1,
+    "config.user": "text",
+    "config.platform": 1,
   });
 
   await SendTelegramMessage({

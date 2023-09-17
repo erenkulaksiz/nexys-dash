@@ -119,6 +119,20 @@ export default function AddProject() {
       });
       return;
     }
+    if (state.domain.includes(" ")) {
+      dispatch({
+        type: AddProjectActionType.SET_DOMAIN_ERROR,
+        payload: "Domain must not contain spaces.",
+      });
+      return;
+    }
+    if (state.name.includes(" ")) {
+      dispatch({
+        type: AddProjectActionType.SET_NAME_ERROR,
+        payload: "App name must not contain spaces.",
+      });
+      return;
+    }
 
     nexys.log(
       {
@@ -139,7 +153,7 @@ export default function AddProject() {
         </h1>
         <div className="flex flex-col gap-2 px-4">
           <label htmlFor="projectName" className="font-semibold">
-            App Name
+            Project Name
           </label>
           <Input
             type="text"
@@ -152,7 +166,7 @@ export default function AddProject() {
                 payload: formatString(e.target.value).toLocaleLowerCase(),
               })
             }
-            placeholder="Project Name"
+            placeholder="myapp"
             maxLength={LIMITS.MAX.PROJECT_NAME_CHARACTER_LENGTH}
           />
           <span className="text-neutral-500 text-sm">
@@ -177,7 +191,7 @@ export default function AddProject() {
             onChange={(e) =>
               dispatch({
                 type: AddProjectActionType.SET_DOMAIN,
-                payload: e.target.value,
+                payload: e.target.value.replace(" ", ""),
               })
             }
             placeholder="example.com"
