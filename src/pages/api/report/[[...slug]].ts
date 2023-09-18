@@ -121,6 +121,7 @@ export default async function handler(
         user: config?.user || null,
         appVersion: config?.appVersion || null,
       },
+      batchIp: ip,
     }))
   );
 
@@ -151,9 +152,7 @@ export default async function handler(
     }
   );
 
-  //await createSearchIndex(new ObjectId(project._id));
-  //await createIndex(new ObjectId(project._id));
-
+  /*
   SendTelegramMessage({
     message: `
 RECIEVED REPORT
@@ -166,6 +165,7 @@ RECIEVED REPORT
 
 Limit: ${logUsage + 1}/${logUsageLimit}`,
   });
+*/
 
   return accept({
     res,

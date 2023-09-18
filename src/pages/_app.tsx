@@ -13,13 +13,12 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   }
 }
 
-nexys.configure((config) => {
-  config.setAppVersion(version);
-});
-
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     nexys.init();
+    nexys.configure((config) => {
+      config.setAppVersion(version);
+    });
   }, []);
 
   return (

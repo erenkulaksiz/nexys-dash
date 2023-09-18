@@ -78,10 +78,12 @@ export default async function create(
     logUsageLimit: LIMITS.MAX.LOG_USAGE_LIMIT,
     plan: "free",
     planExpireAt: 0,
+    /*
     telegram: {
       botId: "",
       targetId: "",
     },
+    */
   };
 
   const { insertedId } = await projectsCollection.insertOne(project);
