@@ -97,7 +97,7 @@ export async function createIndex(project: ObjectId | null) {
   const { db } = await connectToDatabase();
   const logCollection = await db.collection(`logs-${project}`);
   const batchCollection = await db.collection(`batches-${project}`);
-  const usersCollection = await db.collection(`users-${project}`);
+  const usersCollection = await db.collection(`users`);
 
   await logCollection.createIndex({
     "options.type": 1,
@@ -111,4 +111,42 @@ export async function createIndex(project: ObjectId | null) {
   });
   await usersCollection.createIndex({ email: 1, username: 1, uid: 1 });
   Log.debug("Created indexes!");
+}
+
+/**
+ * check whether user is admin or not
+ */
+export async function checkAdminAuth({
+  req,
+  res,
+  func,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  func: (
+    req: NextApiRequest,
+    res: NextApiResponse<any>,
+    validateUser: ValidateUserReturnType
+  ) => Promise<void>;
+}): Promise<void> {
+  const { db } = await connectToDatabase();
+  const usersCollection = await db.collection(`users`);
+  const { body } = req;
+  if (!body && !body.uid) return reject({ res, reason: "no-auth-params" }); // assuming all auth routes have uid in body
+  const { uid } = body;
+  const bearer = getTokenFromHeader(req);
+  if (!bearer) return reject({ res, reason: "no-auth" });
+  const validateUser = await ValidateUser({ token: bearer });
+  //Log.debug("validateUser: ", validateUser);
+  if (validateUser && !validateUser.decodedToken)
+    return reject({ reason: validateUser.errorCode, res });
+  if (validateUser.decodedToken.uid !== uid)
+    return reject({ res, reason: "auth-uid-error" });
+
+  const user = await usersCollection.findOne({ uid });
+
+  if (!user || !user.isAdmin)
+    return reject({ res, reason: "you are not admin buddy" });
+
+  return func(req, res, validateUser);
 }

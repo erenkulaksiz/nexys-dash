@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { accept, checkUserAuth } from "@/api/utils";
+import { accept, checkUserAuth, checkAdminAuth } from "@/api/utils";
 import { projects } from "./projects";
 import signup from "./auth/signup";
 import create from "./project/create";
@@ -9,6 +9,7 @@ import deleteproject from "./project/delete";
 import setting from "./project/setting";
 import logs from "./project/logs";
 import batch from "./project/batch";
+import admin from "./admin";
 
 import details from "./project/path/details";
 
@@ -17,6 +18,7 @@ type APIReturnType = (req: NextApiRequest, res: NextApiResponse) => void;
 export interface ControllerReturnType {
   ping: APIReturnType;
   projects: APIReturnType;
+  admin: APIReturnType;
   auth: {
     signup: APIReturnType;
   };
@@ -28,8 +30,8 @@ export interface ControllerReturnType {
     logs: APIReturnType;
     batch: APIReturnType;
     path: {
-      details: APIReturnType
-    }
+      details: APIReturnType;
+    };
   };
 }
 
@@ -40,6 +42,8 @@ export function Controller(): ControllerReturnType {
     },
     projects: (req: NextApiRequest, res: NextApiResponse) =>
       checkUserAuth({ req, res, func: projects }),
+    admin: (req: NextApiRequest, res: NextApiResponse) =>
+      checkAdminAuth({ req, res, func: admin }),
     auth: {
       signup,
     },
@@ -59,7 +63,7 @@ export function Controller(): ControllerReturnType {
       path: {
         details: (req: NextApiRequest, res: NextApiResponse) =>
           checkUserAuth({ req, res, func: details }),
-      }
+      },
     },
   };
 }

@@ -5,6 +5,8 @@ export interface TabProps {
   onTabChange?: ({ index, id }: { index: number; id: string }) => void;
   defaultTab?: string;
   tabChange?: string;
+  showTabViews?: boolean;
+  showTabs?: boolean;
 }
 
 export interface TabViewProps {

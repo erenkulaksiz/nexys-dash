@@ -238,7 +238,7 @@ export default function BatchPage(props: NexysComponentProps) {
                         }
                         id="device"
                       >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 pb-2">
                           <div className="flex flex-col gap-2">
                             <View.If
                               hidden={!batch?.data?.data?.deviceData?.userAgent}

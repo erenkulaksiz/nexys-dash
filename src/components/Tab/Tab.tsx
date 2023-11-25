@@ -11,6 +11,8 @@ function Tab({
   onTabChange,
   defaultTab,
   tabChange,
+  showTabViews = true,
+  showTabs = true,
 }: TabProps) {
   const [activeTab, setActiveTab] = useState<number>(
     defaultTabStringToIndex(defaultTab)
@@ -55,7 +57,7 @@ function Tab({
   return (
     <>
       <div className={BuildTab.classes}>
-        <View.If visible={Array.isArray(children)}>
+        <View.If visible={Array.isArray(children) && showTabs}>
           {children.map((child, index) => {
             if (!child || !isValidElement(child)) return;
             const props = child.props as TabViewProps;
@@ -87,7 +89,9 @@ function Tab({
           })}
         </View.If>
       </div>
-      <View.If visible={Array.isArray(children)}>{children[activeTab]}</View.If>
+      <View.If visible={Array.isArray(children) && showTabViews}>
+        {children[activeTab]}
+      </View.If>
     </>
   );
 }
