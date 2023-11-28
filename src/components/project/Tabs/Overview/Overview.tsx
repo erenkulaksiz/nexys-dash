@@ -29,11 +29,14 @@ export default function Overview() {
   const project = useProjectStore((state) => state.currentProject);
   const router = useRouter();
   const id = router.query.id;
+  const isProjectNew = project?.logUsage === 0;
 
-  const projectScore = Math.floor(
-    // @ts-ignore
-    100 - (project?.errorCount / project?.logCount) * 100
-  );
+  const projectScore = isProjectNew
+    ? 100
+    : Math.floor(
+        // @ts-ignore
+        100 - (project?.errorCount / project?.logCount) * 100
+      );
 
   function getProjectScoreMessage(score: number) {
     if (score > 80) {
@@ -73,7 +76,12 @@ export default function Overview() {
             <IoFlagOutline />
             <span>Project Score</span>
           </div>
-          <div className="p-4 flex flex-col items-center gap-2">
+          <div className="p-4 flex flex-col items-center gap-2 relative">
+            <View.If visible={isProjectNew}>
+              <div className="backdrop-blur-sm bg-white/50 dark:bg-black/50 inset-0 absolute z-50 flex justify-center items-center">
+                Start logging to see your score.
+              </div>
+            </View.If>
             <div
               className={
                 BuildComponent({
@@ -90,7 +98,11 @@ export default function Overview() {
               <div className="flex flex-row w-full items-center justify-center gap-1">
                 <Tooltip
                   outline
-                  content="Project score calculated by (error/total) logs."
+                  content={
+                    isProjectNew
+                      ? "i knew you would check this"
+                      : "Project score calculated by (error/total) logs."
+                  }
                 >
                   <MdInfoOutline size={14} />
                 </Tooltip>

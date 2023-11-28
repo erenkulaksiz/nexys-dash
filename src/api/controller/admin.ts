@@ -33,6 +33,10 @@ export default async function admin(
                   email: 1,
                   createdAt: 1,
                   updatedAt: 1,
+                  provider: 1,
+                  fullname: 1,
+                  emailVerified: 1,
+                  avatar: 1,
                 },
               },
               {

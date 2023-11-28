@@ -9,24 +9,24 @@ export default function Table({
   const BuildTable = BuildComponent({
     name: "Table",
     defaultClasses:
-      "flex flex-col overflow-auto w-full border border-neutral-200 dark:border-neutral-900 p-4",
+      "flex flex-col overflow-auto p-4 border border-neutral-200 dark:border-neutral-900",
     extraClasses: containerClassName,
   });
 
   return (
     <div className={BuildTable.classes}>
-      <div className="flex flex-row w-full pb-2 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+      <div className="flex flex-row min-w-max border-b pb-2 border-neutral-200 dark:border-neutral-900">
         {columns.map((column) => (
-          <div key={column} className="flex w-full font-bold">
+          <div key={column} className="flex font-bold min-w-[280px]">
             {column}
           </div>
         ))}
       </div>
-      <div className="flex flex-col w-full pt-2">
+      <div className="flex flex-col min-w-max pt-2">
         {data?.map((row: any) => (
           <div key={row.uid} className="flex flex-row">
             {columns.map((column) => (
-              <div key={row[column]} className="flex w-full">
+              <div key={row[column]} className="flex min-w-[280px]">
                 {row[column]}
               </div>
             ))}

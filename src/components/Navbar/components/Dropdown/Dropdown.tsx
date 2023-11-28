@@ -14,6 +14,7 @@ import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
 import { useAuthStore } from "@/stores/authStore";
 import { nexys } from "@/utils/nexys";
+import { RiVipDiamondLine } from "react-icons/ri";
 
 export default function Dropdown() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -101,10 +102,10 @@ export default function Dropdown() {
               </Button>
             </Tooltip>
           </div>
-          <Button title="profile" fullWidth onClick={() => {}}>
-            <FaUser />
-            <span className="ml-1">profile</span>
-          </Button>
+          {/*<Button title="plans" fullWidth onClick={() => {}}>
+            <RiVipDiamondLine />
+            <span className="ml-1">plans</span>
+            </Button>*/}
           <Button title="log out" fullWidth onClick={signout}>
             <MdLogout />
             <span className="ml-1">log out</span>

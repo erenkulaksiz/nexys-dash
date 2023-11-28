@@ -27,25 +27,20 @@ export default function AdminPage(props: NexysComponentProps) {
   const totalPages = Math.ceil(admin?.data?.data?.usersLength / 10);
 
   return (
-    <Layout {...props} withoutLayout>
+    <Layout {...props}>
       <WithAuth {...props}>
-        <main className="flex flex-col overflow-y-auto overflow-x-hidden h-full">
-          <Navbar />
-          <Container className="pb-4">
-            <Tab
-              id="admintab"
-              onTabChange={({ id }) => setPageType(id as "users" | "projects")}
-            >
-              <Tab.TabView
-                activeTitle="users"
-                nonActiveTitle="users"
-                id="users"
-              >
-                {loading && !admin?.data?.data?.users ? (
-                  <LoadingOverlay />
-                ) : (
-                  <div className="mt-2 flex flex-col gap-2">
-                    {/*<Pager
+        <Navbar />
+        <Container className="pb-4">
+          <Tab
+            id="admintab"
+            onTabChange={({ id }) => setPageType(id as "users" | "projects")}
+          >
+            <Tab.TabView activeTitle="users" nonActiveTitle="users" id="users">
+              {loading && !admin?.data?.data?.users ? (
+                <LoadingOverlay />
+              ) : (
+                <div className="mt-2 flex flex-col gap-2">
+                  {/*<Pager
                       currentPage={1}
                       totalPages={totalPages}
                       perPage={10}
@@ -53,38 +48,41 @@ export default function AdminPage(props: NexysComponentProps) {
                       onNextClick={() => {}}
                       onPreviousClick={() => {}}
                     />*/}
-                    <Table
-                      columns={[
-                        "username",
-                        "email",
-                        "subscription",
-                        "createdAt",
-                      ]}
-                      data={admin?.data?.data?.users?.map((user: any) => {
-                        return {
-                          ...user,
-                          subscription: user.subscription || "free",
-                          createdAt: formatDateToHuman({
-                            date: user.createdAt,
-                            output:
-                              "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
-                          }),
-                        };
-                      })}
-                    />
-                  </div>
-                )}
-              </Tab.TabView>
-              <Tab.TabView
-                activeTitle="projects"
-                nonActiveTitle="projects"
-                id="projects"
-              >
-                <div>halo2</div>
-              </Tab.TabView>
-            </Tab>
-          </Container>
-        </main>
+                  <Table
+                    columns={[
+                      "username",
+                      "email",
+                      "subscription",
+                      "createdAt",
+                      "provider",
+                      "uid",
+                      "emailVerified",
+                    ]}
+                    data={admin?.data?.data?.users?.map((user: any) => {
+                      return {
+                        ...user,
+                        subscription: user.subscription || "free",
+                        createdAt: formatDateToHuman({
+                          date: user.createdAt,
+                          output:
+                            "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+                        }),
+                        emailVerified: user.emailVerified ? "true" : "false",
+                      };
+                    })}
+                  />
+                </div>
+              )}
+            </Tab.TabView>
+            <Tab.TabView
+              activeTitle="projects"
+              nonActiveTitle="projects"
+              id="projects"
+            >
+              <div>halo2</div>
+            </Tab.TabView>
+          </Tab>
+        </Container>
       </WithAuth>
     </Layout>
   );

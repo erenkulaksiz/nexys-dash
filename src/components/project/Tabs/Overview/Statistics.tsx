@@ -28,6 +28,11 @@ ChartJS.register(
 
 export default function Statistics() {
   const project = useProjectStore((state) => state.currentProject);
+  const isProjectNew = project?.logUsage === 0;
+
+  if (isProjectNew) {
+    return <span className="text-sm text-neutral-500">No paths yet.</span>;
+  }
 
   const ExceptionRateLabels = useMemo(
     () =>

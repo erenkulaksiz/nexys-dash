@@ -27,81 +27,79 @@ export default function HomePage(props: NexysComponentProps) {
   });
 
   return (
-    <Layout {...props} withoutLayout>
+    <Layout {...props}>
       <WithAuth {...props}>
         <Head>
           <title>Nex · Dashboard</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex flex-col overflow-y-auto overflow-x-hidden h-full">
-          <Navbar />
-          <Container>
-            <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
-              <RiDashboardFill size={20} />
-              <h1 className="text-xl font-semibold">Projects</h1>
+        <Navbar />
+        <Container>
+          <div className="flex flex-row py-4 pb-4 items-center h-full gap-2">
+            <RiDashboardFill size={20} />
+            <h1 className="text-xl font-semibold">Projects</h1>
+          </div>
+        </Container>
+        <View viewIf={loading}>
+          <View.If>
+            <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
+              <Container>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
+                  {Array.from(Array(6)).map((_, index) => (
+                    <div
+                      key={index}
+                      className="animate-pulse relative group flex items-center justify-center dark:bg-neutral-900 bg-neutral-100 rounded-lg p-4 h-32"
+                    ></div>
+                  ))}
+                </div>
+              </Container>
             </div>
-          </Container>
-          <View viewIf={loading}>
-            <View.If>
-              <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
-                <Container>
-                  <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
-                    {Array.from(Array(6)).map((_, index) => (
-                      <div
-                        key={index}
-                        className="animate-pulse relative group flex items-center justify-center dark:bg-neutral-900 bg-neutral-100 rounded-lg p-4 h-32"
-                      ></div>
-                    ))}
-                  </div>
-                </Container>
-              </div>
-            </View.If>
-            <View.Else>
-              <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
-                <Container>
-                  <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
-                    <View.If
-                      visible={
-                        Array.isArray(projects?.data?.data) &&
-                        projects?.data?.data?.length != 0
-                      }
-                    >
-                      {projects?.data?.data?.map(
-                        (project: ProjectTypes, index: number) => (
-                          <Link
-                            key={project._id?.toString()}
-                            href={{
-                              pathname: "/project/[id]",
-                              query: { id: project.name?.toString() },
-                            }}
-                          >
-                            <ProjectCard project={project} />
-                            <View.If
-                              visible={
-                                projects?.data?.data.length - 1 == index &&
-                                newProject
-                              }
-                            >
-                              <ConfettiExplosion
-                                force={0.4}
-                                duration={2000}
-                                particleCount={100}
-                                width={1920}
-                              />
-                            </View.If>
-                          </Link>
-                        )
-                      )}
-                    </View.If>
-                    <AddProjectCard />
+          </View.If>
+          <View.Else>
+            <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
+              <Container>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
+                  <View.If
+                    visible={
+                      Array.isArray(projects?.data?.data) &&
+                      projects?.data?.data?.length != 0
+                    }
+                  >
                     {props?.validate?.data?.isAdmin && <AdminCard />}
-                  </div>
-                </Container>
-              </div>
-            </View.Else>
-          </View>
-        </main>
+                    {projects?.data?.data?.map(
+                      (project: ProjectTypes, index: number) => (
+                        <Link
+                          key={project._id?.toString()}
+                          href={{
+                            pathname: "/project/[id]",
+                            query: { id: project.name?.toString() },
+                          }}
+                        >
+                          <ProjectCard project={project} />
+                          <View.If
+                            visible={
+                              projects?.data?.data.length - 1 == index &&
+                              newProject
+                            }
+                          >
+                            <ConfettiExplosion
+                              force={0.4}
+                              duration={2000}
+                              particleCount={100}
+                              width={1920}
+                            />
+                          </View.If>
+                        </Link>
+                      )
+                    )}
+                  </View.If>
+                  <AddProjectCard />
+                </div>
+              </Container>
+            </div>
+          </View.Else>
+        </View>
       </WithAuth>
     </Layout>
   );

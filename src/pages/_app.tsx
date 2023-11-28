@@ -7,6 +7,8 @@ import { version } from "@/utils";
 import { nexys } from "@/utils/nexys";
 import type { AppProps, NextWebVitalsMetric } from "next/app";
 
+nexys.init();
+
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   if (metric.label === "web-vital") {
     nexys.metric(metric);
@@ -15,7 +17,6 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    nexys.init();
     nexys.configure((config) => {
       config.setAppVersion(version);
     });

@@ -30,9 +30,9 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
   }
 
   return (
-    <nav className="sticky top-0  py-4 w-full z-50 border-b-[1px] border-neutral-200 dark:border-neutral-900">
-      <Container className="flex justify-between ">
-        <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-md -z-10"></div>
+    <nav className="sticky top-0 py-4 w-full z-50 border-b-[1px] border-neutral-200 dark:border-neutral-900 transition-colors ease-in-out duration-400">
+      <Container className="flex justify-between">
+        <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-md -z-10 transition-colors ease-in-out duration-400"></div>
         <Link
           href={authUser ? "/" : "/auth/signin"}
           title={authUser ? "Home" : "Sign in"}
@@ -52,7 +52,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
                   }
                   style={{ imageRendering: "crisp-edges" }}
                 />
-                <span className="flex px-[6px] rounded-lg items-center justify-center text-xs text-neutral-400 dark:text-neutral-600 dark:bg-neutral-900 bg-neutral-100">
+                <span className="flex px-[6px] rounded-lg items-center justify-center text-xs text-neutral-400 dark:text-neutral-600 dark:bg-neutral-900 bg-neutral-100 transition-colors ease-in-out duration-400">
                   ALPHA
                 </span>
               </div>

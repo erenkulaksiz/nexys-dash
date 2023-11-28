@@ -56,59 +56,57 @@ export default function VerifyPage(props: NexysComponentProps) {
   }
 
   return (
-    <Layout withoutLayout {...props}>
+    <Layout {...props}>
       <WithAuth {...props}>
         <Head>
           <title>Nex · Verify</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        <main className="h-full">
-          <Navbar hideAuth />
-          <Container className="flex justify-center h-full items-center">
-            <div className="flex flex-col h-full items-start justify-center w-[400px] gap-2">
-              <h1 className="text-2xl font-bold">Email Verification</h1>
+        <Navbar hideAuth />
+        <Container className="flex justify-center h-full items-center">
+          <div className="flex flex-col h-full items-start justify-center w-[400px] gap-2">
+            <h1 className="text-2xl font-bold">Email Verification</h1>
+            <p className="text-neutral-500 text-sm">
+              {"We've sent an email to "}
+              <span className="text-neutral-400 font-bold">
+                {authUser?.email}
+              </span>
+              {
+                " with a link to verify your email address. If you don't see it, check your spam folder."
+              }
+            </p>
+            <p className="text-neutral-500 text-sm">
+              After clicking the link we sent you, just refresh this page.
+            </p>
+            <div className="flex flex-row gap-2">
+              <View.If hidden={sent}>
+                <Button
+                  className="px-2"
+                  onClick={onSendAgain}
+                  loading={sending}
+                >
+                  <MdRefresh />
+                  <span className="ml-1">Send again</span>
+                </Button>
+              </View.If>
+              <Button className="px-2" onClick={signout}>
+                <MdLogout />
+                <span className="ml-1">Sign out</span>
+              </Button>
+            </div>
+            <View.If visible={sent}>
               <p className="text-neutral-500 text-sm">
-                {"We've sent an email to "}
+                {"We've sent another verification link to "}
                 <span className="text-neutral-400 font-bold">
                   {authUser?.email}
                 </span>
-                {
-                  " with a link to verify your email address. If you don't see it, check your spam folder."
-                }
               </p>
-              <p className="text-neutral-500 text-sm">
-                After clicking the link we sent you, just refresh this page.
-              </p>
-              <div className="flex flex-row gap-2">
-                <View.If hidden={sent}>
-                  <Button
-                    className="px-2"
-                    onClick={onSendAgain}
-                    loading={sending}
-                  >
-                    <MdRefresh />
-                    <span className="ml-1">Send again</span>
-                  </Button>
-                </View.If>
-                <Button className="px-2" onClick={signout}>
-                  <MdLogout />
-                  <span className="ml-1">Sign out</span>
-                </Button>
-              </div>
-              <View.If visible={sent}>
-                <p className="text-neutral-500 text-sm">
-                  {"We've sent another verification link to "}
-                  <span className="text-neutral-400 font-bold">
-                    {authUser?.email}
-                  </span>
-                </p>
-              </View.If>
-              <View.If visible={!!error}>
-                <p className="text-neutral-500 text-sm">{error}</p>
-              </View.If>
-            </div>
-          </Container>
-        </main>
+            </View.If>
+            <View.If visible={!!error}>
+              <p className="text-neutral-500 text-sm">{error}</p>
+            </View.If>
+          </div>
+        </Container>
       </WithAuth>
     </Layout>
   );

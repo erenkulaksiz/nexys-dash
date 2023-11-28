@@ -109,6 +109,8 @@ export default async function handler(
   const batchInsert = await batchesCollection.insertOne({
     ...rest,
     createdAt: Date.now(),
+    requests,
+    config,
     logTypes,
     ip,
   });

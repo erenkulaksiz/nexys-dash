@@ -12,7 +12,7 @@ export default function Header() {
   const loading = useProjectStore((state) => state.loading);
 
   return (
-    <div className="flex z-40 flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+    <div className="flex z-40 w-full flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
       <Container className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2">
           <View viewIf={loading}>

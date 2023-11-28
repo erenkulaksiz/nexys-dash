@@ -31,7 +31,7 @@ export default function ProjectPage(props: NexysComponentProps) {
   const tab = router.query.page?.toString() || "";
 
   return (
-    <Layout {...props} withoutLayout>
+    <Layout {...props}>
       <WithAuth {...props}>
         <Head>
           <title>
@@ -44,71 +44,69 @@ export default function ProjectPage(props: NexysComponentProps) {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex flex-col overflow-y-auto overflow-x-hidden h-full">
-          <Navbar />
-          <View viewIf={notFound}>
-            <View.If>
-              <div className="flex flex-col items-center justify-center h-1/2">
-                <h1 className="text-2xl font-semibold">Project not found</h1>
-                <h2 className="text-neutral-500">
-                  The project you are looking for does not exist
-                </h2>
-              </div>
-            </View.If>
-            <View.Else>
-              <Header />
-              <Container className="pt-1">
-                <View viewIf={loading}>
-                  <View.If>
-                    <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
-                      <div className="flex flex-row gap-2">
-                        {Array.from(Array(6)).map((_, index) => (
-                          <div
-                            key={index}
-                            className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
-                          ></div>
-                        ))}
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                        <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                      </div>
-                    </div>
-                  </View.If>
-                  <View.Else>
-                    <Tab
-                      id="dashboard"
-                      defaultTab={props?.query?.page}
-                      onTabChange={({ id }) =>
-                        router.push(
-                          {
-                            pathname: `/project/[id]`,
-                            query,
-                          },
-                          `/project/${query}?page=${id}`,
-                          { shallow: true }
-                        )
-                      }
-                      tabChange={tab}
-                    >
-                      {Tabs.map((tab) => (
-                        <Tab.TabView
-                          activeTitle={tab.activeTitle}
-                          nonActiveTitle={tab.nonActiveTitle}
-                          id={tab.id}
-                          key={tab.id}
-                          disabled={tab?.disabled}
-                        >
-                          {tab.children}
-                        </Tab.TabView>
+        <Navbar />
+        <View viewIf={notFound}>
+          <View.If>
+            <div className="flex flex-col items-center justify-center h-1/2">
+              <h1 className="text-2xl font-semibold">Project not found</h1>
+              <h2 className="text-neutral-500">
+                The project you are looking for does not exist
+              </h2>
+            </div>
+          </View.If>
+          <View.Else>
+            <Header />
+            <Container className="pt-1">
+              <View viewIf={loading}>
+                <View.If>
+                  <div className="animate-pulse flex flex-col w-full gap-2 pt-1">
+                    <div className="flex flex-row gap-2">
+                      {Array.from(Array(6)).map((_, index) => (
+                        <div
+                          key={index}
+                          className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                        ></div>
                       ))}
-                    </Tab>
-                  </View.Else>
-                </View>
-              </Container>
-            </View.Else>
-          </View>
-        </main>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                    </div>
+                  </div>
+                </View.If>
+                <View.Else>
+                  <Tab
+                    id="dashboard"
+                    defaultTab={props?.query?.page}
+                    onTabChange={({ id }) =>
+                      router.push(
+                        {
+                          pathname: `/project/[id]`,
+                          query,
+                        },
+                        `/project/${query}?page=${id}`,
+                        { shallow: true }
+                      )
+                    }
+                    tabChange={tab}
+                  >
+                    {Tabs.map((tab) => (
+                      <Tab.TabView
+                        activeTitle={tab.activeTitle}
+                        nonActiveTitle={tab.nonActiveTitle}
+                        id={tab.id}
+                        key={tab.id}
+                        disabled={tab?.disabled}
+                      >
+                        {tab.children}
+                      </Tab.TabView>
+                    ))}
+                  </Tab>
+                </View.Else>
+              </View>
+            </Container>
+          </View.Else>
+        </View>
       </WithAuth>
     </Layout>
   );
