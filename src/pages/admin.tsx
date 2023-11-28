@@ -45,14 +45,14 @@ export default function AdminPage(props: NexysComponentProps) {
                   <LoadingOverlay />
                 ) : (
                   <div className="mt-2 flex flex-col gap-2">
-                    <Pager
+                    {/*<Pager
                       currentPage={1}
                       totalPages={totalPages}
                       perPage={10}
                       onPageClick={() => {}}
                       onNextClick={() => {}}
                       onPreviousClick={() => {}}
-                    />
+                    />*/}
                     <Table
                       columns={[
                         "username",

@@ -8,6 +8,7 @@ import Tooltip from "@/components/Tooltip";
 import View from "@/components/View";
 import Button from "@/components/Button";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
@@ -100,6 +101,10 @@ export default function Dropdown() {
               </Button>
             </Tooltip>
           </div>
+          <Button title="profile" fullWidth onClick={() => {}}>
+            <FaUser />
+            <span className="ml-1">profile</span>
+          </Button>
           <Button title="log out" fullWidth onClick={signout}>
             <MdLogout />
             <span className="ml-1">log out</span>
