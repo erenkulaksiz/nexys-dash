@@ -30,10 +30,6 @@ export default function Statistics() {
   const project = useProjectStore((state) => state.currentProject);
   const isProjectNew = project?.logUsage === 0;
 
-  if (isProjectNew) {
-    return <span className="text-sm text-neutral-500">No paths yet.</span>;
-  }
-
   const ExceptionRateLabels = useMemo(
     () =>
       project?.exceptionRate?.length
@@ -121,6 +117,10 @@ export default function Statistics() {
         : [],
     [project?.logPaths]
   );
+
+  if (isProjectNew) {
+    return <span className="text-sm text-neutral-500">No paths yet.</span>;
+  }
 
   return (
     <div className="w-full justify-center flex flex-col gap-10">
