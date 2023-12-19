@@ -10,7 +10,6 @@ import {
 
 import Button from "@/components/Button";
 import View from "@/components/View";
-import { NotifyLogin } from "@/utils/notifyLogin";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
@@ -28,7 +27,6 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
         const user = result.user as User;
         signin(user);
         const token = await user.getIdToken();
-        await NotifyLogin(token);
         Log.debug("User", user);
       })
       .catch((error) => {

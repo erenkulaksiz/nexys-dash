@@ -48,6 +48,8 @@ export default function BatchPage(props: NexysComponentProps) {
   const batchId = router.query.batchId;
   const tab = router.query.page?.toString() || "";
 
+  console.log("loading", loading, batchLoading);
+
   return (
     <Layout {...props}>
       <WithAuth {...props}>
@@ -66,7 +68,13 @@ export default function BatchPage(props: NexysComponentProps) {
         <div className="flex z-40 w-full flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
           <BatchHeader />
         </div>
-        <View viewIf={!batch?.data?.data && !batchLoading && !loading}>
+        <View
+          viewIf={
+            (batch?.data?.error == "batch/not-found" || notFound) &&
+            !batchLoading &&
+            !loading
+          }
+        >
           <View.If>
             <div className="flex flex-col items-center justify-center h-full">
               <div className="flex flex-col items-center justify-center gap-2">
@@ -156,7 +164,7 @@ export default function BatchPage(props: NexysComponentProps) {
                                 <LogCard
                                   log={log}
                                   key={log._id}
-                                  logSelected={log._id == logId}
+                                  logSelected={log?._id?.$oid == logId}
                                   viewingBatch
                                 />
                               );
@@ -175,14 +183,20 @@ export default function BatchPage(props: NexysComponentProps) {
                         <div className="flex flex-row items-center gap-1 relative">
                           <MdPersonOutline />
                           <span>User</span>
-                          <MdInfoOutline title="View documentation section 'Configuring' for further information." />
+                          {!batch?.data?.data?.user &&
+                            !batch?.data?.data?.config?.client &&
+                            !batch?.data?.data?.config?.appVersion &&
+                            !batch?.data?.data?.config?.platform && (
+                              <MdInfoOutline title="View documentation section 'Configuring' for further information." />
+                            )}
                         </div>
                       }
                       id="user"
                       disabled={
                         !batch?.data?.data?.user &&
                         !batch?.data?.data?.config?.client &&
-                        !batch?.data?.data?.config?.appVersion
+                        !batch?.data?.data?.config?.appVersion &&
+                        !batch?.data?.data?.config?.platform
                       }
                     >
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -195,16 +209,6 @@ export default function BatchPage(props: NexysComponentProps) {
                               </Codeblock>
                             </div>
                           </View.If>
-                          <View.If hidden={!batch?.data?.data?.config?.client}>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="configClient">Client</label>
-                              <Codeblock
-                                data={batch?.data?.data?.config?.client}
-                              >
-                                {batch?.data?.data?.config?.client}
-                              </Codeblock>
-                            </div>
-                          </View.If>
                           <View.If
                             hidden={!batch?.data?.data?.config?.appVersion}
                           >
@@ -214,6 +218,18 @@ export default function BatchPage(props: NexysComponentProps) {
                                 data={batch?.data?.data?.config?.appVersion}
                               >
                                 {batch?.data?.data?.config?.appVersion}
+                              </Codeblock>
+                            </div>
+                          </View.If>
+                          <View.If
+                            hidden={!batch?.data?.data?.config?.platform}
+                          >
+                            <div className="flex flex-col gap-2 w-full">
+                              <label htmlFor="platform">Platform</label>
+                              <Codeblock
+                                data={batch?.data?.data?.config?.platform}
+                              >
+                                {batch?.data?.data?.config?.platform}
                               </Codeblock>
                             </div>
                           </View.If>
@@ -487,12 +503,17 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (ctx.req) {
     validate = await ValidateToken({ token: ctx.req.cookies.auth });
     if (validate.success) {
-      if (!validate.data.emailVerified) {
+      return { props: { validate } };
+    } else if (!validate.success) {
+      if (validate.error == "auth/email-not-verified") {
         ctx.res.writeHead(302, { Location: "/auth/verify" });
         ctx.res.end();
         return { props: { validate } };
+      } else {
+        ctx.res.writeHead(302, { Location: "/auth/signin" });
+        ctx.res.end();
+        return { props: { validate } };
       }
-      return { props: { validate } };
     }
   }
   return { props: { validate } };

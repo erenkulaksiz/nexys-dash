@@ -41,7 +41,7 @@ export default function useLogs({
     ],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/dash/project/logs`, {
+      return fetch(`${server}/api/v1/dash/project/${project?.name}/logs`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,
@@ -53,13 +53,13 @@ export default function useLogs({
           type,
           page,
           filters: {
-            asc: filters?.asc,
-            types: filters?.types,
-            search: filters?.search,
-            path: filters?.path,
-            batchVersion: filters?.batchVersion,
-            configUser: filters?.configUser,
-            action: filters?.action,
+            asc: filters?.asc ?? false,
+            types: filters?.types ?? [],
+            search: filters?.search ?? "",
+            path: filters?.path ?? "all",
+            batchVersion: filters?.batchVersion ?? "all",
+            configUser: filters?.configUser ?? "all",
+            action: filters?.action ?? "all",
           },
         }),
       })

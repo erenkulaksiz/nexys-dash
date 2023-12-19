@@ -6,7 +6,6 @@ import {
 import { setLoading } from "@/stores/authStore";
 
 import { Log } from "./logger";
-import { NotifyLogin } from "./notifyLogin";
 
 export interface signinParams {
   email: string;
@@ -43,7 +42,6 @@ export async function signin({
       const { user } = result;
       const token = await user?.getIdToken();
       setLoading(false);
-      await NotifyLogin(token);
 
       return { success: true, user, token };
     })

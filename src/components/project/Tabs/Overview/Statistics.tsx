@@ -119,7 +119,7 @@ export default function Statistics() {
   );
 
   if (isProjectNew) {
-    return <span className="text-sm text-neutral-500">No paths yet.</span>;
+    return <span className="text-sm text-neutral-500">No statistics yet.</span>;
   }
 
   return (

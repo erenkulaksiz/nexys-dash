@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
   return (
     <Layout {...props}>
       <Head>
-        <title>Privacy Policy</title>
+        <title>{"Nex · Privacy Policy"}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Navbar />

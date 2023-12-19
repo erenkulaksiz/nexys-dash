@@ -11,13 +11,13 @@ export async function deleteProject({
   const auth = getAuth();
   const token = await auth.currentUser?.getIdToken();
 
-  return await fetch(`${server}/api/dash/project/delete`, {
-    method: "POST",
+  return await fetch(`${server}/api/v1/dash/project/${id}`, {
+    method: "DELETE",
     headers: new Headers({
       "content-type": "application/json",
       Authorization: `Bearer ${token || ""}`,
     }),
-    body: JSON.stringify({ id, uid }),
+    body: JSON.stringify({ uid }),
   })
     .then(async (res) => {
       if (res.ok) {

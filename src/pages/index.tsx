@@ -2,11 +2,13 @@ import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 
 import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
+import { FaLightbulb } from "react-icons/fa";
 import AddProjectCard from "@/components/home/AddProjectCard";
 import AdminCard from "@/components/home/AdminCard";
 const ProjectCard = dynamic(() => import("@/components/home/ProjectCard"), {});
@@ -15,16 +17,21 @@ import { RiDashboardFill } from "react-icons/ri";
 import WithAuth from "@/hocs/withAuth";
 import useProjects from "@/hooks/useProjects";
 import View from "@/components/View";
+import { nexys } from "@/utils/nexys";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps, ProjectTypes } from "@/types";
 import type { GetServerSidePropsContext } from "next";
 
 export default function HomePage(props: NexysComponentProps) {
   const router = useRouter();
-  const newProject = router.query.newProject == "true" ? true : false;
+  const [newProject, setNewProject] = useState<boolean>(false);
   const { projects, loading } = useProjects({
     uid: props?.validate?.data?.uid,
   });
+
+  useEffect(() => {
+    setNewProject(router.query.newProject == "true" ? true : false);
+  }, [router.query]);
 
   return (
     <Layout {...props}>
@@ -60,13 +67,24 @@ export default function HomePage(props: NexysComponentProps) {
             <div className="flex w-full dark:bg-neutral-900a bg-neutral-100/50a pb-4">
               <Container>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
+                  {projects?.data?.data && !projects?.data?.data.length && (
+                    <div className="flex flex-row gap-1 overflow-hidden group items-center justify-center relative dark:bg-black bg-white rounded-lg p-4 h-32 border-[1px] border-neutral-200 dark:border-neutral-900">
+                      <FaLightbulb
+                        size={180}
+                        className="absolute -left-[20px] -bottom-[20px] text-neutral-200/70 dark:text-neutral-900/50 z-10 dark:group-hover:text-neutral-800 group-hover:text-neutral-400 transition-colors duration-200"
+                      />
+                      <div className="text-center z-20">
+                        Create new projects to get started.
+                      </div>
+                    </div>
+                  )}
+                  {props?.validate?.data?.isAdmin && <AdminCard />}
                   <View.If
                     visible={
                       Array.isArray(projects?.data?.data) &&
                       projects?.data?.data?.length != 0
                     }
                   >
-                    {props?.validate?.data?.isAdmin && <AdminCard />}
                     {projects?.data?.data?.map(
                       (project: ProjectTypes, index: number) => (
                         <Link
@@ -75,14 +93,14 @@ export default function HomePage(props: NexysComponentProps) {
                             pathname: "/project/[id]",
                             query: { id: project.name?.toString() },
                           }}
+                          onClick={() => {
+                            setNewProject(false);
+                            nexys.log(project._id?.$oid, {
+                              action: "PROJECT_OPEN",
+                            });
+                          }}
                         >
-                          <ProjectCard project={project} />
-                          <View.If
-                            visible={
-                              projects?.data?.data.length - 1 == index &&
-                              newProject
-                            }
-                          >
+                          <View.If visible={index == 0 && newProject}>
                             <ConfettiExplosion
                               force={0.4}
                               duration={2000}
@@ -90,6 +108,7 @@ export default function HomePage(props: NexysComponentProps) {
                               width={1920}
                             />
                           </View.If>
+                          <ProjectCard project={project} />
                         </Link>
                       )
                     )}
@@ -110,12 +129,17 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (ctx.req) {
     validate = await ValidateToken({ token: ctx.req.cookies.auth });
     if (validate.success) {
-      if (!validate.data.emailVerified) {
+      return { props: { validate } };
+    } else if (!validate.success) {
+      if (validate.error == "auth/email-not-verified") {
         ctx.res.writeHead(302, { Location: "/auth/verify" });
         ctx.res.end();
         return { props: { validate } };
+      } else {
+        ctx.res.writeHead(302, { Location: "/auth/signin" });
+        ctx.res.end();
+        return { props: { validate } };
       }
-      return { props: { validate } };
     }
   }
   return { props: { validate } };

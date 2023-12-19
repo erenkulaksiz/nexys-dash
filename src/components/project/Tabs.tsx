@@ -65,13 +65,6 @@ export default [
   },
   */
   {
-    activeTitle: "Actions",
-    nonActiveTitle: "Actions",
-    id: "actions",
-    children: <div>Under construction.</div>,
-    disabled: true,
-  },
-  {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
         <MdOutlineError />

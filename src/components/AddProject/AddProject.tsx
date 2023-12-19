@@ -46,17 +46,17 @@ export default function AddProject() {
       return;
     }
 
-    if (res.error == "max-projects") {
+    if (res.error == "project/max-projects") {
       dispatch({
         type: AddProjectActionType.SET_PROJECT_ERROR,
         payload: `You can create maximum of ${LIMITS.MAX.PROJECT_LENGTH} projects.`,
       });
-    } else if (res.error == "domain-exists") {
+    } else if (res.error == "project/domain-taken") {
       dispatch({
         type: AddProjectActionType.SET_DOMAIN_ERROR,
         payload: `This domain has been already taken.`,
       });
-    } else if (res.error == "name-exists") {
+    } else if (res.error == "project/name-taken") {
       dispatch({
         type: AddProjectActionType.SET_NAME_ERROR,
         payload: `This project name has been already taken.`,

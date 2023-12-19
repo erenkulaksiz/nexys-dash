@@ -46,8 +46,11 @@ export default function Metrics() {
               tooltipContent="Total number of batches"
             />
           </div>
-          <div className="flex flex-col gap-4 px-4 pt-4 text-xl sm:text-3xl font-semibold">
+          <div className="flex flex-col px-4 pt-4 text-xl sm:text-3xl font-semibold">
             <h1>Average Performance</h1>
+            <div className="text-sm pb-4 text-neutral-500">
+              Hover over metrics to view the performance score.
+            </div>
             <div className="w-full border-b-[1px] border-neutral-200 dark:border-neutral-900"></div>
           </div>
           <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4 pb-0">

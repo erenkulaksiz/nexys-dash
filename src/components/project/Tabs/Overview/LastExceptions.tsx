@@ -55,7 +55,7 @@ export default function LastExceptions() {
       </View>
       <View.If hidden={exceptionsLoading}>
         {lastExceptions.data?.data?.exceptions?.map((exception: any) => (
-          <LogCard log={exception} key={exception._id} />
+          <LogCard log={exception} key={exception._id.$oid} />
         ))}
       </View.If>
     </div>

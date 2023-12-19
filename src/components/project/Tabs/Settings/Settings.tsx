@@ -7,6 +7,7 @@ import {
 import { RiTelegramLine, RiTelegramFill } from "react-icons/ri";
 import { RiVipDiamondLine, RiVipDiamondFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
+import { MdOutlineDone } from "react-icons/md";
 
 import Tab from "@/components/Tab";
 import View from "@/components/View";
@@ -80,13 +81,16 @@ export default function Settings() {
               <div className="grid grid-cols-1 sm:grid-cols-2 pt-2 gap-4">
                 <View viewIf={project?.verified}>
                   <View.If>
-                    <div>{`This project has been verified on ${formatDateToHuman(
-                      {
-                        date: project?.verifiedAt ?? 0,
-                        output:
-                          "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
-                      }
-                    )}`}</div>
+                    <div className="flex flex-row items-center gap-1">
+                      <MdOutlineDone />
+                      <div>{`This project has been verified on ${formatDateToHuman(
+                        {
+                          date: project?.verifiedAt ?? 0,
+                          output:
+                            "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+                        }
+                      )}`}</div>
+                    </div>
                   </View.If>
                   <View.Else>
                     <div className="w-full flex flex-col gap-2 items-start">

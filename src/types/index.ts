@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import type { PropsWithChildren } from "react";
 
 export interface LogTypes {
@@ -21,7 +20,9 @@ export interface LogMetricTypes {
 }
 
 export interface ProjectTypes {
-  _id?: ObjectId;
+  _id?: {
+    $oid: string;
+  };
   publicKey?: string;
   name: string;
   domain: string;
@@ -92,8 +93,14 @@ export interface UserTypes {
   avatar?: string;
   provider?: string;
   emailVerified?: boolean;
-  _id?: ObjectId;
+  _id?: string;
   isAdmin?: boolean;
+  subscription?: {
+    type: "free" | "basic" | "pro" | "enterprise";
+    expiresAt: number | null;
+    boughtAt: number | null;
+    boughtIP: string | null;
+  };
 }
 
 export interface LogFilterTypes {

@@ -25,11 +25,16 @@ export default function Table({
       <div className="flex flex-col min-w-max pt-2">
         {data?.map((row: any) => (
           <div key={row.uid} className="flex flex-row">
-            {columns.map((column) => (
-              <div key={row[column]} className="flex min-w-[280px]">
-                {row[column]}
-              </div>
-            ))}
+            {columns.map((column) => {
+              if (!row[column]) {
+                return null;
+              }
+              return (
+                <div key={row[column]} className="flex min-w-[280px]">
+                  {row[column]}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

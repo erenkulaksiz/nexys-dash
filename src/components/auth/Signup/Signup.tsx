@@ -74,7 +74,7 @@ export function Signup() {
     if (
       signupResult?.error?.message === "auth/email-already-in-use" ||
       signupResult?.error?.message === "auth/invalid-email" ||
-      signupResult?.error?.message === "email-exists" ||
+      signupResult?.error?.message === "auth/email-taken" ||
       signupResult?.error?.message === "auth/weak-password"
     ) {
       setSignupLoading(false);
@@ -84,7 +84,7 @@ export function Signup() {
             ? "Email is already in use"
             : signupResult?.error?.message === "auth/invalid-email"
             ? "Invalid email"
-            : signupResult?.error?.message === "email-exists"
+            : signupResult?.error?.message === "auth/email-taken"
             ? "Email is already in use"
             : "",
         password:
@@ -94,7 +94,7 @@ export function Signup() {
       });
     }
 
-    if (signupResult?.error?.message === "username-exists") {
+    if (signupResult?.error?.message === "auth/username-taken") {
       setSignupLoading(false);
       return setErrors({
         username: "Username already in use",

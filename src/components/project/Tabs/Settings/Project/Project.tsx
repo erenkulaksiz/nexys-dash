@@ -21,7 +21,7 @@ export default function Project() {
     if (!project?._id) return;
 
     const res = await deleteProject({
-      id: project?._id.toString() || "",
+      id: project?.name?.toString() || "",
       uid: validatedUser?.uid || "",
     });
 

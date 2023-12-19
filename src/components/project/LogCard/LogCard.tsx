@@ -9,6 +9,7 @@ import Codeblock from "@/components/Codeblock";
 import { Log, formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import View from "@/components/View";
+import { MdOutlineAutoAwesome } from "react-icons/md";
 import { useProjectStore } from "@/stores/projectStore";
 import LogCardEntry from "../LogCardEntry";
 import type { LogCardProps } from "./LogCard.types";
@@ -67,17 +68,26 @@ export default function LogCard({
             <View.If hidden={viewingBatch}>
               <Link
                 href={`/project/${project?.name ? project.name : ""}/batch/${
-                  log.batchId
-                }?log=${log._id}`}
+                  log.batchId?.$oid
+                }?log=${log._id?.$oid}`}
               >
                 <Button
                   light="dark:bg-white bg-black dark:text-black"
-                  className="px-4  text-white"
+                  className="px-4 text-white"
                 >
                   <TbListDetails />
                   <span className="ml-1">View Batch</span>
                 </Button>
               </Link>
+            </View.If>
+            <View.If visible={isTypeError}>
+              <Button
+                light="dark:bg-white bg-black dark:text-black"
+                className="px-4 text-white"
+              >
+                <MdOutlineAutoAwesome />
+                <span className="ml-1">AI</span>
+              </Button>
             </View.If>
           </div>
         </div>
@@ -131,8 +141,8 @@ export default function LogCard({
           <View.If hidden={!log?.guid}>
             <LogCardEntry title="GUID" value={log?.guid} />
           </View.If>
-          <View.If hidden={!log._id}>
-            <LogCardEntry title="ID" value={log._id} />
+          <View.If hidden={!log._id.$oid}>
+            <LogCardEntry title="ID" value={log._id.$oid} />
           </View.If>
           <View.If hidden={!log?.batchConfig?.user}>
             <LogCardEntry title="User" value={log?.batchConfig?.user} />

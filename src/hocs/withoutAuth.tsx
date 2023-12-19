@@ -13,6 +13,8 @@ export default function WithoutAuth(props: NexysComponentProps) {
 
   //if (auth?.authLoading) return <LoadingOverlay />;
 
+  console.log("authUser", authUser);
+
   if (!authLoading && authUser && isClient()) {
     if (!authUser?.emailVerified) {
       router.push("/auth/verify");

@@ -48,7 +48,7 @@ export default function BatchCard({ batch }: { batch: any }) {
             </span>
           </div>
           <Link
-            href={`/project/${project ? project.name : ""}/batch/${batch._id}`}
+            href={`/project/${project ? project.name : ""}/batch/${batch._id?.$oid}`}
           >
             <Button
               light="dark:bg-white bg-black dark:text-black"

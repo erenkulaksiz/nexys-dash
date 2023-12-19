@@ -31,12 +31,12 @@ export default function VerifyPage(props: NexysComponentProps) {
 
       if (authUser?.emailVerified) {
         Log.debug("Email is verified!");
-        router.replace(router.asPath);
+        router.reload();
       }
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [authUser]);
 
   async function onSendAgain() {
     if (sending) return;
@@ -121,8 +121,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       ctx.res.end();
       return { props: { validate } };
     } else if (!validate.success) {
-      ctx.res.writeHead(302, { Location: "/auth/signin" });
-      ctx.res.end();
+      if (validate.error != "auth/email-not-verified") {
+        ctx.res.writeHead(302, { Location: "/auth/signin" });
+        ctx.res.end();
+        return { props: { validate } };
+      }
       return { props: { validate } };
     } else if (validate.success && !validate.data.emailVerified) {
       return { props: { validate } };

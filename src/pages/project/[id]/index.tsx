@@ -1,7 +1,9 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { MdOutlineArrowBack } from "react-icons/md";
 
-import { Log } from "@/utils";
+import Button from "@/components/Button";
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
@@ -22,7 +24,6 @@ export default function ProjectPage(props: NexysComponentProps) {
   const notFound = useProjectStore((state) => state.notFound);
   const loading = useProjectStore((state) => state.loading);
   const authUser = useAuthStore((state) => state.user);
-  const validatedUser = useAuthStore((state) => state.validatedUser);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
 
@@ -36,9 +37,9 @@ export default function ProjectPage(props: NexysComponentProps) {
         <Head>
           <title>
             {loading
-              ? "Loading..."
+              ? "Nex · Loading..."
               : notFound
-              ? "Not Found"
+              ? "Nex · Not Found"
               : `Nex · ${project?.data?.data?.name}`}
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,11 +48,21 @@ export default function ProjectPage(props: NexysComponentProps) {
         <Navbar />
         <View viewIf={notFound}>
           <View.If>
-            <div className="flex flex-col items-center justify-center h-1/2">
-              <h1 className="text-2xl font-semibold">Project not found</h1>
-              <h2 className="text-neutral-500">
+            <div className="flex flex-col gap-2 items-center justify-center h-1/2">
+              <h1 className="text-6xl font-semibold">404</h1>
+              <h1 className="text-2xl">Project not found</h1>
+              <h2 className="text-neutral-500 mb-2">
                 The project you are looking for does not exist
               </h2>
+              <Link href="/">
+                <Button
+                  light="dark:bg-white bg-black dark:text-black"
+                  className="px-4 text-white"
+                >
+                  <MdOutlineArrowBack size={18} />
+                  <span className="ml-2">Back</span>
+                </Button>
+              </Link>
             </div>
           </View.If>
           <View.Else>
@@ -117,13 +128,18 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (ctx.req) {
     validate = await ValidateToken({ token: ctx.req.cookies.auth });
     if (validate.success) {
-      if (!validate.data.emailVerified) {
+      return { props: { validate } };
+    } else if (!validate.success) {
+      if (validate.error == "auth/email-not-verified") {
         ctx.res.writeHead(302, { Location: "/auth/verify" });
         ctx.res.end();
-        return { props: { validate, query: ctx.query } };
+        return { props: { validate } };
+      } else {
+        ctx.res.writeHead(302, { Location: "/auth/signin" });
+        ctx.res.end();
+        return { props: { validate } };
       }
-      return { props: { validate, query: ctx.query } };
     }
   }
-  return { props: { validate, query: ctx.query } };
+  return { props: { validate } };
 }

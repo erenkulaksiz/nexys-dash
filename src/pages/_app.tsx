@@ -19,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     nexys.configure((config) => {
       config.setAppVersion(version);
+      config.setPlatform("web");
     });
   }, []);
 

@@ -65,7 +65,30 @@ export default function Dropdown() {
           className="flex flex-col gap-1 w-36 items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 shadow-neutral-200/50 dark:shadow-neutral-900/20"
           style={{ zIndex: 999 }}
         >
-          <div className="text-xs font-semibold w-full flex justify-end">{`@${validatedUser?.username}`}</div>
+          {/*<div className="w-full flex justify-end items-center gap-1">
+            <div className="border-[1px] border-neutral-200 dark:border-neutral-900 px-1 py-[2px] pb-1 rounded-lg text-xs first-letter:uppercase items-center justify-center">
+              {validatedUser?.subscription?.type}
+            </div>
+            <Link href="/subscription">
+              <Button size="h-6" className="px-1">
+                Plans
+              </Button>
+            </Link>
+            </div>*/}
+
+          <div className="flex justify-end w-full">
+            <Link href="/feedback">
+              <Button
+                light="dark:bg-white bg-black dark:text-black"
+                className="px-2 text-white"
+              >
+                <span className="ml-1">Feedback</span>
+              </Button>
+            </Link>
+          </div>
+          <div className="text-xs font-semibold w-full flex justify-end">
+            {`@${validatedUser?.username}`}
+          </div>
           <div className="flex flex-row w-full justify-end gap-1 items-center">
             <span
               className="text-xs text-neutral-400"

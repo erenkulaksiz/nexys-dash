@@ -25,7 +25,7 @@ export default function useProject({ uid }: useProjectParams) {
     [`api/dash/project/data/${query}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/dash/project/data`, {
+      return fetch(`${server}/api/v1/dash/project/${query}`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,
@@ -58,6 +58,14 @@ export default function useProject({ uid }: useProjectParams) {
   );
 
   useEffect(() => {
+    if (project?.data?.error == "project/not-found") {
+      Log.error("Loading of project failed", project?.data?.error);
+      nexys.error({ message: project?.data?.error });
+
+      setNotFound(true);
+      setProjectLoading(false);
+      return;
+    }
     if (project?.data?.error) {
       Log.error("Loading of project failed", project?.data?.error);
       nexys.error({ message: project?.data?.error });
@@ -66,16 +74,13 @@ export default function useProject({ uid }: useProjectParams) {
         await project.mutate();
         router.replace(router.asPath);
       })();
+      setProjectLoading(false);
       setNotFound(true);
       return;
     }
-    if (typeof project?.data == "object") {
-      if (project?.data != null && typeof project?.data?.data != null) {
-        setCurrentProject(project?.data?.data);
-        setNotFound(false);
-      }
-      setProjectLoading(false);
-    }
+    setCurrentProject(project?.data?.data);
+    setProjectLoading(false);
+    setNotFound(false);
     Log.debug("project", project.data);
   }, [project.data]);
 

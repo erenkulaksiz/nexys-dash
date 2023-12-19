@@ -13,13 +13,13 @@ export async function projectSetting({
   const auth = getAuth();
   const token = await auth.currentUser?.getIdToken();
 
-  return await fetch(`${server}/api/dash/project/setting`, {
-    method: "POST",
+  return await fetch(`${server}/api/v1/dash/project/${id}`, {
+    method: "PUT",
     headers: new Headers({
       "content-type": "application/json",
       Authorization: `Bearer ${token || ""}`,
     }),
-    body: JSON.stringify({ id, uid, localhostAccess }),
+    body: JSON.stringify({ uid, localhostAccess }),
   })
     .then(async (res) => {
       if (res.ok) {

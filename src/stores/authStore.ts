@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import { getAuth } from "firebase/auth";
 
 import { Log } from "@/utils";
-import { NotifyLogin } from "@/utils/notifyLogin";
 import { nexys } from "@/utils/nexys";
 import type { UserTypes } from "@/types";
 import type { User } from "firebase/auth";
@@ -30,7 +29,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     signin: async function (user: User) {
       const idToken = await user.getIdToken();
       Cookies.set("auth", idToken);
-      await NotifyLogin(idToken);
       nexys.log(
         { user: useAuthStore.getState().user?.email },
         { action: "LOGIN" }
@@ -46,6 +44,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const auth = getAuth();
       await auth.signOut();
       Cookies.remove("auth");
+      nexys.configure((config) => config.setUser(""));
       set({ user: null, authLoading: false });
     },
     setValidatedUser: function (user: UserTypes) {

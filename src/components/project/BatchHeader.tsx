@@ -5,7 +5,6 @@ import { MdOutlineArrowBack } from "react-icons/md";
 import Container from "@/components/Container";
 import Button from "@/components/Button";
 import View from "@/components/View";
-import { Log } from "@/utils";
 import { useProjectStore } from "@/stores/projectStore";
 import { BuildComponent } from "@/utils/style";
 
@@ -14,8 +13,13 @@ export default function BatchHeader() {
   const loading = useProjectStore((state) => state.loading);
   const batchLoading = useProjectStore((state) => state.batchLoading);
   const batch = useProjectStore((state) => state.currentBatch);
+  const notFound = useProjectStore((state) => state.notFound);
   const router = useRouter();
   const { batchId } = router.query;
+
+  if (notFound) {
+    return <></>;
+  }
 
   return (
     <>
@@ -27,7 +31,7 @@ export default function BatchHeader() {
           <Link href={`/project/${project?.name}?page=batches`}>
             <Button
               light="dark:bg-white bg-black dark:text-black"
-              className="px-4  text-white"
+              className="px-4 text-white"
             >
               <MdOutlineArrowBack size={18} />
               <span className="ml-2">Back</span>

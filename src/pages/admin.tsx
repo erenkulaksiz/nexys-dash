@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import JSONPretty from "react-json-pretty";
 import {
   ValidateTokenReturnType,
   ValidateToken,
@@ -10,13 +10,13 @@ import Container from "@/components/Container";
 import Tab from "@/components/Tab";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import Table from "@/components/Table";
-import Pager from "@/components/Pager";
 import useAdmin from "@/hooks/useAdmin";
 import { useAuthStore } from "@/stores/authStore";
+import { formatDateToHuman } from "@/utils";
+import { nexys } from "@/utils/nexys";
 import { useAdminStore, setPageType } from "@/stores/adminStore";
 import type { GetServerSidePropsContext } from "next";
 import type { NexysComponentProps } from "@/types";
-import { formatDateToHuman } from "@/utils";
 
 export default function AdminPage(props: NexysComponentProps) {
   const authUser = useAuthStore((state) => state.user);
@@ -52,22 +52,38 @@ export default function AdminPage(props: NexysComponentProps) {
                     columns={[
                       "username",
                       "email",
-                      "subscription",
                       "createdAt",
                       "provider",
                       "uid",
                       "emailVerified",
+                      "subscriptionType",
+                      "subscriptionBoughtAt",
+                      "subscriptionExpiresAt",
                     ]}
                     data={admin?.data?.data?.users?.map((user: any) => {
                       return {
                         ...user,
-                        subscription: user.subscription || "free",
                         createdAt: formatDateToHuman({
                           date: user.createdAt,
                           output:
                             "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
                         }),
                         emailVerified: user.emailVerified ? "true" : "false",
+                        subscriptionType: user.subscription?.type,
+                        subscriptionBoughtAt: user.subscription?.boughtAt
+                          ? formatDateToHuman({
+                              date: user.subscription?.boughtAt,
+                              output:
+                                "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+                            })
+                          : "",
+                        subscriptionExpiresAt: user.subscription?.expiresAt
+                          ? formatDateToHuman({
+                              date: user.subscription?.expiresAt,
+                              output:
+                                "{DAY}/{MONTHDATE}/{YEAR} {HOURS}:{MINUTES}:{SECONDS}",
+                            })
+                          : "",
                       };
                     })}
                   />
@@ -80,6 +96,12 @@ export default function AdminPage(props: NexysComponentProps) {
               id="projects"
             >
               <div>halo2</div>
+            </Tab.TabView>
+            <Tab.TabView activeTitle="nexys" nonActiveTitle="nexys" id="nexys">
+              <JSONPretty
+                className="text-xs mt-2"
+                data={nexys.getLogPoolLogs()}
+              ></JSONPretty>
             </Tab.TabView>
           </Tab>
         </Container>

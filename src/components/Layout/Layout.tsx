@@ -9,7 +9,6 @@ import {
   setLoading,
   refreshToken,
 } from "@/stores/authStore";
-import { NotifyLogin } from "@/utils/notifyLogin";
 import type { NexysComponentProps } from "@/types";
 
 interface LayoutProps extends NexysComponentProps {
@@ -28,7 +27,7 @@ export default function Layout(props: LayoutProps) {
         if (props.validate.error === "auth/id-token-expired") {
           (async () => {
             await refreshToken(true);
-            //router.reload();
+            router.replace(router.asPath);
           })();
         }
       }

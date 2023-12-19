@@ -14,7 +14,7 @@ export default function API() {
 
   async function onLocalhostAccessChange() {
     const res = await projectSetting({
-      id: project?._id?.toString() ?? "",
+      id: project?.name ?? "",
       uid: validatedUser?.uid ?? "",
       localhostAccess: !project?.localhostAccess,
     });
