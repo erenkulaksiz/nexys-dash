@@ -1,6 +1,6 @@
 import { getAuth } from "firebase/auth";
-import { server } from "@/utils";
 
+import { server } from "@/utils";
 import type { ProjectTypes } from "@/types";
 
 interface CreateProjectParams extends ProjectTypes {
