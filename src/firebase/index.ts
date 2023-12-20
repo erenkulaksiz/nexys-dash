@@ -27,7 +27,6 @@ if (!getApps.length) {
 
   if (isClient()) {
     if ("measurementId" in firebaseConfig) {
-      console.error(firebaseConfig);
       const analytics = getAnalytics(app);
     }
   }
