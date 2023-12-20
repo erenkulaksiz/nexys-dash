@@ -41,7 +41,7 @@ export default function useLogs({
     ],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${project?.name}/logs`, {
+      return fetch(`${server}/v1/dash/project/${project?.name}/logs`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,

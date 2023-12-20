@@ -13,7 +13,7 @@ export async function createProject(
   const auth = getAuth();
   const token = await auth.currentUser?.getIdToken();
 
-  return await fetch(`${server}/api/v1/dash/projects/create`, {
+  return await fetch(`${server}/v1/dash/projects/create`, {
     method: "POST",
     headers: new Headers({
       "content-type": "application/json",

@@ -24,7 +24,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
   const [totalsLoading, setTotalsLoading] = useState(false);
   const totals = useSWR("api/dash/project/totalLogs", async () => {
     const token = Cookies.get("auth");
-    return fetch(`${server}/api/v1/dash/count`, {
+    return fetch(`${server}/v1/dash/count`, {
       headers: new Headers({
         "content-type": "application/json",
         Authorization: `Bearer ${token || ""}`,

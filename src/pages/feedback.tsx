@@ -36,7 +36,7 @@ export default function FeedbackPage(props: NexysComponentProps) {
     const token = await auth.currentUser?.getIdToken();
     const uid = auth.currentUser?.uid ?? props?.validate?.data?.uid;
 
-    const res = await fetch(`${server}/api/v1/dash/feedback`, {
+    const res = await fetch(`${server}/v1/dash/feedback`, {
       method: "POST",
       headers: new Headers({
         "content-type": "application/json",

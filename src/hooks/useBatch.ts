@@ -28,7 +28,7 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
     [`api/dash/project/batch/${batchId}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${id}/batch/${batchId}`, {
+      return fetch(`${server}/v1/dash/project/${id}/batch/${batchId}`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,
@@ -63,7 +63,10 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
 
   useEffect(() => {
     setBatchLoading(true);
-    if (batch?.data?.error == 'batch/not-found' || batch?.data?.error == 'project/not-found') {
+    if (
+      batch?.data?.error == "batch/not-found" ||
+      batch?.data?.error == "project/not-found"
+    ) {
       Log.error("Loading of batch failed", batch?.data?.error);
       setBatchLoading(false);
       return;

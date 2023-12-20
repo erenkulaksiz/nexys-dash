@@ -17,7 +17,7 @@ export default function useProjects({ uid }: useProjectsParams) {
 
   const projects = useSWR(["api/dash/projects"], async () => {
     const token = Cookies.get("auth");
-    return fetch(`${server}/api/v1/dash/projects`, {
+    return fetch(`${server}/v1/dash/projects`, {
       headers: new Headers({
         "content-type": "application/json",
         Authorization: `Bearer ${token || ""}`,

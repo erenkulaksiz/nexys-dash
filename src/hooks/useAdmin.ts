@@ -26,7 +26,7 @@ export default function useAdmin({ uid, pageType }: useAdminParams) {
     [`api/dash/admin/${pageType}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/dash/admin`, {
+      return fetch(`${server}/dash/admin`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,

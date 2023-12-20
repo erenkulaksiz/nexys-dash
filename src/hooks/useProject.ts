@@ -25,7 +25,7 @@ export default function useProject({ uid }: useProjectParams) {
     [`api/dash/project/data/${query}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${query}`, {
+      return fetch(`${server}/v1/dash/project/${query}`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,

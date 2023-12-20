@@ -17,7 +17,7 @@ export async function signup({
   password,
   username,
 }: signupParams): Promise<signupReturnTypes> {
-  return await fetch(`${server}/api/v1/dash/auth/signup`, {
+  return await fetch(`${server}/v1/dash/auth/signup`, {
     headers: new Headers({
       "content-type": "application/json",
     }),
