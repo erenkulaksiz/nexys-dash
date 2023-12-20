@@ -48,8 +48,6 @@ export default function BatchPage(props: NexysComponentProps) {
   const batchId = router.query.batchId;
   const tab = router.query.page?.toString() || "";
 
-  console.log("loading", loading, batchLoading);
-
   return (
     <Layout {...props}>
       <WithAuth {...props}>
@@ -452,41 +450,47 @@ export default function BatchPage(props: NexysComponentProps) {
                         </div>
                       </div>
                     </Tab.TabView>
-                    <Tab.TabView
-                      activeTitle={
-                        <div className="flex flex-row items-center gap-1">
-                          <IoMdSettings />
-                          <span>Package Options</span>
-                        </div>
-                      }
-                      nonActiveTitle={
-                        <div className="flex flex-row items-center gap-1">
-                          <IoSettingsOutline />
-                          <span>Package Options</span>
-                        </div>
-                      }
-                      id="options"
-                    >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        <div className="flex flex-col gap-2">
-                          <div className="flex flex-col gap-2 w-full">
-                            <div className="flex flex-col">
-                              <label htmlFor="poptions">Package Options</label>
-                              <span className="text-sm text-neutral-400">
-                                Configured library options. This section is used
-                                Nexys internally and may be to debugging the
-                                options used by the library.
-                              </span>
-                            </div>
-                            <Codeblock data={batch?.data?.data?.options}>
-                              <div className="text-xs">
-                                <JSONPretty data={batch?.data?.data?.options} />
+                    {props.validate?.data?.isAdmin && (
+                      <Tab.TabView
+                        activeTitle={
+                          <div className="flex flex-row items-center gap-1">
+                            <IoMdSettings />
+                            <span>Package Options</span>
+                          </div>
+                        }
+                        nonActiveTitle={
+                          <div className="flex flex-row items-center gap-1">
+                            <IoSettingsOutline />
+                            <span>Package Options</span>
+                          </div>
+                        }
+                        id="options"
+                      >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                          <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2 w-full">
+                              <div className="flex flex-col">
+                                <label htmlFor="poptions">
+                                  Package Options
+                                </label>
+                                <span className="text-sm text-neutral-400">
+                                  Configured library options. This section is
+                                  used Nexys internally and may be to debugging
+                                  the options used by the library.
+                                </span>
                               </div>
-                            </Codeblock>
+                              <Codeblock data={batch?.data?.data?.options}>
+                                <div className="text-xs">
+                                  <JSONPretty
+                                    data={batch?.data?.data?.options}
+                                  />
+                                </div>
+                              </Codeblock>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Tab.TabView>
+                      </Tab.TabView>
+                    )}
                   </Tab>
                 </View.Else>
               </View>

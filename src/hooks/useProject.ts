@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
+import hookRequest from "@/utils/api/hookRequest";
 import { Log, server } from "@/utils";
 import {
   setCurrentProject,
@@ -25,32 +26,14 @@ export default function useProject({ uid }: useProjectParams) {
     [`api/dash/project/data/${query}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${query}`, {
-        headers: new Headers({
-          "content-type": "application/json",
-          Authorization: `Bearer ${token || ""}`,
-        }),
-        method: "POST",
-        body: JSON.stringify({
+      return hookRequest({
+        url: `/v1/dash/project/${query}`,
+        data: {
           uid: uid || user?.uid,
           id: query,
-        }),
-      })
-        .then(async (res) => {
-          let json = null;
-          try {
-            json = await res.json();
-          } catch (error) {
-            Log.error("LogPage error json", error);
-          }
-          if (res.ok) {
-            return { success: true, data: json.data };
-          }
-          return { success: false, error: json.error, data: null };
-        })
-        .catch((error) => {
-          return { success: false, error: error.message, data: null };
-        });
+        },
+        token,
+      });
     },
     {
       revalidateOnFocus: false,

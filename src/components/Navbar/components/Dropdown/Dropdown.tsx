@@ -42,11 +42,10 @@ export default function Dropdown() {
 
   return (
     <>
-      <details className="relative inline-block bg-transparent">
+      <details className="relative inline-block bg-transparent list-none">
         <summary
           style={{
             userSelect: "none",
-            listStyle: "none",
           }}
         >
           <div className="border-[1px] rounded-full p-[2px] border-neutral-400/30 dark:border-neutral-800/50">

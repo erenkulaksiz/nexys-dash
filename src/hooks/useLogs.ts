@@ -2,6 +2,7 @@ import useSWR from "swr";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 
+import hookRequest from "@/utils/api/hookRequest";
 import { useAuthStore, refreshToken } from "@/stores/authStore";
 import {
   setBatches,
@@ -12,7 +13,7 @@ import {
   setLogsLoading,
   useProjectStore,
 } from "@/stores/projectStore";
-import { Log, server } from "@/utils";
+import { Log } from "@/utils";
 import type { LogFilterTypes } from "@/types";
 
 interface useLogsParams {
@@ -41,13 +42,9 @@ export default function useLogs({
     ],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${project?.name}/logs`, {
-        headers: new Headers({
-          "content-type": "application/json",
-          Authorization: `Bearer ${token || ""}`,
-        }),
-        method: "POST",
-        body: JSON.stringify({
+      return hookRequest({
+        url: `/v1/dash/project/${project?.name}/logs`,
+        data: {
           uid: user?.uid,
           id: project?._id,
           type,
@@ -61,23 +58,9 @@ export default function useLogs({
             configUser: filters?.configUser ?? "all",
             action: filters?.action ?? "all",
           },
-        }),
-      })
-        .then(async (res) => {
-          let json = null;
-          try {
-            json = await res.json();
-          } catch (error) {
-            Log.error("useLogs error json", error);
-          }
-          if (res.ok) {
-            return { success: true, data: json.data };
-          }
-          return { success: false, error: json.error, data: null };
-        })
-        .catch((error) => {
-          return { success: false, error: error.message, data: null };
-        });
+        },
+        token,
+      });
     },
     { revalidateIfStale: false }
   );

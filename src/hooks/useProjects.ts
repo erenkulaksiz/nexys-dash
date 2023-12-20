@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Cookies from "js-cookie";
 
+import hookRequest from "@/utils/api/hookRequest";
 import { Log, server } from "@/utils";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
 
@@ -17,29 +18,11 @@ export default function useProjects({ uid }: useProjectsParams) {
 
   const projects = useSWR(["api/dash/projects"], async () => {
     const token = Cookies.get("auth");
-    return fetch(`${server}/api/v1/dash/projects`, {
-      headers: new Headers({
-        "content-type": "application/json",
-        Authorization: `Bearer ${token || ""}`,
-      }),
-      method: "POST",
-      body: JSON.stringify({ uid: user?.uid || uid }),
-    })
-      .then(async (res) => {
-        let json = null;
-        try {
-          json = await res.json();
-        } catch (error) {
-          Log.error("LogPage error json", error);
-        }
-        if (res.ok) {
-          return { success: true, data: json.data };
-        }
-        return { success: false, error: json.error, data: null };
-      })
-      .catch((error) => {
-        return { success: false, error: error.message, data: null };
-      });
+    return hookRequest({
+      url: "/v1/dash/projects",
+      data: { uid: user?.uid || uid },
+      token,
+    });
   });
 
   useEffect(() => {

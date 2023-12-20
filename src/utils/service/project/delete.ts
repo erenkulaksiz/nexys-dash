@@ -11,7 +11,7 @@ export async function deleteProject({
   const auth = getAuth();
   const token = await auth.currentUser?.getIdToken();
 
-  return await fetch(`${server}/api/v1/dash/project/${id}`, {
+  return await fetch(`${server}/v1/dash/project/${id}`, {
     method: "DELETE",
     headers: new Headers({
       "content-type": "application/json",

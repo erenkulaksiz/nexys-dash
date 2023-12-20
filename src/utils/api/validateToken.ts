@@ -10,7 +10,7 @@ export async function ValidateToken({
 }: {
   token?: string;
 }): Promise<ValidateTokenReturnType> {
-  return await fetch(`${server}/api/v1/dash/auth/validate`, {
+  return await fetch(`${server}/v1/dash/auth/validate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

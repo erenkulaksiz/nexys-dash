@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 
+import hookRequest from "@/utils/api/hookRequest";
 import { setBatchLoading, setCurrentBatch } from "@/stores/projectStore";
 import { Log, server } from "@/utils";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
@@ -28,32 +29,14 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
     [`api/dash/project/batch/${batchId}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/v1/dash/project/${id}/batch/${batchId}`, {
-        headers: new Headers({
-          "content-type": "application/json",
-          Authorization: `Bearer ${token || ""}`,
-        }),
-        method: "POST",
-        body: JSON.stringify({
+      return hookRequest({
+        url: `/v1/dash/project/${id}/batch/${batchId}`,
+        data: {
           uid: uid || user?.uid,
           page,
-        }),
-      })
-        .then(async (res) => {
-          let json = null;
-          try {
-            json = await res.json();
-          } catch (error) {
-            Log.error("useBatch error json", error);
-          }
-          if (res.ok) {
-            return { success: true, data: json.data };
-          }
-          return { success: false, error: json.error, data: null };
-        })
-        .catch((error) => {
-          return { success: false, error: error.message, data: null };
-        });
+        },
+        token,
+      });
     },
     {
       revalidateIfStale: false,
@@ -63,7 +46,10 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
 
   useEffect(() => {
     setBatchLoading(true);
-    if (batch?.data?.error == 'batch/not-found' || batch?.data?.error == 'project/not-found') {
+    if (
+      batch?.data?.error == "batch/not-found" ||
+      batch?.data?.error == "project/not-found"
+    ) {
       Log.error("Loading of batch failed", batch?.data?.error);
       setBatchLoading(false);
       return;

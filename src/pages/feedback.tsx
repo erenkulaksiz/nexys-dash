@@ -36,7 +36,7 @@ export default function FeedbackPage(props: NexysComponentProps) {
     const token = await auth.currentUser?.getIdToken();
     const uid = auth.currentUser?.uid ?? props?.validate?.data?.uid;
 
-    const res = await fetch(`${server}/api/v1/dash/feedback`, {
+    const res = await fetch(`${server}/v1/dash/feedback`, {
       method: "POST",
       headers: new Headers({
         "content-type": "application/json",
@@ -79,12 +79,17 @@ export default function FeedbackPage(props: NexysComponentProps) {
             </h2>
           </div>
         </Container>
-        <View viewIf={sentFeedback}>
+        <View viewIf={!sentFeedback}>
           <View.If>
             <Container>
               <div className="flex flex-row gap-2 items-center">
                 <BsCheckCircleFill className="text-4xl text-green-500" />
-                <h2 className="text-2xl">We recieved your feedback.</h2>
+                <div className="flex flex-col">
+                  <h2 className="text-2xl">We recieved your feedback.</h2>
+                  <span className="dark:text-neutral-400 text-neutral-500">
+                    Thanks for your valuable feedback.
+                  </span>
+                </div>
               </div>
             </Container>
           </View.If>
