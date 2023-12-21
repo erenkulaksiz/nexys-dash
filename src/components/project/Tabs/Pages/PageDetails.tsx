@@ -33,11 +33,11 @@ export default function PageDetails({ selected, onBack }: PageDetailsProps) {
   const filterNonErrorLogs = Object.keys(
     pathDetails.data?.data?.pathLogCounts || {}
   ).filter(
-    (el) =>
-      el != "ERROR" &&
-      el != "AUTO:ERROR" &&
-      el != "AUTO:UNHANDLEDREJECTION" &&
-      el != "count"
+    (log) =>
+      log != "ERROR" &&
+      log != "AUTO:ERROR" &&
+      log != "AUTO:UNHANDLEDREJECTION" &&
+      log != "count"
   );
 
   const sortedNonErrorLogs = filterNonErrorLogs

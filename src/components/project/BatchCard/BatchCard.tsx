@@ -48,7 +48,9 @@ export default function BatchCard({ batch }: { batch: any }) {
             </span>
           </div>
           <Link
-            href={`/project/${project ? project.name : ""}/batch/${batch._id?.$oid}`}
+            href={`/project/${project ? project.name : ""}/batch/${
+              batch._id?.$oid
+            }`}
           >
             <Button
               light="dark:bg-white bg-black dark:text-black"
@@ -61,19 +63,19 @@ export default function BatchCard({ batch }: { batch: any }) {
         </div>
         <View.If visible={isProduction || gitBranch || gitCommit}>
           <div className="flex flex-row gap-2 items-start">
-            <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+            <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded">
               <View viewIf={isProduction}>
                 <View.If>Production</View.If>
                 <View.Else>Development</View.Else>
               </View>
             </span>
             <View.If visible={!!gitBranch}>
-              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded">
                 {gitBranch}
               </span>
             </View.If>
             <View.If visible={!!gitCommit}>
-              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+              <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded">
                 {gitCommit}
               </span>
             </View.If>

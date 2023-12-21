@@ -11,7 +11,7 @@ export default function LogCardEntry({
         <div>{title}</div>
       </div>
       <div>
-        <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded-full">
+        <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-1 rounded">
           {value}
         </span>
       </div>

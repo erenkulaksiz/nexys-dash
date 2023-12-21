@@ -54,7 +54,7 @@ export default function Pager({
             className={
               BuildComponent({
                 name: "Pager Button",
-                defaultClasses: "w-8",
+                defaultClasses: "w-auto min-w-[2rem] p-2",
                 conditionalClasses: [
                   { true: "dark:bg-neutral-900 bg-neutral-200" },
                 ],
@@ -74,7 +74,7 @@ export default function Pager({
         className={
           BuildComponent({
             name: "Pager Button",
-            defaultClasses: "w-8",
+            defaultClasses: "w-auto min-w-[2rem] p-2",
             conditionalClasses: [
               { true: "dark:bg-neutral-900 bg-neutral-200" },
             ],

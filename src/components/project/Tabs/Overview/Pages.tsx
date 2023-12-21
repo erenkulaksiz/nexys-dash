@@ -20,7 +20,7 @@ export default function Pages() {
                 key={path._id}
               >
                 <div className="flex">{path._id}</div>
-                <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded-full">
+                <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded">
                   {path.count}
                 </div>
                 <View.If visible={errors > 0}>
@@ -31,7 +31,7 @@ export default function Pages() {
                         <View.If visible={path.ERROR > 0}>
                           <div className="flex flex-row gap-2">
                             <div>ERROR</div>
-                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded">
                               {path.ERROR}
                             </div>
                           </div>
@@ -39,7 +39,7 @@ export default function Pages() {
                         <View.If visible={path["AUTO:ERROR"] > 0}>
                           <div className="flex flex-row gap-2">
                             <div>AUTO:ERROR</div>
-                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded">
                               {path["AUTO:ERROR"]}
                             </div>
                           </div>
@@ -47,7 +47,7 @@ export default function Pages() {
                         <View.If visible={path["AUTO:UNHANDLEDREJECTION"] > 0}>
                           <div className="flex flex-row gap-2">
                             <div>AUTO:UNHANDLEDREJECTION</div>
-                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded-full">
+                            <div className="text-sm dark:text-white text-white bg-red-500 dark:bg-red-900 px-2 rounded">
                               {path["AUTO:UNHANDLEDREJECTION"]}
                             </div>
                           </div>
@@ -55,7 +55,7 @@ export default function Pages() {
                       </div>
                     }
                   >
-                    <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 px-1 pr-2 rounded-full">
+                    <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 px-1 pr-2 rounded">
                       <MdInfoOutline size={14} />
                       <span>{errors}</span>
                     </div>
@@ -67,7 +67,7 @@ export default function Pages() {
           <View.If
             visible={project?.logPaths && project?.logPaths?.length > 10}
           >
-            <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-black bg-neutral-200 dark:bg-neutral-900 px-1 pr-2 rounded-full">
+            <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-black bg-neutral-200 dark:bg-neutral-900 px-1 pr-2 rounded">
               <MdInfoOutline size={14} />
               <span>
                 {project?.logPaths?.length && project?.logPaths?.length - 10}{" "}

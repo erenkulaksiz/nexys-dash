@@ -3,6 +3,7 @@ import { MdOutlineError, MdOutlineAccessTime } from "react-icons/md";
 import { RiStackLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import JSONPretty from "react-json-pretty";
+import { HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
 
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
@@ -138,12 +139,6 @@ export default function LogCard({
           <View.If hidden={!log?.data?.filename}>
             <LogCardEntry title="File" value={log?.data?.filename} />
           </View.If>
-          <View.If hidden={!log?.guid}>
-            <LogCardEntry title="GUID" value={log?.guid} />
-          </View.If>
-          <View.If hidden={!log._id.$oid}>
-            <LogCardEntry title="ID" value={log._id.$oid} />
-          </View.If>
           <View.If hidden={!log?.batchConfig?.user}>
             <LogCardEntry title="User" value={log?.batchConfig?.user} />
           </View.If>
@@ -156,8 +151,32 @@ export default function LogCard({
           <View.If hidden={!log?.batch?.env?.type}>
             <LogCardEntry title="Environment" value={log?.batch?.env?.type} />
           </View.If>
+          <details className="w-full group">
+            <summary className="dark:text-white text-black flex flex-row items-center list-none gap-1 cursor-pointer">
+              <HiOutlinePlus className="block group-open:hidden" />
+              <HiOutlineMinus className="hidden group-open:block" />
+              <span>Details</span>
+            </summary>
+            <View.If hidden={!log?.guid}>
+              <LogCardEntry title="GUID" value={log?.guid} />
+            </View.If>
+            <View.If hidden={!log._id.$oid}>
+              <LogCardEntry title="ID" value={log._id.$oid} />
+            </View.If>
+          </details>
           <View.If hidden={!log?.data?.stack}>
-            <LogCardEntry title="Stack Trace" value={log?.data?.stack} />
+            <details className="w-full group">
+              <summary className="dark:text-white text-black flex flex-row items-center list-none gap-1 cursor-pointer">
+                <HiOutlinePlus className="block group-open:hidden" />
+                <HiOutlineMinus className="hidden group-open:block" />
+                <span>Stack Trace</span>
+              </summary>
+              <div className="p-2 bg-neutral-200 dark:bg-neutral-900 rounded">
+                <span className="text-xs whitespace-pre-wrap break-all dark:text-neutral-400 text-neutral-600 px-1 rounded">
+                  {log?.data?.stack}
+                </span>
+              </div>
+            </details>
           </View.If>
         </div>
       </div>
