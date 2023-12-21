@@ -34,7 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-public/fallback-development.js
-public/sw.js
-public/sw.js.map
-public/workbox*.js.map
+
+# workbox
+fallback-development.js
+sw.js
+sw.js.map
+workbox*.js.map
