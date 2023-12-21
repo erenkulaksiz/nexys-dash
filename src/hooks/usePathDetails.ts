@@ -21,7 +21,7 @@ export default function usePathDetails({ path }: usePathDetailsParams) {
     [`api/dash/project/path/details/${path}`],
     async () => {
       const token = Cookies.get("auth");
-      return fetch(`${server}/api/dash/project/path/details`, {
+      return fetch(`${server}/dash/project/path/details`, {
         headers: new Headers({
           "content-type": "application/json",
           Authorization: `Bearer ${token || ""}`,
