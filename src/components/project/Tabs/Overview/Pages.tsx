@@ -67,7 +67,7 @@ export default function Pages() {
           <View.If
             visible={project?.logPaths && project?.logPaths?.length > 10}
           >
-            <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-black bg-neutral-200 dark:bg-neutral-900 px-1 pr-2 rounded-full">
+            <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-black bg-neutral-200 dark:bg-neutral-900 px-1 pr-2 rounded">
               <MdInfoOutline size={14} />
               <span>
                 {project?.logPaths?.length && project?.logPaths?.length - 10}{" "}
