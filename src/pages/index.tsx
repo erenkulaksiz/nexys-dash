@@ -88,7 +88,7 @@ export default function HomePage(props: NexysComponentProps) {
                     {projects?.data?.data?.map(
                       (project: ProjectTypes, index: number) => (
                         <Link
-                          key={project._id?.toString()}
+                          key={project._id?.$oid.toString()}
                           href={{
                             pathname: "/project/[id]",
                             query: { id: project.name?.toString() },
