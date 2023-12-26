@@ -102,7 +102,7 @@ export default function useLogs({
       }
       setLoading(false);
     }
-  }, [logs.data]);
+  }, [logs]);
 
   useEffect(() => {
     if (logs.isLoading) {

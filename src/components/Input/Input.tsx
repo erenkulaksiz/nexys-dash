@@ -24,6 +24,8 @@ export default function Input({
   maxLength,
   passwordVisibility = false,
   type = "text",
+  onFocus,
+  onKeyDown,
 }: InputProps) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -104,12 +106,14 @@ export default function Input({
         placeholder={placeholder}
         maxLength={maxLength}
         onKeyDown={(e) => {
+          typeof onKeyDown == "function" && onKeyDown(e);
           if (e.key != "Enter") return;
 
           if (typeof onEnterPress === "function") {
             onEnterPress(e);
           }
         }}
+        onFocus={(event) => typeof onFocus == "function" && onFocus(event)}
       />
       <View.If visible={passwordVisibility}>
         <button

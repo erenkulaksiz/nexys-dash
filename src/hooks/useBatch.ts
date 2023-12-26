@@ -70,7 +70,7 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
       }
       setBatchLoading(false);
     }
-  }, [batch.data]);
+  }, [batch]);
 
   useEffect(() => {
     if (batch.isValidating) {

@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, FocusEvent } from "react";
 
 export interface InputProps {
   onChange?: (
@@ -6,6 +6,12 @@ export interface InputProps {
   ) => void;
   value?: string;
   onEnterPress?: (
+    event: KeyboardEvent<HTMLInputElement> | KeyboardEvent<HTMLTextAreaElement>
+  ) => void;
+  onFocus?: (
+    event: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
+  ) => void;
+  onKeyDown?: (
     event: KeyboardEvent<HTMLInputElement> | KeyboardEvent<HTMLTextAreaElement>
   ) => void;
   placeholder?: string;

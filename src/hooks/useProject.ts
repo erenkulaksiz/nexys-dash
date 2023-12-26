@@ -30,7 +30,6 @@ export default function useProject({ uid }: useProjectParams) {
         url: `/v1/dash/project/${query}`,
         data: {
           uid: uid || user?.uid,
-          id: query,
         },
         token,
       });
@@ -49,7 +48,7 @@ export default function useProject({ uid }: useProjectParams) {
       setProjectLoading(false);
       return;
     }
-    if (project?.data?.error) {
+    if (project?.data?.error == "auth/id-token-expired") {
       Log.error("Loading of project failed", project?.data?.error);
       nexys.error({ message: project?.data?.error });
       (async () => {
@@ -61,11 +60,20 @@ export default function useProject({ uid }: useProjectParams) {
       setNotFound(true);
       return;
     }
-    setCurrentProject(project?.data?.data);
-    setProjectLoading(false);
-    setNotFound(false);
+    if (project?.data?.error == "project/invalid-params") {
+      Log.error("Loading of project failed", project?.data?.error);
+      nexys.error({ message: project?.data?.error });
+      setProjectLoading(false);
+      setNotFound(true);
+      return;
+    }
+    if (project?.data?.success) {
+      setCurrentProject(project?.data?.data);
+      setProjectLoading(false);
+      setNotFound(false);
+    }
     Log.debug("project", project.data);
-  }, [project.data]);
+  }, [project]);
 
   useEffect(() => {
     if (project.isLoading) {

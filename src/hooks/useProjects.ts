@@ -37,7 +37,7 @@ export default function useProjects({ uid }: useProjectsParams) {
     } else {
       setLoading(false);
     }
-  }, [projects.data]);
+  }, [projects]);
 
   useEffect(() => {
     if (projects.isLoading) {
