@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
@@ -11,11 +12,13 @@ import Input from "@/components/Input";
 import Tooltip from "@/components/Tooltip";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
-import { Log } from "@/utils";
+import { Log, server } from "@/utils";
 import { LIMITS } from "@/constants";
 import { FaSearch } from "react-icons/fa";
 import Select from "@/components/Select";
+import hookRequest from "@/utils/api/hookRequest";
 import { MdOutlineArrowForwardIos, MdClose } from "react-icons/md";
+import { useAuthStore } from "@/stores/authStore";
 
 const filterPoss = [
   {
@@ -26,14 +29,16 @@ const filterPoss = [
       {
         id: "erenkulaksz@gmail.com",
         text: "erenkulaksz@gmail.com",
+        value: 100,
       },
       {
         id: "test",
         text: "test",
+        value: 0,
       },
     ],
     selectionOpen: false,
-    selectionPlaceholder: "User",
+    selectionPlaceholder: "mike@gmail.com",
   },
   {
     value: "path",
@@ -50,13 +55,14 @@ const filterPoss = [
       },
     ],
     selectionOpen: false,
-    selectionPlaceholder: "Path",
+    selectionPlaceholder: "/shop/cart/checkout",
   },
 ];
 
 export default function Exceptions() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
+  const user = useAuthStore((state) => state.validatedUser);
   const [filters, setFilters] = useState<any>([]);
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const exceptions = useLogs({
@@ -75,7 +81,24 @@ export default function Exceptions() {
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
 
-  function addFilter(filter: any) {
+  async function addFilter(filter: any) {
+    if (filter.value == "from") {
+      const token = Cookies.get("auth");
+      const users = await hookRequest({
+        url: `/v1/dash/project/${project?.name}/filter/exceptions/users`,
+        data: {
+          uid: user?.uid,
+        },
+        token: token || "",
+      });
+      filter.selections = users.data?.map((user: any) => {
+        return {
+          id: user._id,
+          text: user._id,
+          value: user.count,
+        };
+      });
+    }
     setFilters([...filters, filter]);
     setFiltersOpen(false);
   }
@@ -126,10 +149,10 @@ export default function Exceptions() {
                         </span>
                         <span>{filter.text}</span>
                         <div className="relative flex">
-                          <Input
+                          <input
                             type="text"
                             placeholder={filter.selectionPlaceholder}
-                            containerClassName="h-8"
+                            className="h-8 px-2 rounded-lg"
                             onFocus={() => {
                               setFiltersOpen(false);
                               filters[index].selectionOpen = true;
@@ -137,8 +160,13 @@ export default function Exceptions() {
                             }}
                           />
                           <View.If visible={filter.selectionOpen}>
-                            <div className="absolute top-[100%] z-[999]">
-                              asd
+                            <div className="absolute top-[calc(100%+10px)] p-2 z-[999] bg-black w-full">
+                              {filter.selections?.map((selection: any) => (
+                                <div className="flex flex-col w-full break-keep text-xs">
+                                  <div>{selection.text}</div>
+                                  <div>{selection.value}</div>
+                                </div>
+                              ))}
                             </div>
                           </View.If>
                         </div>
