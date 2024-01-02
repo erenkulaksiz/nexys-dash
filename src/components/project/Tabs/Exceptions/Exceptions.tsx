@@ -8,14 +8,9 @@ import LogCard from "@/components/project/LogCard";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Pager from "@/components/Pager";
-import Input from "@/components/Input";
 import Tooltip from "@/components/Tooltip";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
-import { Log, server } from "@/utils";
-import { LIMITS } from "@/constants";
-import { FaSearch } from "react-icons/fa";
-import Select from "@/components/Select";
 import hookRequest from "@/utils/api/hookRequest";
 import { MdOutlineArrowForwardIos, MdClose } from "react-icons/md";
 import { useAuthStore } from "@/stores/authStore";
@@ -39,6 +34,9 @@ const filterPoss = [
     ],
     selectionOpen: false,
     selectionPlaceholder: "mike@gmail.com",
+    selectionLoading: true,
+    selectionTextInput: "",
+    selectionFiltered: [],
   },
   {
     value: "path",
@@ -56,6 +54,9 @@ const filterPoss = [
     ],
     selectionOpen: false,
     selectionPlaceholder: "/shop/cart/checkout",
+    selectionLoading: true,
+    selectionTextInput: "",
+    selectionFiltered: [],
   },
 ];
 
@@ -82,6 +83,8 @@ export default function Exceptions() {
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
 
   async function addFilter(filter: any) {
+    setFilters([...filters, filter]);
+    const filterIndex = filters.length;
     if (filter.value == "from") {
       const token = Cookies.get("auth");
       const users = await hookRequest({
@@ -91,15 +94,20 @@ export default function Exceptions() {
         },
         token: token || "",
       });
-      filter.selections = users.data?.map((user: any) => {
+      const selections = users.data?.map((user: any) => {
         return {
-          id: user._id,
-          text: user._id,
-          value: user.count,
+          id: user._id || "Anonymous",
+          text: user._id || "Anonymous",
+          value: user.errorCount,
         };
       });
+      filter.selections = selections;
+      filter.selectionFiltered = selections;
+      filter.selectionLoading = false;
     }
-    setFilters([...filters, filter]);
+    const newFilters = [...filters];
+    newFilters[filterIndex] = filter;
+    setFilters(newFilters);
     setFiltersOpen(false);
   }
 
@@ -134,7 +142,7 @@ export default function Exceptions() {
                   <div className="flex flex-wrap gap-1 items-center outline-none rounded-lg focus:outline-2 focus:outline-blue-500/50 dborder-[1px] border-neutral-200 dark:border-neutral-900 dark:bg-black placeholder:text-neutral-400 placeholder:text-sm">
                     {filters.map((filter: any, index: number) => (
                       <div
-                        className="flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-900 rounded-md p-1 pr-2 text-sm"
+                        className="flex flex-row h-10 items-center gap-2 bg-neutral-100 dark:bg-neutral-900 rounded-md p-1 pr-2 text-sm"
                         key={`${filter.value}${index}`}
                       >
                         <span
@@ -148,28 +156,74 @@ export default function Exceptions() {
                           <MdClose />
                         </span>
                         <span>{filter.text}</span>
-                        <div className="relative flex">
-                          <input
-                            type="text"
-                            placeholder={filter.selectionPlaceholder}
-                            className="h-8 px-2 rounded-lg"
-                            onFocus={() => {
-                              setFiltersOpen(false);
-                              filters[index].selectionOpen = true;
-                              setFilters([...filters]);
-                            }}
-                          />
-                          <View.If visible={filter.selectionOpen}>
-                            <div className="absolute top-[calc(100%+10px)] p-2 z-[999] bg-black w-full">
-                              {filter.selections?.map((selection: any) => (
-                                <div className="flex flex-col w-full break-keep text-xs">
-                                  <div>{selection.text}</div>
-                                  <div>{selection.value}</div>
-                                </div>
-                              ))}
-                            </div>
+                        <View viewIf={filter.selectionLoading}>
+                          <View.If>
+                            <Loading size="lg" />
                           </View.If>
-                        </div>
+                          <View.Else>
+                            <div className="relative flex">
+                              <input
+                                type="text"
+                                placeholder={filter.selectionPlaceholder}
+                                className="h-8 px-2 rounded-lg"
+                                value={filter.selectionTextInput}
+                                onFocus={() => {
+                                  setFiltersOpen(false);
+                                  const newFilters = [...filters];
+                                  newFilters[index].selectionOpen = true;
+                                  setFilters([...newFilters]);
+                                }}
+                                onChange={(e) => {
+                                  const newFilters = [...filters];
+
+                                  newFilters[index].selectionTextInput =
+                                    e.target.value;
+
+                                  if (e.target.value == "") {
+                                    newFilters[index].selectionFiltered =
+                                      newFilters[index].selections;
+                                  } else {
+                                    newFilters[index].selectionFiltered =
+                                      newFilters[index].selections.filter(
+                                        (selection: any) =>
+                                          selection.text.includes(
+                                            e.target.value
+                                          )
+                                      );
+                                  }
+
+                                  setFilters([...newFilters]);
+                                }}
+                              />
+                              <View.If visible={filter.selectionOpen}>
+                                <div className="absolute top-[calc(100%+10px)] z-[999] rounded-lg dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 w-full overflow-hidden">
+                                  {filter.selectionFiltered?.map(
+                                    (selection: any) => {
+                                      return (
+                                        <button
+                                          onClick={() => {
+                                            const newFilters = [...filters];
+                                            newFilters[index].selectionOpen =
+                                              false;
+                                            newFilters[
+                                              index
+                                            ].selectionTextInput =
+                                              selection.text;
+                                            setFilters([...newFilters]);
+                                          }}
+                                          className="flex flex-col w-full break-keep text-xs dark:hover:bg-neutral-900 hover:bg-neutral-200 px-2"
+                                        >
+                                          <div>{selection.text}</div>
+                                          <div>{`${selection.value} errors`}</div>
+                                        </button>
+                                      );
+                                    }
+                                  )}
+                                </div>
+                              </View.If>
+                            </div>
+                          </View.Else>
+                        </View>
                       </div>
                     ))}
                   </div>
@@ -200,7 +254,7 @@ export default function Exceptions() {
                   <div className="h-full">
                     <Button
                       className="w-16"
-                      size="h-8"
+                      size="h-10"
                       onClick={() => setFiltersOpen(!filtersOpen)}
                     >
                       <MdOutlineArrowForwardIos
