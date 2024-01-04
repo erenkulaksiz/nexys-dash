@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 
 import { useProjectStore } from "@/stores/projectStore";
@@ -12,60 +12,16 @@ import Tooltip from "@/components/Tooltip";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
 import hookRequest from "@/utils/api/hookRequest";
-import { MdOutlineArrowForwardIos, MdClose } from "react-icons/md";
+import { MdOutlineArrowForwardIos, MdClose, MdSearch } from "react-icons/md";
 import { useAuthStore } from "@/stores/authStore";
 
-const filterPoss = [
-  {
-    value: "from",
-    text: "from:",
-    desc: "Filter by user who created the exception",
-    selections: [
-      {
-        id: "erenkulaksz@gmail.com",
-        text: "erenkulaksz@gmail.com",
-        value: 100,
-      },
-      {
-        id: "test",
-        text: "test",
-        value: 0,
-      },
-    ],
-    selectionOpen: false,
-    selectionPlaceholder: "mike@gmail.com",
-    selectionLoading: true,
-    selectionTextInput: "",
-    selectionFiltered: [],
-  },
-  {
-    value: "path",
-    text: "path:",
-    desc: "Filter by path",
-    selections: [
-      {
-        id: "/",
-        text: "/",
-      },
-      {
-        id: "/about",
-        text: "/about",
-      },
-    ],
-    selectionOpen: false,
-    selectionPlaceholder: "/shop/cart/checkout",
-    selectionLoading: true,
-    selectionTextInput: "",
-    selectionFiltered: [],
-  },
-];
+const possibleFilters = ["from:", "path:"];
 
 export default function Exceptions() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
   const user = useAuthStore((state) => state.validatedUser);
   const [filters, setFilters] = useState<any>([]);
-  const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const exceptions = useLogs({
     type: "exceptions",
     page,
@@ -79,36 +35,65 @@ export default function Exceptions() {
     },
   });
 
+  const [filterText, setFilterText] = useState<string>("");
+  const [currentAvailableFilters, setCurrentAvailableFilters] = useState<any>({
+    loading: false,
+    items: possibleFilters.map((filter) => {
+      return {
+        id: filter,
+        text: filter,
+      };
+    }),
+    type: "filter",
+  });
+  const [showAvailableFilters, setShowAvailableFilters] =
+    useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (possibleFilters.includes(filterText.toLowerCase())) {
+      setFilters([...filters, { value: filterText, selection: "" }]);
+      if (filterText == "from:") {
+        setCurrentAvailableFilters({
+          loading: true,
+          items: [],
+          type: "user",
+        });
+        getAvailableUserSelections().then((users) => {
+          setCurrentAvailableFilters({
+            loading: false,
+            items: users.map((user: any) => {
+              return {
+                id: user._id,
+                text: `${user._id} (${user.errorCount})`,
+              };
+            }),
+            type: "user",
+          });
+        });
+      }
+      setFilterText("");
+    }
+  }, [filterText]);
+
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
 
-  async function addFilter(filter: any) {
-    setFilters([...filters, filter]);
-    const filterIndex = filters.length;
-    if (filter.value == "from") {
-      const token = Cookies.get("auth");
-      const users = await hookRequest({
-        url: `/v1/dash/project/${project?.name}/filter/exceptions/users`,
-        data: {
-          uid: user?.uid,
-        },
-        token: token || "",
-      });
-      const selections = users.data?.map((user: any) => {
-        return {
-          id: user._id || "Anonymous",
-          text: user._id || "Anonymous",
-          value: user.errorCount,
-        };
-      });
-      filter.selections = selections;
-      filter.selectionFiltered = selections;
-      filter.selectionLoading = false;
-    }
-    const newFilters = [...filters];
-    newFilters[filterIndex] = filter;
-    setFilters(newFilters);
-    setFiltersOpen(false);
+  async function getAvailableUserSelections() {
+    const token = Cookies.get("auth");
+    const users = await hookRequest({
+      url: `/v1/dash/project/${project?.name}/filter/exceptions/users`,
+      data: {
+        uid: user?.uid,
+      },
+      token: token || "",
+    });
+    return users?.data?.map((user: any) => {
+      return {
+        _id: user._id || "Anonymous",
+        errorCount: user.errorCount,
+      };
+    });
   }
 
   return (
@@ -136,138 +121,234 @@ export default function Exceptions() {
             </View.If>
           </div>
           <View.If hidden={exceptionsLoading}>
-            <div className="flex flex-col items-start gap-2 p-4 pb-0">
-              <div className="flex flex-row gap-1 min-h-8 relative">
-                <View.If visible={filters.length > 0}>
-                  <div className="flex flex-wrap gap-1 items-center outline-none rounded-lg focus:outline-2 focus:outline-blue-500/50 dborder-[1px] border-neutral-200 dark:border-neutral-900 dark:bg-black placeholder:text-neutral-400 placeholder:text-sm">
-                    {filters.map((filter: any, index: number) => (
-                      <div
-                        className="flex flex-row h-10 items-center gap-2 bg-neutral-100 dark:bg-neutral-900 rounded-md p-1 pr-2 text-sm"
-                        key={`${filter.value}${index}`}
-                      >
-                        <span
-                          className="cursor-pointer"
-                          onClick={() =>
-                            setFilters(
-                              filters.filter((_: any, i: number) => i != index)
-                            )
-                          }
-                        >
-                          <MdClose />
-                        </span>
-                        <span>{filter.text}</span>
-                        <View viewIf={filter.selectionLoading}>
-                          <View.If>
-                            <Loading size="lg" />
-                          </View.If>
-                          <View.Else>
-                            <div className="relative flex">
-                              <input
-                                type="text"
-                                placeholder={filter.selectionPlaceholder}
-                                className="h-8 px-2 rounded-lg"
-                                value={filter.selectionTextInput}
-                                onFocus={() => {
-                                  setFiltersOpen(false);
-                                  const newFilters = [...filters];
-                                  newFilters[index].selectionOpen = true;
-                                  setFilters([...newFilters]);
-                                }}
-                                onChange={(e) => {
-                                  const newFilters = [...filters];
-
-                                  newFilters[index].selectionTextInput =
-                                    e.target.value;
-
-                                  if (e.target.value == "") {
-                                    newFilters[index].selectionFiltered =
-                                      newFilters[index].selections;
-                                  } else {
-                                    newFilters[index].selectionFiltered =
-                                      newFilters[index].selections.filter(
-                                        (selection: any) =>
-                                          selection.text.includes(
-                                            e.target.value
-                                          )
-                                      );
-                                  }
-
-                                  setFilters([...newFilters]);
-                                }}
-                              />
-                              <View.If visible={filter.selectionOpen}>
-                                <div className="absolute top-[calc(100%+10px)] z-[999] rounded-lg dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 w-full overflow-hidden">
-                                  {filter.selectionFiltered?.map(
-                                    (selection: any) => {
-                                      return (
-                                        <button
-                                          onClick={() => {
-                                            const newFilters = [...filters];
-                                            newFilters[index].selectionOpen =
-                                              false;
-                                            newFilters[
-                                              index
-                                            ].selectionTextInput =
-                                              selection.text;
-                                            setFilters([...newFilters]);
-                                          }}
-                                          className="flex flex-col w-full break-keep text-xs dark:hover:bg-neutral-900 hover:bg-neutral-200 px-2"
-                                        >
-                                          <div>{selection.text}</div>
-                                          <div>{`${selection.value} errors`}</div>
-                                        </button>
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              </View.If>
-                            </div>
-                          </View.Else>
-                        </View>
-                      </div>
-                    ))}
-                  </div>
-                </View.If>
-                <View.If visible={filtersOpen}>
-                  <div className="flex flex-col min-w-[200px] items-start gap-1 absolute left-0 right-[50%] top-[calc(100%+8px)] dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg z-50 p-2">
-                    <div>Filters</div>
-                    <div className="flex flex-col gap-1">
-                      {filterPoss.map((filter, index) => (
-                        <Tooltip
-                          content={filter.desc}
-                          key={`${filter.value}${index}filters`}
-                        >
-                          <button
-                            onClick={() => addFilter(filter)}
-                            className="px-2 border-[1px] border-neutral-200 dark:border-neutral-900 hover:dark:border-neutral-800 rounded-lg"
-                          >
-                            {filter.text}
-                          </button>
-                        </Tooltip>
-                      ))}
-                    </div>
-                  </div>
-                </View.If>
-                <Tooltip
-                  content={filtersOpen ? "Close Filters" : "Open Filters"}
-                >
-                  <div className="h-full">
-                    <Button
-                      className="w-16"
-                      size="h-10"
-                      onClick={() => setFiltersOpen(!filtersOpen)}
+            <div className="p-4 pb-0 flex">
+              <div className="relative flex flex-row min-h-10 min-w-[300px] items-center border-[1px] border-neutral-200 dark:border-neutral-900 rounded-xl">
+                <div className="p-2 h-full flex items-center border-r-[1px] border-neutral-200 dark:border-neutral-900">
+                  <MdSearch />
+                </div>
+                {filters.map((filter: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className="ml-1 flex flex-row items-center bg-neutral-900 rounded-lg"
                     >
-                      <MdOutlineArrowForwardIos
-                        style={{
-                          transform: filtersOpen
-                            ? "rotate(90deg)"
-                            : "rotate(0deg)",
+                      <div
+                        className="p-1 h-full flex items-center cursor-pointer"
+                        onClick={() => {
+                          const newFilters = [...filters];
+                          newFilters.splice(index, 1);
+                          setFilters(newFilters);
+                          setCurrentAvailableFilters({
+                            loading: false,
+                            items: possibleFilters.map((filter) => {
+                              return {
+                                id: filter,
+                                text: filter,
+                              };
+                            }),
+                            type: "filter",
+                          });
                         }}
-                      />
-                    </Button>
-                  </div>
-                </Tooltip>
+                      >
+                        <MdClose />
+                      </div>
+                      <div className="h-full whitespace-nowrap p-1 px-2 pl-0 flex gap-1 items-center">
+                        <span>{filter.value}</span>
+                        <span>{filter.selection}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+                <View.If visible={currentAvailableFilters.loading}>
+                  <Loading size="lg" className="ml-2" />
+                </View.If>
+                <div className="relative w-full">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    className="bg-transparent w-full outline-none px-2 break-keep-all overflow-hidden"
+                    onChange={(e) => setFilterText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key == "Backspace" && filterText == "") {
+                        const newFilters = [...filters];
+                        newFilters.pop();
+                        setFilters(newFilters);
+                        setCurrentAvailableFilters({
+                          loading: false,
+                          items: possibleFilters.map((filter) => {
+                            return {
+                              id: filter,
+                              text: filter,
+                            };
+                          }),
+                          type: "filter",
+                        });
+                      }
+                      if (
+                        (e.key == "Tab" || e.key == "Enter") &&
+                        currentAvailableFilters.items.filter((item: any) => {
+                          return item.text
+                            .toLowerCase()
+                            .includes(filterText.toLowerCase());
+                        }).length == 1 &&
+                        currentAvailableFilters.type == "filter"
+                      ) {
+                        setFilterText(
+                          currentAvailableFilters.items.filter((item: any) => {
+                            return item.text
+                              .toLowerCase()
+                              .includes(filterText.toLowerCase());
+                          })[0].text
+                        );
+                        setShowAvailableFilters(true);
+                        setTimeout(() => inputRef.current?.focus(), 0);
+                      }
+                      if (
+                        (e.key == "Tab" || e.key == "Enter") &&
+                        currentAvailableFilters.items.filter((item: any) => {
+                          return item.text
+                            .toLowerCase()
+                            .includes(filterText.toLowerCase());
+                        }).length == 1 &&
+                        currentAvailableFilters.type == "user"
+                      ) {
+                        const newFilters = [...filters];
+                        newFilters[newFilters.length - 1].selection =
+                          currentAvailableFilters.items.filter((item: any) => {
+                            return item.text
+                              .toLowerCase()
+                              .includes(filterText.toLowerCase());
+                          })[0].text;
+                        setShowAvailableFilters(true);
+                        setFilterText("");
+                        setTimeout(() => inputRef.current?.focus(), 0);
+                        setCurrentAvailableFilters({
+                          loading: false,
+                          items: possibleFilters.map((filter) => {
+                            return {
+                              id: filter,
+                              text: filter,
+                            };
+                          }),
+                          type: "filter",
+                        });
+                      }
+                    }}
+                    onFocus={() => setShowAvailableFilters(true)}
+                    //onBlur={() => setShowAvailableFilters(false)}
+                    value={filterText}
+                  />
+                  <View.If
+                    visible={
+                      currentAvailableFilters.items &&
+                      !currentAvailableFilters.loading &&
+                      showAvailableFilters
+                    }
+                  >
+                    <div className="absolute overflow-hidden top-[calc(100%+10px)] left-0 z-20 rounded-xl bg-black border-[1px] border-neutral-200 dark:border-neutral-900 ">
+                      {filterText
+                        ? currentAvailableFilters.items
+                            .filter((item: any) => {
+                              return item.text
+                                .toLowerCase()
+                                .includes(filterText.toLowerCase());
+                            })
+                            .map((item: any, index: number) => {
+                              return (
+                                <button
+                                  onClick={() => {
+                                    if (
+                                      currentAvailableFilters.type == "filter"
+                                    ) {
+                                      setFilterText(item.text);
+                                      setShowAvailableFilters(false);
+                                      setTimeout(
+                                        () => inputRef.current?.focus(),
+                                        0
+                                      );
+                                    } else if (
+                                      currentAvailableFilters.type == "user"
+                                    ) {
+                                      const newFilters = [...filters];
+                                      newFilters[
+                                        newFilters.length - 1
+                                      ].selection = item.text;
+                                      setShowAvailableFilters(false);
+                                      setFilterText("");
+                                      setTimeout(
+                                        () => inputRef.current?.focus(),
+                                        0
+                                      );
+                                      setCurrentAvailableFilters({
+                                        loading: false,
+                                        items: possibleFilters.map((filter) => {
+                                          return {
+                                            id: filter,
+                                            text: filter,
+                                          };
+                                        }),
+                                        type: "filter",
+                                      });
+                                    }
+                                  }}
+                                  className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
+                                >
+                                  {item.text}
+                                </button>
+                              );
+                            })
+                        : currentAvailableFilters.items.map(
+                            (item: any, index: number) => {
+                              return (
+                                <button
+                                  onClick={() => {
+                                    if (
+                                      currentAvailableFilters.type == "filter"
+                                    ) {
+                                      setFilterText(item.text);
+                                      setShowAvailableFilters(false);
+                                      setTimeout(
+                                        () => inputRef.current?.focus(),
+                                        0
+                                      );
+                                    } else if (
+                                      currentAvailableFilters.type == "user"
+                                    ) {
+                                      const newFilters = [...filters];
+                                      newFilters[
+                                        newFilters.length - 1
+                                      ].selection = item.text;
+                                      setShowAvailableFilters(false);
+                                      setFilterText("");
+                                      setTimeout(
+                                        () => inputRef.current?.focus(),
+                                        0
+                                      );
+                                      setCurrentAvailableFilters({
+                                        loading: false,
+                                        items: possibleFilters.map((filter) => {
+                                          return {
+                                            id: filter,
+                                            text: filter,
+                                          };
+                                        }),
+                                        type: "filter",
+                                      });
+                                    }
+                                  }}
+                                  className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
+                                >
+                                  {item.text}
+                                </button>
+                              );
+                            }
+                          )}
+                    </div>
+                  </View.If>
+                </div>
               </div>
+            </div>
+            <div className="flex flex-col items-start gap-2 p-4 pb-0">
               <View.If visible={!exceptionsLoading && totalPages > 1}>
                 <Pager
                   currentPage={page}
