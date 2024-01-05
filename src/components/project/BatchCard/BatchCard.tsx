@@ -89,7 +89,8 @@ export default function BatchCard({ batch }: { batch: any }) {
         </View.If>
         <div className="flex flex-row items-center gap-2">
           <ul className="flex flex-row gap-2 items-center flex-wrap">
-            {Object.keys(batch?.logTypes)
+            {
+              Object.keys(batch?.logTypes || [])
               .sort((a: any, b: any) => {
                 return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;
               })
