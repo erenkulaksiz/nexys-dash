@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { RiFilterLine, RiFilterFill } from "react-icons/ri";
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
 import useLogs from "@/hooks/useLogs";
@@ -8,74 +7,78 @@ import LogCard from "@/components/project/LogCard";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Pager from "@/components/Pager";
+import Input from "@/components/Input";
+import Tooltip from "@/components/Tooltip";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
 import { Log } from "@/utils";
-import useDebounce from "@/hooks/useDebounce";
-import ExceptionFilters from "@/components/project/Filters/ExceptionFilters";
-import type { LogFilterTypes } from "@/types";
+import { LIMITS } from "@/constants";
+import { FaSearch } from "react-icons/fa";
+import Select from "@/components/Select";
+import { MdOutlineArrowForwardIos, MdClose } from "react-icons/md";
+
+const filterPoss = [
+  {
+    value: "from",
+    text: "from:",
+    desc: "Filter by user who created the exception",
+    selections: [
+      {
+        id: "erenkulaksz@gmail.com",
+        text: "erenkulaksz@gmail.com",
+      },
+      {
+        id: "test",
+        text: "test",
+      },
+    ],
+    selectionOpen: false,
+    selectionPlaceholder: "User",
+  },
+  {
+    value: "path",
+    text: "path:",
+    desc: "Filter by path",
+    selections: [
+      {
+        id: "/",
+        text: "/",
+      },
+      {
+        id: "/about",
+        text: "/about",
+      },
+    ],
+    selectionOpen: false,
+    selectionPlaceholder: "Path",
+  },
+];
 
 export default function Exceptions() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
-  const [search, setSearch] = useState<string>("");
+  const [filters, setFilters] = useState<any>([]);
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<LogFilterTypes>({
-    asc: false,
-    types: [],
-    path: "all",
-    batchVersion: "all",
-    configUser: "all",
-    search: "",
-  });
   const exceptions = useLogs({
     type: "exceptions",
     page,
     filters: {
-      path: filters.path,
-      batchVersion: filters.batchVersion,
-      asc: filters.asc,
-      types: filters.types,
-      configUser: filters.configUser,
-      search: filters.search,
+      path: "all",
+      batchVersion: "all",
+      asc: false,
+      types: [],
+      configUser: "all",
+      search: "",
     },
   });
 
-  const debouncedSearch = useDebounce(
-    () => {
-      setFilters({ ...filters, search });
-    },
-    [search],
-    1500
-  );
-
-  useEffect(() => {
-    setPage(0);
-  }, [filters]);
-
-  useEffect(() => {
-    if (exceptions?.data?.data) {
-      exceptions.mutate();
-    }
-  }, [filters.types]);
-
-  useEffect(() => {
-    setFilters({
-      ...filters,
-      types: [],
-    });
-  }, [filters.path]);
-
-  useEffect(() => {
-    setFilters({
-      ...filters,
-      types: [],
-      path: "all",
-    });
-  }, [filters.batchVersion]);
-
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
+
+  function addFilter(filter: any) {
+    setFilters([...filters, filter]);
+    setFiltersOpen(false);
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">
@@ -85,7 +88,9 @@ export default function Exceptions() {
             <div className="flex flex-row gap-2 items-center">
               <MdError />
               <span>Exceptions</span>
-              {exceptions.isValidating && <Loading />}
+              <View.If visible={exceptions.isValidating}>
+                <Loading />
+              </View.If>
             </div>
             <View.If
               visible={
@@ -101,32 +106,86 @@ export default function Exceptions() {
           </div>
           <View.If hidden={exceptionsLoading}>
             <div className="flex flex-col items-start gap-2 p-4 pb-0">
-              <div className="flex flex-row gap-2 items-center">
-                <Button
-                  className="px-2"
-                  size="h-8"
-                  onClick={() => setFiltersOpen(!filtersOpen)}
+              <div className="flex flex-row gap-1 min-h-8 relative">
+                <View.If visible={filters.length > 0}>
+                  <div className="flex flex-wrap gap-1 items-center outline-none rounded-lg focus:outline-2 focus:outline-blue-500/50 dborder-[1px] border-neutral-200 dark:border-neutral-900 dark:bg-black placeholder:text-neutral-400 placeholder:text-sm">
+                    {filters.map((filter: any, index: number) => (
+                      <div
+                        className="flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-900 rounded-md p-1 pr-2 text-sm"
+                        key={`${filter.value}${index}`}
+                      >
+                        <span
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setFilters(
+                              filters.filter((_: any, i: number) => i != index)
+                            )
+                          }
+                        >
+                          <MdClose />
+                        </span>
+                        <span>{filter.text}</span>
+                        <div className="relative flex">
+                          <Input
+                            type="text"
+                            placeholder={filter.selectionPlaceholder}
+                            containerClassName="h-8"
+                            onFocus={() => {
+                              setFiltersOpen(false);
+                              filters[index].selectionOpen = true;
+                              setFilters([...filters]);
+                            }}
+                          />
+                          <View.If visible={filter.selectionOpen}>
+                            <div className="absolute top-[100%] z-[999]">
+                              asd
+                            </div>
+                          </View.If>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </View.If>
+                <View.If visible={filtersOpen}>
+                  <div className="flex flex-col min-w-[200px] items-start gap-1 absolute left-0 right-[50%] top-[calc(100%+8px)] dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg z-50 p-2">
+                    <div>Filters</div>
+                    <div className="flex flex-col gap-1">
+                      {filterPoss.map((filter, index) => (
+                        <Tooltip
+                          content={filter.desc}
+                          key={`${filter.value}${index}filters`}
+                        >
+                          <button
+                            onClick={() => addFilter(filter)}
+                            className="px-2 border-[1px] border-neutral-200 dark:border-neutral-900 hover:dark:border-neutral-800 rounded-lg"
+                          >
+                            {filter.text}
+                          </button>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </div>
+                </View.If>
+                <Tooltip
+                  content={filtersOpen ? "Close Filters" : "Open Filters"}
                 >
-                  <View viewIf={filtersOpen}>
-                    <View.If>
-                      <RiFilterFill />
-                    </View.If>
-                    <View.Else>
-                      <RiFilterLine />
-                    </View.Else>
-                  </View>
-                  <span className="ml-1">Filters</span>
-                </Button>
+                  <div className="h-full">
+                    <Button
+                      className="w-16"
+                      size="h-8"
+                      onClick={() => setFiltersOpen(!filtersOpen)}
+                    >
+                      <MdOutlineArrowForwardIos
+                        style={{
+                          transform: filtersOpen
+                            ? "rotate(90deg)"
+                            : "rotate(0deg)",
+                        }}
+                      />
+                    </Button>
+                  </div>
+                </Tooltip>
               </div>
-              <View.If visible={filtersOpen}>
-                <ExceptionFilters
-                  exceptions={exceptions}
-                  filters={filters}
-                  setFilters={setFilters}
-                  search={search}
-                  onSearchTextChange={(value) => setSearch(value)}
-                />
-              </View.If>
               <View.If visible={!exceptionsLoading && totalPages > 1}>
                 <Pager
                   currentPage={page}
@@ -166,7 +225,7 @@ export default function Exceptions() {
               }
             >
               {exceptions.data?.data?.exceptions.map((exception: any) => {
-                return <LogCard log={exception} key={exception._id} />;
+                return <LogCard log={exception} key={exception._id.$oid} />;
               })}
             </View.If>
           </div>

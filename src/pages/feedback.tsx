@@ -79,7 +79,7 @@ export default function FeedbackPage(props: NexysComponentProps) {
             </h2>
           </div>
         </Container>
-        <View viewIf={!sentFeedback}>
+        <View viewIf={sentFeedback}>
           <View.If>
             <Container>
               <div className="flex flex-row gap-2 items-center">

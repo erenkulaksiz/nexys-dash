@@ -152,7 +152,13 @@ export default function LogCard({
             <LogCardEntry title="Environment" value={log?.batch?.env?.type} />
           </View.If>
           <details className="w-full group">
-            <summary className="dark:text-white text-black flex flex-row items-center list-none gap-1 cursor-pointer">
+            <summary
+              className="dark:text-white text-black flex flex-row items-center gap-1 cursor-pointer"
+              style={{
+                listStyle: "none",
+                userSelect: "none",
+              }}
+            >
               <HiOutlinePlus className="block group-open:hidden" />
               <HiOutlineMinus className="hidden group-open:block" />
               <span>Details</span>
@@ -166,7 +172,13 @@ export default function LogCard({
           </details>
           <View.If hidden={!log?.data?.stack}>
             <details className="w-full group">
-              <summary className="dark:text-white text-black flex flex-row items-center list-none gap-1 cursor-pointer">
+              <summary
+                className="dark:text-white text-black flex flex-row items-center gap-1 cursor-pointer"
+                style={{
+                  listStyle: "none",
+                  userSelect: "none",
+                }}
+              >
                 <HiOutlinePlus className="block group-open:hidden" />
                 <HiOutlineMinus className="hidden group-open:block" />
                 <span>Stack Trace</span>

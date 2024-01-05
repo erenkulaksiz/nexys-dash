@@ -113,7 +113,7 @@ export default function Logs() {
               }
             >
               {logs.data?.data?.logs?.map((log: any) => {
-                return <LogCard log={log} key={log._id} />;
+                return <LogCard log={log} key={log._id?.$oid} />;
               })}
             </View.If>
           </div>
