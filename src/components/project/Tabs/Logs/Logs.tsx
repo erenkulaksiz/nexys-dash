@@ -52,43 +52,15 @@ export default function Logs() {
               />
             </View.If>
           </div>
-          <View.If hidden={logsLoading}>
-            <div className="flex flex-col gap-2 p-4 pb-0">
-              <div className="flex flex-row gap-2 items-center">
-                <Button
-                  className="px-2"
-                  size="h-8"
-                  onClick={() => setFiltersOpen(!filtersOpen)}
-                >
-                  <View viewIf={filtersOpen}>
-                    <View.If>
-                      <RiFilterFill />
-                    </View.If>
-                    <View.Else>
-                      <RiFilterLine />
-                    </View.Else>
-                  </View>
-                  <span className="ml-1">Filters</span>
-                </Button>
-              </div>
-              <View.If visible={filtersOpen}>
-                <LogFilters
-                  filters={filters}
-                  setFilters={setFilters}
-                  logs={logs}
-                />
-              </View.If>
-              <View.If visible={!logsLoading && totalPages > 1}>
-                <Pager
-                  currentPage={page}
-                  totalPages={totalPages}
-                  perPage={4}
-                  onPageClick={(page) => setPage(page)}
-                  onPreviousClick={() => page != 0 && setPage(page - 1)}
-                  onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
-                />
-              </View.If>
-            </div>
+          <View.If visible={!logsLoading && totalPages > 1}>
+            <Pager
+              currentPage={page}
+              totalPages={totalPages}
+              perPage={4}
+              onPageClick={(page) => setPage(page)}
+              onPreviousClick={() => page != 0 && setPage(page - 1)}
+              onNextClick={() => page + 1 < totalPages && setPage(page + 1)}
+            />
           </View.If>
           <div className="flex flex-col gap-2 p-4">
             <View.If visible={logsLoading}>

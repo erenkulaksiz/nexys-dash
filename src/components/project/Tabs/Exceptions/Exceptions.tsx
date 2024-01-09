@@ -71,6 +71,24 @@ export default function Exceptions() {
             type: "user",
           });
         });
+      } else if (filterText == "path:") {
+        setCurrentAvailableFilters({
+          loading: true,
+          items: [],
+          type: "path",
+        });
+        getAvailablePathSelections().then((paths) => {
+          setCurrentAvailableFilters({
+            loading: false,
+            items: paths.map((path: any) => {
+              return {
+                id: path._id,
+                text: `${path._id} (${path.errorCount})`,
+              };
+            }),
+            type: "path",
+          });
+        });
       }
       setFilterText("");
     }
@@ -92,6 +110,23 @@ export default function Exceptions() {
       return {
         _id: user._id || "Anonymous",
         errorCount: user.errorCount,
+      };
+    });
+  }
+
+  async function getAvailablePathSelections() {
+    const token = Cookies.get("auth");
+    const paths = await hookRequest({
+      url: `/v1/dash/project/${project?.name}/filter/exceptions/paths`,
+      data: {
+        uid: user?.uid,
+      },
+      token: token || "",
+    });
+    return paths?.data?.map((path: any) => {
+      return {
+        _id: path._id,
+        errorCount: path.errorCount,
       };
     });
   }
@@ -190,48 +225,44 @@ export default function Exceptions() {
                           return item.text
                             .toLowerCase()
                             .includes(filterText.toLowerCase());
-                        }).length == 1 &&
-                        currentAvailableFilters.type == "filter"
+                        }).length == 1
                       ) {
-                        setFilterText(
-                          currentAvailableFilters.items.filter((item: any) => {
-                            return item.text
-                              .toLowerCase()
-                              .includes(filterText.toLowerCase());
-                          })[0].text
-                        );
-                        setShowAvailableFilters(true);
-                        setTimeout(() => inputRef.current?.focus(), 0);
-                      }
-                      if (
-                        (e.key == "Tab" || e.key == "Enter") &&
-                        currentAvailableFilters.items.filter((item: any) => {
-                          return item.text
-                            .toLowerCase()
-                            .includes(filterText.toLowerCase());
-                        }).length == 1 &&
-                        currentAvailableFilters.type == "user"
-                      ) {
-                        const newFilters = [...filters];
-                        newFilters[newFilters.length - 1].selection =
-                          currentAvailableFilters.items.filter((item: any) => {
-                            return item.text
-                              .toLowerCase()
-                              .includes(filterText.toLowerCase());
-                          })[0].text;
-                        setShowAvailableFilters(true);
-                        setFilterText("");
-                        setTimeout(() => inputRef.current?.focus(), 0);
-                        setCurrentAvailableFilters({
-                          loading: false,
-                          items: possibleFilters.map((filter) => {
-                            return {
-                              id: filter,
-                              text: filter,
-                            };
-                          }),
-                          type: "filter",
-                        });
+                        if (currentAvailableFilters.type == "filter") {
+                          setFilterText(
+                            currentAvailableFilters.items.filter(
+                              (item: any) => {
+                                return item.text
+                                  .toLowerCase()
+                                  .includes(filterText.toLowerCase());
+                              }
+                            )[0].text
+                          );
+                          setShowAvailableFilters(true);
+                          setTimeout(() => inputRef.current?.focus(), 0);
+                        } else if (currentAvailableFilters.type == "user") {
+                          const newFilters = [...filters];
+                          newFilters[newFilters.length - 1].selection =
+                            currentAvailableFilters.items.filter(
+                              (item: any) => {
+                                return item.text
+                                  .toLowerCase()
+                                  .includes(filterText.toLowerCase());
+                              }
+                            )[0].text;
+                          setShowAvailableFilters(true);
+                          setFilterText("");
+                          setTimeout(() => inputRef.current?.focus(), 0);
+                          setCurrentAvailableFilters({
+                            loading: false,
+                            items: possibleFilters.map((filter) => {
+                              return {
+                                id: filter,
+                                text: filter,
+                              };
+                            }),
+                            type: "filter",
+                          });
+                        }
                       }
                     }}
                     onFocus={() => setShowAvailableFilters(true)}
@@ -245,104 +276,78 @@ export default function Exceptions() {
                       showAvailableFilters
                     }
                   >
-                    <div className="absolute overflow-hidden top-[calc(100%+10px)] left-0 z-20 rounded-xl bg-black border-[1px] border-neutral-200 dark:border-neutral-900 ">
-                      {filterText
-                        ? currentAvailableFilters.items
-                            .filter((item: any) => {
-                              return item.text
-                                .toLowerCase()
-                                .includes(filterText.toLowerCase());
-                            })
-                            .map((item: any, index: number) => {
-                              return (
-                                <button
-                                  onClick={() => {
-                                    if (
-                                      currentAvailableFilters.type == "filter"
-                                    ) {
-                                      setFilterText(item.text);
-                                      setShowAvailableFilters(false);
-                                      setTimeout(
-                                        () => inputRef.current?.focus(),
-                                        0
-                                      );
-                                    } else if (
-                                      currentAvailableFilters.type == "user"
-                                    ) {
-                                      const newFilters = [...filters];
-                                      newFilters[
-                                        newFilters.length - 1
-                                      ].selection = item.text;
-                                      setShowAvailableFilters(false);
-                                      setFilterText("");
-                                      setTimeout(
-                                        () => inputRef.current?.focus(),
-                                        0
-                                      );
-                                      setCurrentAvailableFilters({
-                                        loading: false,
-                                        items: possibleFilters.map((filter) => {
-                                          return {
-                                            id: filter,
-                                            text: filter,
-                                          };
-                                        }),
-                                        type: "filter",
-                                      });
-                                    }
-                                  }}
-                                  className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
-                                >
-                                  {item.text}
-                                </button>
-                              );
-                            })
-                        : currentAvailableFilters.items.map(
-                            (item: any, index: number) => {
-                              return (
-                                <button
-                                  onClick={() => {
-                                    if (
-                                      currentAvailableFilters.type == "filter"
-                                    ) {
-                                      setFilterText(item.text);
-                                      setShowAvailableFilters(false);
-                                      setTimeout(
-                                        () => inputRef.current?.focus(),
-                                        0
-                                      );
-                                    } else if (
-                                      currentAvailableFilters.type == "user"
-                                    ) {
-                                      const newFilters = [...filters];
-                                      newFilters[
-                                        newFilters.length - 1
-                                      ].selection = item.text;
-                                      setShowAvailableFilters(false);
-                                      setFilterText("");
-                                      setTimeout(
-                                        () => inputRef.current?.focus(),
-                                        0
-                                      );
-                                      setCurrentAvailableFilters({
-                                        loading: false,
-                                        items: possibleFilters.map((filter) => {
-                                          return {
-                                            id: filter,
-                                            text: filter,
-                                          };
-                                        }),
-                                        type: "filter",
-                                      });
-                                    }
-                                  }}
-                                  className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
-                                >
-                                  {item.text}
-                                </button>
-                              );
-                            }
-                          )}
+                    <div className="absolute max-h-[200px] overflow-auto top-[calc(100%+10px)] left-0 z-20 rounded-xl bg-black border-[1px] border-neutral-200 dark:border-neutral-900 ">
+                      {currentAvailableFilters.items
+                        .filter((item: any) => {
+                          if (!filterText) return true;
+                          return item.text
+                            .toLowerCase()
+                            .includes(filterText.toLowerCase());
+                        })
+                        .map((item: any) => {
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                if (currentAvailableFilters.type == "filter") {
+                                  setFilterText(item.text);
+                                  setShowAvailableFilters(false);
+                                  setTimeout(
+                                    () => inputRef.current?.focus(),
+                                    0
+                                  );
+                                } else if (
+                                  currentAvailableFilters.type == "user"
+                                ) {
+                                  const newFilters = [...filters];
+                                  newFilters[newFilters.length - 1].selection =
+                                    item.text;
+                                  setShowAvailableFilters(false);
+                                  setFilterText("");
+                                  setTimeout(
+                                    () => inputRef.current?.focus(),
+                                    0
+                                  );
+                                  setCurrentAvailableFilters({
+                                    loading: false,
+                                    items: possibleFilters.map((filter) => {
+                                      return {
+                                        id: filter,
+                                        text: filter,
+                                      };
+                                    }),
+                                    type: "filter",
+                                  });
+                                } else if (
+                                  currentAvailableFilters.type == "path"
+                                ) {
+                                  const newFilters = [...filters];
+                                  newFilters[newFilters.length - 1].selection =
+                                    item.text;
+                                  setShowAvailableFilters(false);
+                                  setFilterText("");
+                                  setTimeout(
+                                    () => inputRef.current?.focus(),
+                                    0
+                                  );
+                                  setCurrentAvailableFilters({
+                                    loading: false,
+                                    items: possibleFilters.map((filter) => {
+                                      return {
+                                        id: filter,
+                                        text: filter,
+                                      };
+                                    }),
+                                    type: "filter",
+                                  });
+                                }
+                              }}
+                              className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
+                            >
+                              {item.text}
+                            </button>
+                          );
+                        })}
                     </div>
                   </View.If>
                 </div>

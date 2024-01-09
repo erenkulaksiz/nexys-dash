@@ -7,6 +7,7 @@ import Button from "@/components/Button";
 import View from "@/components/View";
 import { useProjectStore } from "@/stores/projectStore";
 import { BuildComponent } from "@/utils/style";
+import { useEffect } from "react";
 
 export default function BatchHeader() {
   const project = useProjectStore((state) => state.currentProject);
@@ -60,16 +61,16 @@ export default function BatchHeader() {
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:items-center items-start">
               <div className="text-xs text-neutral-400">{`id: ${batchId}`}</div>
-              <div className="flex flex-row flex-wrap gap-2 items-start">
-                {batch?.logTypes &&
-                  Object.keys(batch?.logTypes)
+              <View.If visible={!!batch?.logTypes}>
+                <div className="flex flex-row flex-wrap gap-2 items-start">
+                  {batch?.logTypes
                     .sort((a: any, b: any) => {
-                      return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;
+                      return a?.count > b?.count ? -1 : 1;
                     })
-                    .map((batchType: any) => {
+                    .map((batchLogType: any) => {
                       return (
                         <li
-                          key={`batchCard-${batchType}`}
+                          key={`batchTypeCard-${batchLogType?._id}`}
                           className={
                             BuildComponent({
                               defaultClasses:
@@ -82,25 +83,27 @@ export default function BatchHeader() {
                                 },
                               ],
                               selectedClasses: [
-                                batchType == "ERROR" ||
-                                  batchType == "AUTO:ERROR" ||
-                                  batchType == "AUTO:UNHANDLEDREJECTION",
+                                batchLogType?._id == "ERROR" ||
+                                  batchLogType?._id == "AUTO:ERROR" ||
+                                  batchLogType?._id ==
+                                    "AUTO:UNHANDLEDREJECTION",
                               ],
                             }).classes
                           }
                         >
                           <div className="flex flex-row gap-[2px] items-center">
                             <span className="text-sm">
-                              {batchType != "undefined" ? batchType : "LOG"}
+                              {batchLogType?._id ? batchLogType?._id : "LOG"}
                             </span>
                             <span className="text-neutral-500 text-xs">
-                              ({batch?.logTypes[batchType]})
+                              ({batchLogType?.count})
                             </span>
                           </div>
                         </li>
                       );
                     })}
-              </div>
+                </div>
+              </View.If>
             </div>
           </div>
         </View.If>

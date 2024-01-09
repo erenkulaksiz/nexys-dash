@@ -12,8 +12,6 @@ export default function WithAuth(props: NexysComponentProps) {
   const authLoading = useAuthStore((state) => state.authLoading);
   const [loading, setLoading] = useState(true);
 
-  console.log("authUser", authUser, authLoading, isClient());
-
   useEffect(() => {
     if (!authLoading && !authUser && isClient()) {
       if (router.pathname !== "/auth/signin") {

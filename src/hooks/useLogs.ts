@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 import hookRequest from "@/utils/api/hookRequest";
 import { useAuthStore, refreshToken } from "@/stores/authStore";
@@ -14,6 +15,7 @@ import {
   useProjectStore,
 } from "@/stores/projectStore";
 import { Log } from "@/utils";
+import { nexys } from "@/utils/nexys";
 import type { LogFilterTypes } from "@/types";
 
 interface useLogsParams {
@@ -29,6 +31,7 @@ export default function useLogs({
 }: useLogsParams) {
   const user = useAuthStore((state) => state.user);
   const project = useProjectStore((state) => state.currentProject);
+  const router = useRouter();
 
   useEffect(() => {
     if (logs.data?.data) {
@@ -66,12 +69,18 @@ export default function useLogs({
   );
 
   useEffect(() => {
-    if (logs?.data?.error) {
+    if (
+      logs?.data?.error == "auth/id-token-expired" ||
+      logs?.data?.error == "auth/no-token" ||
+      logs?.data?.error == "auth/invalid-id-token" ||
+      logs?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of logs failed", logs?.data?.error);
+      nexys.error({ message: `useLogs - ${logs?.data?.error}` });
       (async () => {
         await refreshToken(true);
+        router.replace(router.asPath);
         await logs.mutate();
-        //router.reload();
       })();
       setLoading(false);
       return;
@@ -102,7 +111,7 @@ export default function useLogs({
       }
       setLoading(false);
     }
-  }, [logs]);
+  }, [logs.data]);
 
   useEffect(() => {
     if (logs.isLoading) {

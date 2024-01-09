@@ -42,19 +42,18 @@ export default function useProject({ uid }: useProjectParams) {
   useEffect(() => {
     if (project?.data?.error == "project/not-found") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
-
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setNotFound(true);
       setProjectLoading(false);
       return;
     }
     if (project?.data?.error == "auth/id-token-expired") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       (async () => {
         await refreshToken(true);
-        await project.mutate();
         router.replace(router.asPath);
+        await project.mutate();
       })();
       setProjectLoading(false);
       setNotFound(true);
@@ -62,7 +61,7 @@ export default function useProject({ uid }: useProjectParams) {
     }
     if (project?.data?.error == "project/invalid-params") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setProjectLoading(false);
       setNotFound(true);
       return;
@@ -73,7 +72,7 @@ export default function useProject({ uid }: useProjectParams) {
       setNotFound(false);
     }
     Log.debug("project", project.data);
-  }, [project]);
+  }, [project.data]);
 
   useEffect(() => {
     if (project.isLoading) {
