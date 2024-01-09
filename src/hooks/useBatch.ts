@@ -54,14 +54,21 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
       setBatchLoading(false);
       return;
     }
-    if (batch?.data?.error) {
+    if (
+      batch?.data?.error == "auth/id-token-expired" ||
+      batch?.data?.error == "auth/no-token" ||
+      batch?.data?.error == "auth/invalid-id-token" ||
+      batch?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of batch failed", batch?.data?.error);
+      setBatchLoading(true);
       (async () => {
         await refreshToken(true);
-        await batch.mutate();
-        //router.reload();
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await batch.mutate();
+        }, 500);
       })();
-      setBatchLoading(false);
       return;
     }
     if (typeof batch?.data == "object") {

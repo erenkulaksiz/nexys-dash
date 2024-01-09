@@ -47,16 +47,23 @@ export default function useProject({ uid }: useProjectParams) {
       setProjectLoading(false);
       return;
     }
-    if (project?.data?.error == "auth/id-token-expired") {
+    if (
+      project?.data?.error == "auth/id-token-expired" ||
+      project?.data?.error == "auth/no-token" ||
+      project?.data?.error == "auth/invalid-id-token" ||
+      project?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of project failed", project?.data?.error);
       nexys.error({ message: `useProject - ${project?.data?.error}` });
       (async () => {
         await refreshToken(true);
-        router.replace(router.asPath);
-        await project.mutate();
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await project.mutate();
+        }, 500);
       })();
-      setProjectLoading(false);
-      setNotFound(true);
+      setProjectLoading(true);
+      setNotFound(false);
       return;
     }
     if (project?.data?.error == "project/invalid-params") {

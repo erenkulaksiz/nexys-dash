@@ -27,13 +27,21 @@ export default function useProjects({ uid }: useProjectsParams) {
   });
 
   useEffect(() => {
-    if (projects?.data?.error == "auth/id-token-expired") {
+    if (
+      projects?.data?.error == "auth/id-token-expired" ||
+      projects?.data?.error == "auth/no-token" ||
+      projects?.data?.error == "auth/invalid-id-token" ||
+      projects?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of projects failed", projects?.data?.error);
       nexys.error({ message: `useProjects - ${projects?.data?.error}` });
+      setLoading(true);
       (async () => {
         await refreshToken(true);
-        router.replace(router.asPath);
-        await projects.mutate();
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await projects.mutate();
+        }, 500);
       })();
       return;
     } else {

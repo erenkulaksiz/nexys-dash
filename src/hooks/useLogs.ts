@@ -79,10 +79,17 @@ export default function useLogs({
       nexys.error({ message: `useLogs - ${logs?.data?.error}` });
       (async () => {
         await refreshToken(true);
-        router.replace(router.asPath);
-        await logs.mutate();
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await logs.mutate();
+        }, 500);
       })();
       setLoading(false);
+      return;
+    } else if (logs?.data?.success == false) {
+      Log.error("Loading of logs failed", logs?.data?.error);
+      nexys.error({ message: `useLogs - ${logs?.data?.error}` });
+      setLoading(true);
       return;
     }
     if (typeof logs?.data == "object") {
