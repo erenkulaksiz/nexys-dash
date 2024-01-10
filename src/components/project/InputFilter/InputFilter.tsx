@@ -41,6 +41,12 @@ export default function InputFilter() {
           type: "user",
         });
         getAvailableUserSelections().then((users) => {
+          if (users.length == 0)
+            return setCurrentAvailableFilters({
+              loading: false,
+              items: [],
+              type: "user",
+            });
           setCurrentAvailableFilters({
             loading: false,
             items: users.map((user: any) => {
@@ -121,7 +127,7 @@ export default function InputFilter() {
           return (
             <div
               key={index}
-              className="ml-1 flex flex-row items-center bg-neutral-900 rounded-lg"
+              className="ml-1 flex flex-row items-center dark:bg-neutral-900 bg-neutral-200 rounded-lg"
             >
               <div
                 className="p-1 h-full flex items-center cursor-pointer"
@@ -228,7 +234,7 @@ export default function InputFilter() {
               showAvailableFilters
             }
           >
-            <div className="absolute max-h-[200px] overflow-auto top-[calc(100%+10px)] left-0 z-20 rounded-lg bg-black border-[1px] border-neutral-200 dark:border-neutral-900 ">
+            <div className="absolute max-h-[200px] overflow-auto top-[calc(100%+10px)] left-0 z-20 rounded-lg dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 ">
               {currentAvailableFilters.items
                 .filter((item: any) => {
                   if (!filterText) return true;
@@ -281,7 +287,7 @@ export default function InputFilter() {
                           });
                         }
                       }}
-                      className="text-left whitespace-nowrap px-2 py-1 outline-none border-none hover:bg-neutral-800 w-full"
+                      className="text-left whitespace-nowrap px-2 py-1 outline-none border-none dark:hover:bg-neutral-800 hover:bg-neutral-200 w-full"
                     >
                       {item.text}
                     </button>

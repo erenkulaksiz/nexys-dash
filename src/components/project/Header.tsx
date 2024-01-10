@@ -55,7 +55,7 @@ export default function Header() {
           <Link href={`https://${project?.domain}` ?? ""} target="_blank">
             <Button
               light="dark:bg-white bg-black dark:text-black"
-              className="px-4  text-white"
+              className="px-4 text-white"
             >
               <CiShare1 className="mr-1" />
               <span>Visit</span>
