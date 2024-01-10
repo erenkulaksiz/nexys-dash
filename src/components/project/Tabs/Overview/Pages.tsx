@@ -19,7 +19,9 @@ export default function Pages() {
                 className="flex gap-1 flex-row items-center text-xs"
                 key={path._id}
               >
-                <div className="flex">{path._id}</div>
+                <div className="flex" title={path._id}>
+                  {path._id?.substring(0, 15)}
+                </div>
                 <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded">
                   {path.count}
                 </div>
