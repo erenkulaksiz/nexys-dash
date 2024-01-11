@@ -83,6 +83,11 @@ export default function useProject({ uid }: useProjectParams) {
 
   useEffect(() => {
     if (project.isLoading) {
+      if (project.data?.success && project?.data?.data) {
+        // #TODO: test this code if it really makes it faster
+        setProjectLoading(false);
+        return;
+      }
       setProjectLoading(true);
     } else {
       if (project?.data?.success == false) return;
