@@ -93,7 +93,9 @@ export interface UserTypes {
   avatar?: string;
   provider?: string;
   emailVerified?: boolean;
-  _id?: string;
+  _id?: {
+    $oid: string;
+  };
   isAdmin?: boolean;
   subscription?: {
     type: "free" | "basic" | "pro" | "enterprise";

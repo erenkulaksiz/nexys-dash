@@ -24,7 +24,10 @@ export default function Layout(props: LayoutProps) {
       if (props.validate.success) setValidatedUser(props.validate.data);
 
       if (props.validate.success == false) {
-        if (props.validate.error === "auth/id-token-expired") {
+        if (
+          props.validate.error === "auth/id-token-expired" ||
+          props.validate.error === "auth/no-auth"
+        ) {
           (async () => {
             await refreshToken(true);
             router.replace(router.asPath);

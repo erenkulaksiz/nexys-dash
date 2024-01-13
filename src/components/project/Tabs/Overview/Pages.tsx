@@ -1,6 +1,7 @@
 import { useProjectStore } from "@/stores/projectStore";
 import View from "@/components/View";
 import Tooltip from "@/components/Tooltip";
+import CountUp from "react-countup";
 import { MdInfoOutline } from "react-icons/md";
 
 export default function Pages() {
@@ -19,9 +20,15 @@ export default function Pages() {
                 className="flex gap-1 flex-row items-center text-xs"
                 key={path._id}
               >
-                <div className="flex">{path._id}</div>
+                <div className="flex" title={path._id}>
+                  {path._id?.length > 36 ? `${path._id?.substring(0, 36)}...` : path._id}
+                </div>
                 <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded">
-                  {path.count}
+                  <CountUp
+                    end={path.count}
+                    duration={1}
+                    separator=""
+                  />
                 </div>
                 <View.If visible={errors > 0}>
                   <Tooltip
@@ -57,7 +64,11 @@ export default function Pages() {
                   >
                     <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 px-1 pr-2 rounded">
                       <MdInfoOutline size={14} />
-                      <span>{errors}</span>
+                      <CountUp
+                        end={errors}
+                        duration={1}
+                        separator=""
+                      />
                     </div>
                   </Tooltip>
                 </View.If>

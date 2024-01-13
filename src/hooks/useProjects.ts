@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 import hookRequest from "@/utils/api/hookRequest";
 import { Log, server } from "@/utils";
+import { nexys } from "@/utils/nexys";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
 
 interface useProjectsParams {
@@ -26,12 +27,21 @@ export default function useProjects({ uid }: useProjectsParams) {
   });
 
   useEffect(() => {
-    if (projects?.data?.success == false) {
+    if (
+      projects?.data?.error == "auth/id-token-expired" ||
+      projects?.data?.error == "auth/no-token" ||
+      projects?.data?.error == "auth/invalid-id-token" ||
+      projects?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of projects failed", projects?.data?.error);
+      nexys.error({ message: `useProjects - ${projects?.data?.error}` });
+      setLoading(true);
       (async () => {
         await refreshToken(true);
-        await projects.mutate();
-        router.replace(router.asPath);
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await projects.mutate();
+        }, 500);
       })();
       return;
     } else {
@@ -40,13 +50,13 @@ export default function useProjects({ uid }: useProjectsParams) {
   }, [projects]);
 
   useEffect(() => {
-    if (projects.isLoading) {
+    if (projects.isValidating) {
       setLoading(true);
     } else {
       if (projects?.data?.success == false) return;
       setLoading(false);
     }
-  }, [projects.isLoading]);
+  }, [projects.isValidating]);
 
   return { projects, loading };
 }

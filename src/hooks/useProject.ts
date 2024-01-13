@@ -42,27 +42,33 @@ export default function useProject({ uid }: useProjectParams) {
   useEffect(() => {
     if (project?.data?.error == "project/not-found") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
-
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setNotFound(true);
       setProjectLoading(false);
       return;
     }
-    if (project?.data?.error == "auth/id-token-expired") {
+    if (
+      project?.data?.error == "auth/id-token-expired" ||
+      project?.data?.error == "auth/no-token" ||
+      project?.data?.error == "auth/invalid-id-token" ||
+      project?.data?.error == "auth/no-auth"
+    ) {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       (async () => {
         await refreshToken(true);
-        await project.mutate();
-        router.replace(router.asPath);
+        setTimeout(async () => {
+          router.replace(router.asPath);
+          await project.mutate();
+        }, 500);
       })();
-      setProjectLoading(false);
-      setNotFound(true);
+      setProjectLoading(true);
+      setNotFound(false);
       return;
     }
     if (project?.data?.error == "project/invalid-params") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: project?.data?.error });
+      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setProjectLoading(false);
       setNotFound(true);
       return;
@@ -73,10 +79,15 @@ export default function useProject({ uid }: useProjectParams) {
       setNotFound(false);
     }
     Log.debug("project", project.data);
-  }, [project]);
+  }, [project.data]);
 
   useEffect(() => {
     if (project.isLoading) {
+      if (project.data?.success && project?.data?.data) {
+        // #TODO: test this code if it really makes it faster
+        setProjectLoading(false);
+        return;
+      }
       setProjectLoading(true);
     } else {
       if (project?.data?.success == false) return;

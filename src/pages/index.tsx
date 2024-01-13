@@ -74,7 +74,7 @@ export default function HomePage(props: NexysComponentProps) {
                         className="absolute -left-[20px] -bottom-[20px] text-neutral-200/70 dark:text-neutral-900/50 z-10 dark:group-hover:text-neutral-800 group-hover:text-neutral-400 transition-colors duration-200"
                       />
                       <div className="text-center z-20">
-                        Create new projects to get started.
+                        Create a new project to get started.
                       </div>
                     </div>
                   )}

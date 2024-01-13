@@ -114,7 +114,7 @@ export default function LogCard({
                 <JSONPretty
                   id="json-pretty"
                   data={log?.data}
-                  className="text-sm"
+                  className="text-sm overflow-auto"
                 ></JSONPretty>
               </Codeblock>
             </View.If>

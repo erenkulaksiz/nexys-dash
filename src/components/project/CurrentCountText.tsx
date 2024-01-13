@@ -5,6 +5,8 @@ export default function CurrentLogCountText({
   count: number;
   type: string;
 }) {
+  if (!count) return <></>;
+
   return (
     <div className="text-sm sm:mt-0 mt-2">
       Total

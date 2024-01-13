@@ -87,53 +87,55 @@ export default function BatchCard({ batch }: { batch: any }) {
             <span>{`User: ${batch?.data?.config?.user}`}</span>
           </div>
         </View.If>
-        <div className="flex flex-row items-center gap-2">
-          <ul className="flex flex-row gap-2 items-center flex-wrap">
-            {
-              Object.keys(batch?.logTypes || [])
-              .sort((a: any, b: any) => {
-                return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;
-              })
-              .map((batchType: any) => {
-                return (
-                  <li
-                    key={`batchCard-${batchType}`}
-                    className={
-                      BuildComponent({
-                        defaultClasses:
-                          "flex flex-row gap-2 items-center border-[1px] px-1 rounded",
-                        conditionalClasses: [
-                          {
-                            true: "border-red-400 dark:border-red-800",
-                            false: "border-neutral-200 dark:border-neutral-900",
-                          },
-                        ],
-                        selectedClasses: [
-                          batchType == "ERROR" ||
-                            batchType == "AUTO:ERROR" ||
-                            batchType == "AUTO:UNHANDLEDREJECTION",
-                        ],
-                      }).classes
-                    }
-                  >
-                    <div className="flex flex-row gap-[2px] items-center">
-                      <span className="text-sm">
-                        <View viewIf={!!batchType}>
-                          <View.If>
-                            {batchType == "undefined" ? "OTHERS" : batchType}
-                          </View.If>
-                          <View.Else>LOG</View.Else>
-                        </View>
-                      </span>
-                      <span className="text-neutral-500 text-xs">
-                        ({batch?.logTypes[batchType]})
-                      </span>
-                    </div>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
+        <View.If visible={!!batch?.logTypes}>
+          <div className="flex flex-row items-center gap-2">
+            <ul className="flex flex-row gap-2 items-center flex-wrap">
+              {Object.keys(batch?.logTypes || [])
+                .sort((a: any, b: any) => {
+                  return batch?.logTypes[a] > batch?.logTypes[b] ? -1 : 1;
+                })
+                .map((batchType: any) => {
+                  return (
+                    <li
+                      key={`batchCard-${batchType}`}
+                      className={
+                        BuildComponent({
+                          defaultClasses:
+                            "flex flex-row gap-2 items-center border-[1px] px-1 rounded",
+                          conditionalClasses: [
+                            {
+                              true: "border-red-400 dark:border-red-800",
+                              false:
+                                "border-neutral-200 dark:border-neutral-900",
+                            },
+                          ],
+                          selectedClasses: [
+                            batchType == "ERROR" ||
+                              batchType == "AUTO:ERROR" ||
+                              batchType == "AUTO:UNHANDLEDREJECTION",
+                          ],
+                        }).classes
+                      }
+                    >
+                      <div className="flex flex-row gap-[2px] items-center">
+                        <span className="text-sm">
+                          <View viewIf={!!batchType}>
+                            <View.If>
+                              {batchType == "undefined" ? "OTHERS" : batchType}
+                            </View.If>
+                            <View.Else>LOG</View.Else>
+                          </View>
+                        </span>
+                        <span className="text-neutral-500 text-xs">
+                          ({batch?.logTypes[batchType]})
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        </View.If>
         <div className="flex flex-row gap-2 flex-wrap">
           <View.If visible={!!batch?.config?.appVersion}>
             <LogCardEntry
