@@ -39,7 +39,7 @@ export default function BatchHeader() {
             </Button>
           </Link>
         </View.If>
-        <View.If hidden={loading || batchLoading}>
+        <View.If hidden={loading && batchLoading}>
           <div className="flex flex-col">
             <div className="flex flex-row gap-2 items-center">
               <h1 className="text-2xl font-semibold">Viewing Batch</h1>
@@ -61,7 +61,13 @@ export default function BatchHeader() {
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:items-center items-start">
               <div className="text-xs text-neutral-400">{`id: ${batchId}`}</div>
-              <View.If visible={!!batch?.logTypes}>
+              <View.If
+                visible={
+                  !!batch?.logTypes &&
+                  Array.isArray(batch?.logTypes) &&
+                  !!batch?.logTypes?.length
+                }
+              >
                 <div className="flex flex-row flex-wrap gap-2 items-start">
                   {batch?.logTypes
                     .sort((a: any, b: any) => {

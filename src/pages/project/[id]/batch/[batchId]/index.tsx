@@ -136,7 +136,7 @@ export default function BatchPage(props: NexysComponentProps) {
                       <div className="flex flex-col">
                         <View.If
                           hidden={
-                            batch.data?.data?.logs?.length == 0 ||
+                            batch?.data?.data?.logs?.length == 0 ||
                             totalPages <= 1
                           }
                         >
