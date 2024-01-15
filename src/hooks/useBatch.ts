@@ -71,10 +71,8 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
       })();
       return;
     }
-    if (typeof batch?.data == "object") {
-      if (batch?.data != null && typeof batch?.data?.data != null) {
-        setCurrentBatch(batch?.data?.data);
-      }
+    if (batch?.data?.success) {
+      setCurrentBatch(batch?.data?.data);
       setBatchLoading(false);
     }
   }, [batch]);
