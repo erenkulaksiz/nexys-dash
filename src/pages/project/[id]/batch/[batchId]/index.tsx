@@ -154,20 +154,27 @@ export default function BatchPage(props: NexysComponentProps) {
                             className="pt-2"
                           />
                         </View.If>
-                        <div className="flex flex-col gap-2 py-2">
-                          {batch?.data?.data?.logs
-                            ?.sort((a: any, b: any) => b.ts - a.ts)
-                            .map((log: any) => {
-                              return (
-                                <LogCard
-                                  log={log}
-                                  key={log._id}
-                                  logSelected={log?._id?.$oid == logId}
-                                  viewingBatch
-                                />
-                              );
-                            })}
-                        </div>
+                        <View.If
+                          visible={
+                            !batchLoading &&
+                            batch?.data?.data?.logs?.length !== 0
+                          }
+                        >
+                          <div className="flex flex-col gap-2 py-2">
+                            {batch?.data?.data?.logs
+                              ?.sort((a: any, b: any) => b.ts - a.ts)
+                              .map((log: any) => {
+                                return (
+                                  <LogCard
+                                    log={log}
+                                    key={log._id}
+                                    logSelected={log?._id?.$oid == logId}
+                                    viewingBatch
+                                  />
+                                );
+                              })}
+                          </div>
+                        </View.If>
                       </div>
                     </Tab.TabView>
                     <Tab.TabView
