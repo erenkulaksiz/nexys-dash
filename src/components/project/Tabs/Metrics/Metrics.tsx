@@ -138,7 +138,6 @@ export default function Metrics() {
             <h1>Average Performance of last 100 Logs</h1>
             <div className="w-full border-b-[1px] border-neutral-200 dark:border-neutral-900"></div>
           </div>
-          <div>[#TODO: CHANGE LAST 100 LOGS TO SOMETHING]</div>
           <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 p-4">
             <Metric
               title="FCP"

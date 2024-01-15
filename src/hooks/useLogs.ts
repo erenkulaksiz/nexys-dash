@@ -69,6 +69,10 @@ export default function useLogs({
   );
 
   useEffect(() => {
+    console.log("uselogs isloading", logs.isLoading, logs.isValidating);
+  }, [logs.isLoading, logs.isValidating]);
+
+  useEffect(() => {
     if (
       logs?.data?.error == "auth/id-token-expired" ||
       logs?.data?.error == "auth/no-token" ||

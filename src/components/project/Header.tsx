@@ -9,7 +9,7 @@ import { useProjectStore } from "@/stores/projectStore";
 
 export default function Header() {
   const project = useProjectStore((state) => state.currentProject);
-  const isProjectNew = project?.logUsage === 0;
+  const isProjectNew = project?.logUsage ? project?.logUsage <= 25 : true;
   const loading = useProjectStore((state) => state.loading);
 
   return (

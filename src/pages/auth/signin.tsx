@@ -13,9 +13,11 @@ import {
 import { RiShareBoxLine } from "react-icons/ri";
 import { MdOutlineEmail } from "react-icons/md";
 import WithoutAuth from "@/hocs/withoutAuth";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function SigninPage() {
   const [usingEmail, setUsingEmail] = useState<boolean>(false);
+  const authLoading = useAuthStore((state) => state.authLoading);
 
   return (
     <Layout>
@@ -29,7 +31,7 @@ export default function SigninPage() {
           <div className="p-4 flex flex-col gap-6 w-[300px] relative">
             <div className="absolute right-[calc(100%+30px)] bottom-0 top-0 hidden md:hidden sm:hidden lg:flex items-center">
               <div className="flex flex-col p-4">
-                <div className="w-[400px] relative h-[200px] dark:bg-neutral-800 bg-neutral-200 rounded overflow-hidden">
+                <div className="w-[300px] relative h-[200px] dark:bg-neutral-800 bg-neutral-200 rounded-lg overflow-hidden">
                   <img
                     src="/images/landing_bg_banner_1.png"
                     alt="Banner"
@@ -55,23 +57,25 @@ export default function SigninPage() {
                 <EmailSignin onBack={() => setUsingEmail(false)} />
               </View.Else>
             </View>
-            <div className="flex flex-row gap-2 justify-center items-center">
-              <Link
-                href="/privacy-policy"
-                className="flex flex-row gap-1 items-center"
-              >
-                <RiShareBoxLine />
-                <div>Privacy Policy</div>
-              </Link>
-              <div>•</div>
-              <Link
-                href="mailto:erenkulaksz@gmail.com"
-                className="flex flex-row gap-1 items-center"
-              >
-                <MdOutlineEmail />
-                <div>Contact</div>
-              </Link>
-            </div>
+            <View.If hidden={authLoading}>
+              <div className="flex flex-row gap-2 justify-center items-center">
+                <Link
+                  href="/privacy-policy"
+                  className="flex flex-row gap-1 items-center"
+                >
+                  <RiShareBoxLine />
+                  <div>Privacy Policy</div>
+                </Link>
+                <div>•</div>
+                <Link
+                  href="mailto:erenkulaksz@gmail.com"
+                  className="flex flex-row gap-1 items-center"
+                >
+                  <MdOutlineEmail />
+                  <div>Contact</div>
+                </Link>
+              </div>
+            </View.If>
           </div>
         </Container>
       </WithoutAuth>

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { MdOutlineError, MdOutlineAccessTime } from "react-icons/md";
-import { RiStackLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import JSONPretty from "react-json-pretty";
 import { HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
 
+import Tooltip from "@/components/Tooltip";
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
 import { Log, formatDateToHuman } from "@/utils";
@@ -82,13 +82,15 @@ export default function LogCard({
               </Link>
             </View.If>
             <View.If visible={isTypeError}>
-              <Button
-                light="dark:bg-white bg-black dark:text-black"
-                className="px-4 text-white"
-              >
-                <MdOutlineAutoAwesome />
-                <span className="ml-1">AI</span>
-              </Button>
+              <Tooltip content="AI Feature will be available soon.">
+                <Button
+                  light="dark:bg-white bg-black dark:text-black"
+                  className="px-4 text-white"
+                >
+                  <MdOutlineAutoAwesome />
+                  <span className="ml-1">AI</span>
+                </Button>
+              </Tooltip>
             </View.If>
           </div>
         </div>

@@ -78,7 +78,6 @@ export default function Settings() {
               }
               id="verify"
             >
-              <div>[#TODO: EMPTY STATE, ICONS]</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 pt-2 gap-4">
                 <View viewIf={project?.verified}>
                   <View.If>

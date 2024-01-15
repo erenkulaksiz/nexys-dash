@@ -65,7 +65,6 @@ export default function API() {
             sure to create new project for your testing purposes.
           </span>
         </div>
-        <div>[#TODO: ADD NEW IP WILL COME HERE]</div>
       </div>
     </div>
   );

@@ -44,8 +44,6 @@ export default function useProjects({ uid }: useProjectsParams) {
         }, 500);
       })();
       return;
-    } else {
-      setLoading(false);
     }
   }, [projects]);
 

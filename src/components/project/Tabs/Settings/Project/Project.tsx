@@ -54,7 +54,6 @@ export default function Project() {
             This domain should match where you are using Nexys Client Library.
           </div>
         </div>
-        <div>[#TODO: PROJECT DETAILS DROPDOWN]</div>
         <div className="flex flex-col w-full">
           <div className="flex flex-row gap-2 items-start">
             <span>Project Creation</span>
