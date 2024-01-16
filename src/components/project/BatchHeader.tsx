@@ -63,9 +63,7 @@ export default function BatchHeader() {
               <div className="text-xs text-neutral-400">{`id: ${batchId}`}</div>
               <View.If
                 visible={
-                  !!batch?.logTypes &&
-                  Array.isArray(batch?.logTypes) &&
-                  !!batch?.logTypes?.length
+                  Array.isArray(batch?.logTypes) && !batchLoading && !loading
                 }
               >
                 <div className="flex flex-row flex-wrap gap-2 items-start">

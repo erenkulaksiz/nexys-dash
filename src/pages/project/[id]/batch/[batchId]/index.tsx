@@ -154,12 +154,7 @@ export default function BatchPage(props: NexysComponentProps) {
                             className="pt-2"
                           />
                         </View.If>
-                        <View.If
-                          visible={
-                            !batchLoading &&
-                            batch?.data?.data?.logs?.length !== 0
-                          }
-                        >
+                        <View.If visible={!batchLoading}>
                           <div className="flex flex-col gap-2 py-2">
                             {batch?.data?.data?.logs
                               ?.sort((a: any, b: any) => b.ts - a.ts)
