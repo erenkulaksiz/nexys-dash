@@ -34,6 +34,9 @@ export default function useBatch({ uid, page = 0 }: useBatchParams) {
         data: {
           uid: uid || user?.uid,
           page,
+          asc: false,
+          type: "batch",
+          filters: [],
         },
         token,
       });

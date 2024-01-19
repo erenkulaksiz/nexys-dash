@@ -8,22 +8,17 @@ import Loading from "@/components/Loading";
 import Pager from "@/components/Pager";
 import CurrentCountText from "@/components/project/CurrentCountText";
 import View from "@/components/View";
-import InputFilter from "../../InputFilter";
+import InputFilter from "@/components/project/InputFilter";
+import type { filtersTypes } from "@/components/project/InputFilter/InputFilter.types";
 
 export default function Exceptions() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
+  const [filters, setFilters] = useState<filtersTypes[]>([]);
   const exceptions = useLogs({
     type: "exceptions",
     page,
-    filters: {
-      path: "all",
-      batchVersion: "all",
-      asc: false,
-      types: [],
-      configUser: "all",
-      search: "",
-    },
+    filters,
   });
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
@@ -52,7 +47,11 @@ export default function Exceptions() {
               />
             </View.If>
           </div>
-          <InputFilter />
+          <InputFilter
+            filters={filters}
+            setFilters={setFilters}
+            type="exceptions"
+          />
           <View.If visible={!exceptionsLoading && totalPages > 1}>
             <div className="flex flex-col items-start gap-2 p-4 pb-0">
               <Pager

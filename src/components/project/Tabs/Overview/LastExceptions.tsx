@@ -11,14 +11,7 @@ export default function LastExceptions() {
   const lastExceptions = useLogs({
     type: "exceptions",
     page,
-    filters: {
-      asc: false,
-      types: [],
-      path: "all",
-      batchVersion: "all",
-      configUser: "all",
-      search: "",
-    },
+    filters: [],
   });
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
 

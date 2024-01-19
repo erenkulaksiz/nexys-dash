@@ -8,25 +8,17 @@ import Pager from "@/components/Pager";
 import View from "@/components/View";
 import Loading from "@/components/Loading";
 import CurrentCountText from "@/components/project/CurrentCountText";
-import type { LogFilterTypes } from "@/types";
+import InputFilter from "@/components/project/InputFilter";
+import type { filtersTypes } from "@/components/project/InputFilter/InputFilter.types";
 
 export default function Logs() {
   const [page, setPage] = useState<number>(0);
-  const [filters, setFilters] = useState<LogFilterTypes>({
-    asc: false,
-    path: "all",
-    action: "all",
-  });
+  const [filters, setFilters] = useState<filtersTypes[]>([]);
   const project = useProjectStore((state) => state.currentProject);
   const logs = useLogs({
     type: "logs",
     page,
-    filters: {
-      types: filters.types,
-      asc: filters.asc,
-      path: filters.path,
-      action: filters.action,
-    },
+    filters,
   });
   const logsLoading = useProjectStore((state) => state.logsLoading);
   const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);
@@ -48,6 +40,7 @@ export default function Logs() {
               />
             </View.If>
           </div>
+          <InputFilter filters={filters} setFilters={setFilters} type="logs" />
           <View.If visible={!logsLoading && totalPages > 1}>
             <div className="flex flex-col gap-2 p-4 pb-0">
               <Pager

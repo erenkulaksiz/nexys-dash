@@ -16,12 +16,12 @@ import {
 } from "@/stores/projectStore";
 import { Log } from "@/utils";
 import { nexys } from "@/utils/nexys";
-import type { LogFilterTypes } from "@/types";
+import type { filtersTypes } from "@/components/project/InputFilter/InputFilter.types";
 
 interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
   page?: number;
-  filters?: LogFilterTypes;
+  filters: filtersTypes[];
 }
 
 export default function useLogs({
@@ -34,43 +34,32 @@ export default function useLogs({
   const router = useRouter();
 
   useEffect(() => {
-    if (logs.data?.data) {
-      logs.mutate();
-    }
-  }, [page, filters?.asc, filters?.path, filters?.configUser, filters?.action]);
+    if (logs.data?.data) logs.mutate();
+  }, [page]);
 
   const logs = useSWR(
     [
-      `api/dash/project/${type}/${project?._id}/${page}/${filters?.asc}/${filters?.search}`,
+      `api/dash/project/${type}/${project?._id}/${page}/${JSON.stringify(
+        filters?.filter((filter) => filter.selectionId)
+      )}`,
     ],
-    async () => {
+    () => {
       const token = Cookies.get("auth");
       return hookRequest({
         url: `/v1/dash/project/${project?.name}/logs`,
         data: {
           uid: user?.uid,
           id: project?._id,
+          asc: false,
           type,
           page,
-          filters: {
-            asc: filters?.asc ?? false,
-            types: filters?.types ?? [],
-            search: filters?.search ?? "",
-            path: filters?.path ?? "all",
-            batchVersion: filters?.batchVersion ?? "all",
-            configUser: filters?.configUser ?? "all",
-            action: filters?.action ?? "all",
-          },
+          filters,
         },
         token,
       });
     },
     { revalidateIfStale: false }
   );
-
-  useEffect(() => {
-    console.log("uselogs isloading", logs.isLoading, logs.isValidating);
-  }, [logs.isLoading, logs.isValidating]);
 
   useEffect(() => {
     if (
@@ -96,32 +85,28 @@ export default function useLogs({
       setLoading(true);
       return;
     }
-    if (typeof logs?.data == "object") {
-      if (logs?.data != null && typeof logs?.data?.data != null) {
-        if (type == "logs") {
-          setLogs({
-            logs: logs?.data?.data?.logs,
-            logsLength: logs?.data?.data?.logsLength,
-          });
-        } else if (type == "batches") {
-          setBatches({
-            batches: logs?.data?.data?.batches,
-            batchesLength: logs?.data?.data?.batchesLength,
-          });
-        } else if (type == "exceptions") {
-          setExceptions({
-            exceptions: logs?.data?.data?.exceptions,
-            exceptionsLength: logs?.data?.data?.exceptionsLength,
-          });
-        } else if (type == "all") {
-          setLogs({
-            logs: logs?.data?.data?.logs,
-            allLength: logs?.data?.data?.logsLength,
-          });
-        }
-      }
-      setLoading(false);
+    if (type == "logs") {
+      setLogs({
+        logs: logs?.data?.data?.logs,
+        logsLength: logs?.data?.data?.logsLength,
+      });
+    } else if (type == "batches") {
+      setBatches({
+        batches: logs?.data?.data?.batches,
+        batchesLength: logs?.data?.data?.batchesLength,
+      });
+    } else if (type == "exceptions") {
+      setExceptions({
+        exceptions: logs?.data?.data?.exceptions,
+        exceptionsLength: logs?.data?.data?.exceptionsLength,
+      });
+    } else if (type == "all") {
+      setLogs({
+        logs: logs?.data?.data?.logs,
+        allLength: logs?.data?.data?.logsLength,
+      });
     }
+    setLoading(false);
   }, [logs.data]);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import CurrentCountText from "@/components/project/CurrentCountText";
 export default function Batches() {
   const [page, setPage] = useState<number>(0);
   const project = useProjectStore((state) => state.currentProject);
-  const batches = useLogs({ type: "batches", page });
+  const batches = useLogs({ type: "batches", page, filters: [] });
   const batchesLoading = useProjectStore((state) => state.batchesLoading);
 
   const totalPages = Math.ceil(batches.data?.data?.batchesLength / 10);

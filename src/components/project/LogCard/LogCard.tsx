@@ -141,37 +141,55 @@ export default function LogCard({
           <View.If hidden={!log?.data?.filename}>
             <LogCardEntry title="File" value={log?.data?.filename} />
           </View.If>
-          <View.If hidden={!log?.batchConfig?.user}>
-            <LogCardEntry title="User" value={log?.batchConfig?.user} />
+          <View.If hidden={!log?.batchConfig?.config?.user}>
+            <LogCardEntry title="User" value={log?.batchConfig?.config?.user} />
           </View.If>
-          <View.If hidden={!log?.batchConfig?.appVersion}>
+          <View.If hidden={!log?.batchConfig?.config?.platform}>
+            <LogCardEntry
+              title="Platform"
+              value={log?.batchConfig?.config?.platform}
+            />
+          </View.If>
+          <View.If hidden={!log?.batchConfig?.config?.appVersion}>
             <LogCardEntry
               title="App Version"
-              value={log?.batchConfig?.appVersion}
+              value={log?.batchConfig?.config?.appVersion}
             />
           </View.If>
           <View.If hidden={!log?.batch?.env?.type}>
             <LogCardEntry title="Environment" value={log?.batch?.env?.type} />
           </View.If>
-          <details className="w-full group">
-            <summary
-              className="dark:text-white text-black flex flex-row items-center gap-1 cursor-pointer"
-              style={{
-                listStyle: "none",
-                userSelect: "none",
-              }}
-            >
-              <HiOutlinePlus className="block group-open:hidden" />
-              <HiOutlineMinus className="hidden group-open:block" />
-              <span>Details</span>
-            </summary>
-            <View.If hidden={!log?.guid}>
-              <LogCardEntry title="GUID" value={log?.guid} />
-            </View.If>
-            <View.If hidden={!log._id.$oid}>
-              <LogCardEntry title="ID" value={log._id.$oid} />
-            </View.If>
-          </details>
+          <View.If hidden={!log?.batchConfig?.ip}>
+            <LogCardEntry title="IP" value={log?.batchConfig?.ip} />
+          </View.If>
+          <View.If
+            visible={!!log?.guid && !!log?._id?.$oid && !!log?.batchId?.$oid}
+          >
+            <details className="w-full group">
+              <summary
+                className="dark:text-white text-black flex flex-row items-center gap-1 cursor-pointer"
+                style={{
+                  listStyle: "none",
+                  userSelect: "none",
+                }}
+              >
+                <HiOutlinePlus className="block group-open:hidden" />
+                <HiOutlineMinus className="hidden group-open:block" />
+                <span>Details</span>
+              </summary>
+              <div className="flex flex-row gap-2 flex-wrap items-start">
+                <View.If hidden={!log?.guid}>
+                  <LogCardEntry title="GUID" value={log?.guid} />
+                </View.If>
+                <View.If hidden={!log?._id?.$oid}>
+                  <LogCardEntry title="ID" value={log?._id?.$oid} />
+                </View.If>
+                <View.If hidden={!log?.batchId?.$oid}>
+                  <LogCardEntry title="Batch ID" value={log?.batchId?.$oid} />
+                </View.If>
+              </div>
+            </details>
+          </View.If>
           <View.If hidden={!log?.data?.stack}>
             <details className="w-full group">
               <summary
