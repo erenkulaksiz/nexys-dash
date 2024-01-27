@@ -86,15 +86,9 @@ export default function HomePage(props: NexysComponentProps) {
                               key={project?._id}
                               href={{
                                 pathname: "/project/[id]",
-                                query: { id: project.name?.toString() },
+                                query: { id: project?.name?.toString() },
                               }}
-                              onClick={() => {
-                                setNewProject(false);
-                                nexys.log(project._id, {
-                                  type: "INFO",
-                                  action: "PROJECT_OPEN",
-                                });
-                              }}
+                              onClick={() => setNewProject(false)}
                             >
                               <View.If visible={index == 0 && newProject}>
                                 <ConfettiExplosion

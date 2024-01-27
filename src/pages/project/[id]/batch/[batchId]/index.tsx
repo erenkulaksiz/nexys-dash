@@ -188,12 +188,16 @@ export default function BatchPage(props: NexysComponentProps) {
                         <div className="flex flex-row items-center gap-1 relative">
                           <MdPersonOutline />
                           <span>User</span>
-                          {!batch?.data?.data?.user &&
-                            !batch?.data?.data?.config?.client &&
-                            !batch?.data?.data?.config?.appVersion &&
-                            !batch?.data?.data?.config?.platform && (
-                              <MdInfoOutline title="View documentation section 'Configuring' for further information." />
-                            )}
+                          <View.If
+                            visible={
+                              !batch?.data?.data?.user &&
+                              !batch?.data?.data?.config?.client &&
+                              !batch?.data?.data?.config?.appVersion &&
+                              !batch?.data?.data?.config?.platform
+                            }
+                          >
+                            <MdInfoOutline title="View documentation section 'Configuring' for further information." />
+                          </View.If>
                         </div>
                       }
                       id="user"
