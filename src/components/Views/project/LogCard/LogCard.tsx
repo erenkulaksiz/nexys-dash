@@ -170,7 +170,7 @@ export default function LogCard({
               >
                 <HiOutlinePlus className="block group-open:hidden" />
                 <HiOutlineMinus className="hidden group-open:block" />
-                <span>Details</span>
+                <span className="dark:text-dark-text">Details</span>
               </summary>
               <div className="flex flex-row gap-2 flex-wrap items-start">
                 <View.If hidden={!log?.guid}>
