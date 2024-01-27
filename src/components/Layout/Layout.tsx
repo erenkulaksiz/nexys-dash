@@ -24,7 +24,7 @@ export default function Layout(props: LayoutProps) {
   const BuildLayout = BuildComponent({
     name: "Layout",
     defaultClasses:
-      "mx-auto transition-colors ease-in-out duration-400 overflow-x-hidden overflow-auto dark:bg-black/50 bg-white h-full items-center w-full flex flex-col dark:text-white relative text-black",
+      "mx-auto transition-colors ease-in-out duration-400 overflow-x-hidden overflow-auto dark:bg-dark bg-white h-full items-center w-full flex flex-col dark:text-white relative text-black",
     extraClasses: props?.className,
   });
 

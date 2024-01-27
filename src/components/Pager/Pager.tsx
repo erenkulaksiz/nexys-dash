@@ -18,7 +18,8 @@ export default function Pager({
       className={
         BuildComponent({
           name: "Pager",
-          defaultClasses: "flex flex-row gap-1 w-full flex-wrap",
+          defaultClasses:
+            "flex flex-row gap-1 w-full flex-wrap dark:text-dark-text",
           extraClasses: className,
         }).classes
       }
@@ -32,9 +33,7 @@ export default function Pager({
           BuildComponent({
             name: "Pager Button",
             defaultClasses: "w-8",
-            conditionalClasses: [
-              { true: "dark:bg-neutral-900 bg-neutral-200" },
-            ],
+            conditionalClasses: [{ true: "dark:bg-darker bg-neutral-200" }],
             selectedClasses: [currentPage == 0],
           }).classes
         }
@@ -55,9 +54,7 @@ export default function Pager({
               BuildComponent({
                 name: "Pager Button",
                 defaultClasses: "w-auto min-w-[2rem] p-2",
-                conditionalClasses: [
-                  { true: "dark:bg-neutral-900 bg-neutral-200" },
-                ],
+                conditionalClasses: [{ true: "dark:bg-darker bg-neutral-200" }],
                 selectedClasses: [currentPage == index],
               }).classes
             }
@@ -75,9 +72,7 @@ export default function Pager({
           BuildComponent({
             name: "Pager Button",
             defaultClasses: "w-auto min-w-[2rem] p-2",
-            conditionalClasses: [
-              { true: "dark:bg-neutral-900 bg-neutral-200" },
-            ],
+            conditionalClasses: [{ true: "dark:bg-darker bg-neutral-200" }],
             selectedClasses: [currentPage == totalPages - 1],
           }).classes
         }

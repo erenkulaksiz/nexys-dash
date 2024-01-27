@@ -19,7 +19,7 @@ export default function Checkbox({
   const BuildCheckboxInner = BuildComponent({
     name: "Checkbox Inner",
     defaultClasses:
-      "relative h-4 w-4 outline-none group-focus:outline-2 group-focus:outline-blue-500/50 transition-colors ease-in-out flex items-center text-xs justify-center rounded border-[1px] border-neutral-200 dark:border-neutral-900",
+      "relative h-4 w-4 outline-none group-focus:outline-2 group-focus:outline-blue-500/50 transition-colors ease-in-out flex items-center text-xs justify-center rounded border-[1px] border-neutral-200 dark:border-dark-border",
     extraClasses: className,
     conditionalClasses: [
       {

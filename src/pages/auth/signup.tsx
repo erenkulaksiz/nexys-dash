@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import WithoutAuth from "@/hocs/withoutAuth";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
-import { Signup as SignupForm } from "@/components/auth/Signup";
+import { Signup as SignupForm } from "@/components/Views/auth/Signup";
 
 export default function SignupPage() {
   return (

@@ -32,7 +32,7 @@ export default function Switch({
   const BuildSwitchInside = BuildComponent({
     name: "Switch Inside",
     defaultClasses:
-      "w-4 h-4 relative rounded-full text-black dark:text-white bg-white dark:bg-black",
+      "w-4 h-4 relative rounded-full text-black dark:text-white bg-white dark:bg-dark",
     conditionalClasses: [
       {
         true: "mr-1",

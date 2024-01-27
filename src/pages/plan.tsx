@@ -74,9 +74,9 @@ function SubscriptionCard({
   batchLimit?: string;
 }) {
   return (
-    <div className="flex flex-col p-4 border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg relative">
+    <div className="flex flex-col p-4 border-[1px] border-neutral-200 dark:border-dark-border rounded-lg relative">
       {isMostPopular && (
-        <div className="flex flex-row items-center gap-1 absolute -right-6 -top-4 bg-white dark:bg-black p-1 px-3 rounded-full border-[1px] border-neutral-200 dark:border-neutral-900 z-20">
+        <div className="flex flex-row items-center gap-1 absolute -right-6 -top-4 bg-white dark:bg-black p-1 px-3 rounded-full border-[1px] border-neutral-200 dark:border-dark-border z-20">
           <IoMdHeart />
           <div>Most Popular</div>
         </div>
@@ -142,7 +142,7 @@ export default function PlanPage(props: NexysComponentProps) {
         </Head>
         <Navbar />
         <Container>
-          <div className="flex flex-row items-center text-2xl rounded-lg my-4 p-6 gap-1 justify-start w-full border-[1px] border-neutral-200 dark:border-neutral-900">
+          <div className="flex flex-row items-center text-2xl rounded-lg my-4 p-6 gap-1 justify-start w-full border-[1px] border-neutral-200 dark:border-dark-border">
             <div className="font-semibold">Your</div>
             <div className="font-semibold first-letter:uppercase">
               {validatedUser?.subscription?.type || "Free"}
@@ -153,16 +153,16 @@ export default function PlanPage(props: NexysComponentProps) {
               <div>Active</div>
             </div>
           </div>
-          <div className="flex flex-row items-center text-lg rounded-lg my-4 p-6 gap-1 justify-start w-full border-[1px] border-neutral-200 dark:border-neutral-900">
+          <div className="flex flex-row items-center text-lg rounded-lg my-4 p-6 gap-1 justify-start w-full border-[1px] border-neutral-200 dark:border-dark-border">
             Plans are inactive and you need to contact erenkulaksz@gmail.com to
             upgrade. We are yet still building the platform.
           </div>
           <div className="flex flex-col items-center gap-4 justify-center w-full">
-            <div className="flex flex-row gap-1 p-1 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
+            <div className="flex flex-row gap-1 p-1 rounded-lg border-[1px] border-neutral-200 dark:border-dark-border">
               <button
                 className={
                   billRecurrence == "monthly"
-                    ? "dark:bg-black bg-white rounded-[6px] p-2 font-semibold border-[1px] border-neutral-200 dark:border-neutral-900"
+                    ? "dark:bg-black bg-white rounded-[6px] p-2 font-semibold border-[1px] border-neutral-200 dark:border-dark-border"
                     : "p-2 font-semibold"
                 }
                 onClick={() => setBillRecurrence("monthly")}
@@ -172,7 +172,7 @@ export default function PlanPage(props: NexysComponentProps) {
               <button
                 className={
                   billRecurrence == "yearly"
-                    ? "dark:bg-black bg-white rounded-[6px] p-2 font-semibold border-[1px] border-neutral-200 dark:border-neutral-900"
+                    ? "dark:bg-black bg-white rounded-[6px] p-2 font-semibold border-[1px] border-neutral-200 dark:border-dark-border"
                     : "p-2 font-semibold"
                 }
                 onClick={() => setBillRecurrence("yearly")}

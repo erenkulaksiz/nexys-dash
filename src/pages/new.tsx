@@ -9,7 +9,7 @@ import Navbar from "@/components/Navbar";
 import { server, Log } from "@/utils";
 import View from "@/components/View";
 import Layout from "@/components/Layout";
-import AddProject from "@/components/AddProject";
+import AddProject from "@/components/Views/home/AddProject";
 import { ValidateToken } from "@/utils/api/validateToken";
 import WithAuth from "@/hocs/withAuth";
 import { useAuthStore } from "@/stores/authStore";
@@ -22,7 +22,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
   const authUser = useAuthStore((state) => state.user);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const [totalsLoading, setTotalsLoading] = useState(false);
-  const totals = useSWR("api/dash/project/totalLogs", async () => {
+  const totals = useSWR("api/dash/Views/project/totalLogs", async () => {
     const token = Cookies.get("auth");
     return fetch(`${server}/v1/dash/count`, {
       headers: new Headers({
@@ -71,10 +71,10 @@ export default function NewProjectPage(props: NexysComponentProps) {
         <Navbar />
         <Container>
           <div className="flex flex-col py-2 sm:py-4 justify-center">
-            <h1 className="text-2xl sm:text-4xl font-semibold">
+            <h1 className="text-2xl sm:text-4xl font-semibold dark:text-dark-text">
               {"Let's get you started."}
             </h1>
-            <h2 className="dark:text-neutral-400 text-neutral-500">
+            <h2 className="dark:text-dark-accent text-neutral-500">
               {"Your new project will be flawless with Nexys."}
             </h2>
           </div>
@@ -82,12 +82,12 @@ export default function NewProjectPage(props: NexysComponentProps) {
         <Container>
           <div className="w-full grid sm:grid-cols-2 grid-cols-1 items-start gap-2 pb-2">
             <AddProject />
-            <div className="dark:shadow-neutral-900 flex flex-col gap-2 justify-between dark:bg-black bg-white rounded-lg p-4 border-[1px] border-neutral-200 dark:border-neutral-900">
+            <div className="dark:shadow-neutral-900 flex flex-col gap-2 justify-between dark:bg-dark bg-white rounded-lg p-4 border-[1px] border-neutral-200 dark:border-dark-border dark:text-dark-text">
               <div className="text-2xl">total of</div>
               <div className="flex flex-row gap-1 items-end">
                 <View viewIf={totalsLoading}>
                   <View.If>
-                    <div className="h-10 w-[140px] dark:bg-neutral-900 bg-neutral-200 animate-pulse mr-1"></div>
+                    <div className="h-10 w-[140px] dark:bg-darker bg-neutral-200 animate-pulse mr-1"></div>
                   </View.If>
                   <View.Else>
                     <div className="flex flex-row text-4xl items-end font-semibold dark:text-red-800 text-red-600">
@@ -104,10 +104,10 @@ export default function NewProjectPage(props: NexysComponentProps) {
               <div className="flex flex-row gap-1 items-end">
                 <View viewIf={totalsLoading}>
                   <View.If>
-                    <div className="h-10 w-[140px] dark:bg-neutral-900 bg-neutral-200 animate-pulse mr-1"></div>
+                    <div className="h-10 w-[140px] dark:bg-darker bg-neutral-200 animate-pulse mr-1"></div>
                   </View.If>
                   <View.Else>
-                    <div className="flex flex-row text-4xl items-end font-semibold text-neutral-600 dark:text-neutral-500">
+                    <div className="flex flex-row text-4xl items-end font-semibold text-neutral-600 dark:text-dark-accent">
                       <MdInfo size={18} />
                       <CountUp
                         end={totals?.data?.data?.totalLogs ?? 0}

@@ -7,7 +7,7 @@ import Avatar from "@/components/Avatar";
 import Tooltip from "@/components/Tooltip";
 import View from "@/components/View";
 import Button from "@/components/Button";
-import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
+import { MdDarkMode, MdLightMode, MdLogout, MdFeedback } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
@@ -46,7 +46,7 @@ export default function Dropdown() {
             userSelect: "none",
           }}
         >
-          <div className="border-[1px] rounded-full p-[2px] border-neutral-400/30 dark:border-neutral-800/50">
+          <div className="border-[1px] rounded-full p-[2px] border-neutral-400/30 dark:border-dark-border">
             <Avatar
               size="xl"
               src={
@@ -58,79 +58,107 @@ export default function Dropdown() {
             />
           </div>
         </summary>
-        <div
-          className="flex flex-col gap-1 w-[160px] items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 shadow-neutral-200/50 dark:shadow-neutral-900/20"
-          style={{ zIndex: 999 }}
-        >
-          {/*<div className="w-full flex justify-end items-center gap-1">
-            <div className="border-[1px] border-neutral-200 dark:border-neutral-900 px-1 py-[2px] pb-1 rounded-lg text-xs first-letter:uppercase items-center justify-center">
-              {validatedUser?.subscription?.type}
-            </div>
-            <Link href="/subscription">
-              <Button size="h-6" className="px-1">
-                Plans
-              </Button>
-            </Link>
-            </div>*/}
-          <div className="text-sm font-semibold w-full flex justify-end">
-            {`@${validatedUser?.username}`}
+        <div className="flex flex-col overflow-hidden w-[220px] items-start absolute top-full rounded-xl right-0 dark:bg-dark bg-white border-[1px] border-neutral-200 dark:border-dark-border shadow-neutral-200/50 dark:shadow-neutral-900/20 z-[999]">
+          <div className="text-sm font-semibold w-full flex p-4 border-b-[1px] dark:border-b-dark-border dark:text-dark-text">
+            <View
+              viewIf={
+                !!validatedUser?.email && validatedUser?.email?.length > 26
+              }
+            >
+              <View.If>
+                {`${validatedUser?.email?.substring(0, 23)}...`}
+              </View.If>
+              <View.Else>{validatedUser?.email}</View.Else>
+            </View>
           </div>
-          <div className="flex flex-row gap-1 w-full">
+          <div className="flex flex-col w-full border-b-[1px] dark:border-b-dark-border">
             <div className="flex justify-end w-full">
               <Link
                 href="https://docs.nexys.app"
                 className="w-full"
                 target="_blank"
               >
-                <Button className="px-2" fullWidth>
-                  <span className="ml-1">Docs</span>
+                <Button
+                  rounded="not-rounded"
+                  className="px-4 py-5 justify-between"
+                  fullWidth
+                  light="active:scale-1 active:dark:bg-dark hover:dark:bg-darker/50 hover:bg-neutral-100"
+                  center={false}
+                >
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <span>Documentation</span>
+                    <span>
+                      <IoDocumentText />
+                    </span>
+                  </div>
                 </Button>
               </Link>
             </div>
             <div className="flex justify-end w-full">
               <Link href="/feedback" className="w-full">
-                <Button className="px-2">
-                  <span className="ml-1">Feedback</span>
+                <Button
+                  rounded="not-rounded"
+                  className="px-4 py-5 justify-between"
+                  fullWidth
+                  light="active:scale-1 active:dark:bg-dark hover:dark:bg-darker/50 hover:bg-neutral-100"
+                  center={false}
+                >
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <span>Feedback</span>
+                    <span>
+                      <MdFeedback />
+                    </span>
+                  </div>
                 </Button>
               </Link>
             </div>
           </div>
-          <div className="flex flex-row w-full justify-end gap-1 items-center">
-            <span
-              className="text-xs text-neutral-400"
-              onClick={() => setEasterEggClicks(easterEggClicks + 1)}
-              title="Dashboard Version"
-            >{`v${version}`}</span>
-            <Tooltip
-              content={`${
-                resolvedTheme == "dark" ? "Light Theme" : "Dark Theme"
-              }`}
-              direction="left"
-              outline
+          <div className="flex flex-col w-full justify-center items-center">
+            <Button
+              onClick={onThemeChange}
+              rounded="not-rounded"
+              className="px-4 py-5"
+              fullWidth
+              light="active:scale-1 active:dark:bg-dark hover:dark:bg-darker/50 hover:bg-neutral-100"
+              center={false}
             >
-              <Button
-                onClick={onThemeChange}
-                className="w-8"
-                title="Change Theme"
-              >
-                <View viewIf={resolvedTheme == "dark"}>
-                  <View.If>
-                    <MdDarkMode />
-                  </View.If>
-                  <View.Else>
-                    <MdLightMode />
-                  </View.Else>
-                </View>
-              </Button>
-            </Tooltip>
+              <div className="w-full flex justify-between items-center flex-row">
+                <span>Theme</span>
+                <span>
+                  <View viewIf={resolvedTheme == "dark"}>
+                    <View.If>
+                      <MdDarkMode />
+                    </View.If>
+                    <View.Else>
+                      <MdLightMode />
+                    </View.Else>
+                  </View>
+                </span>
+              </div>
+            </Button>
+            <div className="z-10 overflow-hidden flex flex-row items-center relative transition-all duration-75 font-semibold text-sm px-4 py-5 justify-between w-full rounded-none h-8">
+              <span>Version</span>
+              <span
+                className="text-xs text-neutral-400"
+                onClick={() => setEasterEggClicks(easterEggClicks + 1)}
+                title="Dashboard Version"
+              >{`v${version}`}</span>
+            </div>
           </div>
-          {/*<Button title="plans" fullWidth onClick={() => {}}>
-            <RiVipDiamondLine />
-            <span className="ml-1">plans</span>
-            </Button>*/}
-          <Button title="sign out" fullWidth onClick={signout}>
-            <MdLogout />
-            <span className="ml-1">sign out</span>
+          <Button
+            onClick={signout}
+            rounded="not-rounded"
+            className="px-4 py-5"
+            fullWidth
+            light="active:scale-1 active:dark:bg-dark hover:dark:bg-darker/50 hover:bg-neutral-100"
+            center={false}
+          >
+            <div className="w-full flex justify-between items-center flex-row">
+              <span>Sign out</span>
+              <span>
+                <MdLogout />
+              </span>
+            </div>
           </Button>
         </div>
       </details>

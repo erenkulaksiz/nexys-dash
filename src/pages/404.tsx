@@ -9,7 +9,7 @@ export default function NotFound() {
       <Head>
         <title>Nex · 404</title>
       </Head>
-      <div className="flex flex-col items-center justify-center h-full gap-4">
+      <div className="flex flex-col items-center justify-center h-full gap-4 dark:text-dark-text dark:bg-dark">
         <h1 className="text-7xl font-semibold">404</h1>
         <span>{"We couln't find this page."}</span>
         <Link href="/">

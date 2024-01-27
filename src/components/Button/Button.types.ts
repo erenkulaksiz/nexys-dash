@@ -18,4 +18,5 @@ export interface ButtonProps {
   type?: HTMLInputElement["type"];
   testId?: string;
   disabled?: boolean;
+  center?: boolean;
 }

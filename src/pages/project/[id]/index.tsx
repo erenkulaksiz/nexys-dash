@@ -9,8 +9,8 @@ import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import Tab from "@/components/Tab";
-import Header from "@/components/project/Header";
-import Tabs from "@/components/project/Tabs";
+import Header from "@/components/Views/project/Header";
+import Tabs from "@/components/Views/project/Tabs";
 import WithAuth from "@/hocs/withAuth";
 import View from "@/components/View";
 import { ValidateToken } from "@/utils/api/validateToken";
@@ -80,13 +80,13 @@ export default function ProjectPage(props: NexysComponentProps) {
                       {Array.from(Array(6)).map((_, index) => (
                         <div
                           key={index}
-                          className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                          className="bg-neutral-100 dark:bg-darker p-3 px-10"
                         ></div>
                       ))}
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-darker"></div>
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-darker"></div>
                     </div>
                   </div>
                 </View.If>

@@ -9,7 +9,7 @@ import View from "@/components/View";
 import {
   Signin as SigninForm,
   Email as EmailSignin,
-} from "@/components/auth/Signin";
+} from "@/components/Views/auth/Signin";
 import { RiShareBoxLine } from "react-icons/ri";
 import { MdOutlineEmail } from "react-icons/md";
 import WithoutAuth from "@/hocs/withoutAuth";
@@ -38,10 +38,10 @@ export default function SigninPage() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-0 left-0 right-0 from-black via-black/80 to-transparent bg-gradient-to-t h-full flex flex-col justify-end p-4">
-                    <div className="text-2xl font-semibold text-white">
+                    <div className="text-2xl font-semibold text-white dark:text-dark-text">
                       {"We're public testing Nexys."}
                     </div>
-                    <div className="text-neutral-400 text-sm">
+                    <div className="text-neutral-400 dark:text-dark-accent text-sm">
                       Please use feedback button if you encounter any bugs or
                       have any suggestions. (on top right when you sign in)
                     </div>
@@ -53,11 +53,11 @@ export default function SigninPage() {
               <div className="flex flex-col p-4">
                 <div className="w-[300px] relative h-[200px] dark:bg-neutral-800 bg-neutral-200 rounded-lg overflow-hidden">
                   <div className="absolute bottom-0 left-0 right-0 from-black via-black/80 to-transparent bg-gradient-to-t h-full flex flex-col justify-end p-4">
-                    <div className="text-2xl font-semibold text-white">
-                      {"Celebrating 1st birthday of Nexys."}
+                    <div className="text-2xl font-semibold text-white dark:text-dark-text">
+                      {"New dark theme is here!"}
                     </div>
-                    <div className="text-neutral-400 text-sm">
-                      Thank you for your support.
+                    <div className="text-neutral-400 dark:text-dark-accent text-sm">
+                      {`"Dark Morfeus" is now available.`}
                     </div>
                   </div>
                 </div>
@@ -75,7 +75,7 @@ export default function SigninPage() {
               <div className="flex flex-row gap-2 justify-center items-center">
                 <Link
                   href="/privacy-policy"
-                  className="flex flex-row gap-1 items-center"
+                  className="flex flex-row gap-1 items-center dark:text-dark-text"
                 >
                   <RiShareBoxLine />
                   <div>Privacy Policy</div>
@@ -83,7 +83,7 @@ export default function SigninPage() {
                 <div>•</div>
                 <Link
                   href="mailto:erenkulaksz@gmail.com"
-                  className="flex flex-row gap-1 items-center"
+                  className="flex flex-row gap-1 items-center dark:text-dark-text"
                 >
                   <MdOutlineEmail />
                   <div>Contact</div>

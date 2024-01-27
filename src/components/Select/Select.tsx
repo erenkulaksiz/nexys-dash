@@ -13,7 +13,7 @@ export default function Select({
   const BuildSelect = BuildComponent({
     name: "Select",
     defaultClasses:
-      "px-2 outline-none focus:outline-2 focus:outline-blue-500/50 border-[1px] border-solid border-neutral-200 dark:border-neutral-900 appearance-none flex text-base font-normal text-gray-700 dark:text-white bg-white dark:bg-black bg-clip-padding bg-no-repeat rounded-lg transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none",
+      "px-2 outline-none focus:outline-2 focus:outline-blue-500/50 border-[1px] border-solid border-neutral-200 dark:border-dark-border appearance-none flex text-base font-normal text-gray-700 dark:text-white bg-white dark:bg-black bg-clip-padding bg-no-repeat rounded-lg transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none",
     extraClasses: className,
   });
 

@@ -23,6 +23,7 @@ export default function Button({
   title,
   type,
   disabled,
+  center = true,
   ...props
 }: ButtonProps) {
   const iconSpace = conditionalClass({
@@ -33,12 +34,20 @@ export default function Button({
     selected: size,
   });
 
+  const centerButton = conditionalClass({
+    keys: {
+      true: "mx-auto flex flex-row items-center",
+      false: "flex flex-row items-center w-full",
+    },
+    selected: center.toString(),
+  });
+
   const iconClasses = twMerge("absolute left-0", iconSpace);
 
   const BuildButton = BuildComponent({
     name: "Button",
     defaultClasses:
-      "cursor-pointer z-10 overflow-hidden hover:opacity-80 active:opacity-80 flex flex-row items-center relative active:scale-95 transition-all duration-75 font-semibold text-sm",
+      "cursor-pointer z-10 overflow-hidden hover:opacity-80 active:opacity-80 flex flex-row items-center relative active:scale-95 transition-all duration-75 font-semibold text-sm dark:text-dark-text",
     extraClasses: className,
     conditionalClasses: [
       {
@@ -64,7 +73,7 @@ export default function Button({
       {
         default: light,
         false:
-          "hover:bg-neutral-100/50 hover:dark:bg-neutral-800 outline-none border-[1px] border-neutral-200 dark:border-neutral-900", //also remove ring
+          "hover:bg-neutral-100/50 hover:dark:bg-darker/50 outline-none border-[1px] border-neutral-200 dark:border-dark-border",
         true: "bg-transparent hover:bg-transparent active:dark:bg-neutral-700/30 active:bg-neutral-200/50",
       },
       {
@@ -92,7 +101,7 @@ export default function Button({
       <View.If hidden={!icon}>
         <div className={iconClasses}>{icon}</div>
       </View.If>
-      <div className="mx-auto flex flex-row items-center">{children}</div>
+      <div className={centerButton}>{children}</div>
       <View.If visible={!!loading}>
         <div className="absolute left-0 right-0 bottom-0 top-0 dark:bg-neutral-900/90 bg-neutral-200/50 flex items-center justify-center">
           <Loading />

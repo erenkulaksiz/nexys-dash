@@ -9,13 +9,13 @@ export default function Table({
   const BuildTable = BuildComponent({
     name: "Table",
     defaultClasses:
-      "flex flex-col overflow-auto p-4 border border-neutral-200 dark:border-neutral-900",
+      "flex flex-col overflow-auto p-4 border border-neutral-200 dark:border-dark-border",
     extraClasses: containerClassName,
   });
 
   return (
     <div className={BuildTable.classes}>
-      <div className="flex flex-row min-w-max border-b pb-2 border-neutral-200 dark:border-neutral-900">
+      <div className="flex flex-row min-w-max border-b pb-2 border-neutral-200 dark:border-dark-border">
         {columns.map((column) => (
           <div key={column} className="flex font-bold min-w-[280px]">
             {column}

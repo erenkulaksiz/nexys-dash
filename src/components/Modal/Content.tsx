@@ -11,7 +11,7 @@ export default function Content({
   const BuildModalContent = BuildComponent({
     name: "Modal Content",
     defaultClasses:
-      "md:w-[700px] lg:w-[900px] w-full h-full md:h-auto z-50 relative flex flex-col shadow-2xl p-4 m-auto backdrop-brightness-75 dark:bg-neutral-900 bg-white",
+      "md:w-[700px] lg:w-[900px] w-full h-full md:h-auto z-50 relative flex flex-col shadow-2xl p-4 m-auto backdrop-brightness-75 dark:bg-dark bg-white dark:text-dark-text",
     extraClasses: className,
   });
 

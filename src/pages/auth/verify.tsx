@@ -66,7 +66,7 @@ export default function VerifyPage(props: NexysComponentProps) {
         <Container className="flex justify-center h-full items-center">
           <div className="flex flex-col h-full items-start justify-center w-[400px] gap-2">
             <h1 className="text-2xl font-bold">Email Verification</h1>
-            <p className="text-neutral-500 text-sm">
+            <p className="text-neutral-500 dark:text-dark-accent text-sm">
               {"We've sent an email to "}
               <span className="text-neutral-400 font-bold">
                 {authUser?.email}
@@ -75,7 +75,7 @@ export default function VerifyPage(props: NexysComponentProps) {
                 " with a link to verify your email address. If you don't see it, check your spam folder."
               }
             </p>
-            <p className="text-neutral-500 text-sm">
+            <p className="text-neutral-500 dark:text-dark-accent text-sm">
               After clicking the link we sent you, just refresh this page.
             </p>
             <div className="flex flex-row gap-2">
@@ -103,7 +103,9 @@ export default function VerifyPage(props: NexysComponentProps) {
               </p>
             </View.If>
             <View.If visible={!!error}>
-              <p className="text-neutral-500 text-sm">{error}</p>
+              <p className="text-neutral-500 text-sm dark:text-dark-accent">
+                {error}
+              </p>
             </View.If>
           </div>
         </Container>

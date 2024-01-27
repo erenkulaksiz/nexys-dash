@@ -71,8 +71,10 @@ export default function FeedbackPage(props: NexysComponentProps) {
         <Navbar />
         <Container>
           <div className="flex flex-col py-2 sm:py-8 justify-center">
-            <h1 className="text-2xl sm:text-4xl font-semibold">{"Feedback"}</h1>
-            <h2 className="dark:text-neutral-400 text-neutral-500">
+            <h1 className="text-2xl sm:text-4xl font-semibold dark:text-dark-text">
+              {"Feedback"}
+            </h1>
+            <h2 className="dark:text-dark-accent text-neutral-500">
               {
                 "Every feedback is important to us. Please describe how was your experience, did you encounter any bugs etc. You will receive a response within 24 hours."
               }
@@ -109,13 +111,13 @@ export default function FeedbackPage(props: NexysComponentProps) {
                 )}
                 <div className="flex flex-row justify-between mt-2">
                   <View.If visible={!!props.validate?.data?.email}>
-                    <span className="text-sm dark:text-neutral-400 text-neutral-500">
+                    <span className="text-sm dark:text-dark-accent text-neutral-500">
                       We will make a response to email{" "}
                       {props.validate?.data?.email}
                     </span>
                   </View.If>
                   <div className="flex flex-row gap-2 items-center">
-                    <div className="flex flex-row text-sm dark:text-neutral-400 text-neutral-500">
+                    <div className="flex flex-row text-sm dark:text-dark-accent text-neutral-500">
                       <div
                         className={feedback.length > 1000 ? "text-red-600" : ""}
                       >

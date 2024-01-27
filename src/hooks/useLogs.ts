@@ -16,7 +16,7 @@ import {
 } from "@/stores/projectStore";
 import { Log } from "@/utils";
 import { nexys } from "@/utils/nexys";
-import type { filtersTypes } from "@/components/project/InputFilter/InputFilter.types";
+import type { filtersTypes } from "@/components/Views/project/InputFilter/InputFilter.types";
 
 interface useLogsParams {
   type: "all" | "logs" | "batches" | "exceptions";
@@ -53,7 +53,7 @@ export default function useLogs({
           asc: false,
           type,
           page,
-          filters,
+          filters: filters?.filter((filter) => filter.selectionId),
         },
         token,
       });

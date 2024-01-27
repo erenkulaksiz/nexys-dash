@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
       </Head>
       <Navbar />
       <Container className="pb-4">
-        <div className="mt-2 text-3xl font-medium flex flex-row items-center border-b-[1px] border-neutral-200 dark:border-neutral-900 pb-2">
+        <div className="mt-2 text-3xl font-medium flex flex-row items-center border-b-[1px] border-neutral-200 dark:border-dark-border pb-2">
           <MdOutlinePrivacyTip className="text-4xl mr-2" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-2 items-end">
             <h1 className="flex flex-row items-end text-black dark:text-white">
@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
             information in accordance with this Privacy Policy.
           </div>
         </div>
-        <h1 className="mt-8 text-3xl font-medium border-b-[1px] border-neutral-200 dark:border-neutral-900 pb-2">
+        <h1 className="mt-8 text-3xl font-medium border-b-[1px] border-neutral-200 dark:border-dark-border pb-2">
           Interpretation and Definitions
         </h1>
         <div className="grid grid-cols-1 gap-4 mt-4 text-neutral-700 dark:text-neutral-300">
@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
               </li>
             </ul>
           </div>
-          <h1 className="text-xl border-b-[1px] border-neutral-200 dark:border-neutral-900 pb-2 mt-4 dark:text-white text-black">
+          <h1 className="text-xl border-b-[1px] border-neutral-200 dark:border-dark-border pb-2 mt-4 dark:text-white text-black">
             Collecting and Using Your Personal Data
           </h1>
           <h1 className="text-lg pb-2">Types of Data Collected</h1>
@@ -381,7 +381,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
             content, privacy policies or practices of any third party sites or
             services.
           </div>
-          <h1 className="text-2xl font-semibold dark:text-white text-black border-b-[1px] border-neutral-200 dark:border-neutral-900 pb-2">
+          <h1 className="text-2xl font-semibold dark:text-white text-black border-b-[1px] border-neutral-200 dark:border-dark-border pb-2">
             Changes to this Privacy Policy
           </h1>
           <div>

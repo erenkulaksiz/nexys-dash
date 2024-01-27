@@ -24,10 +24,10 @@ import Tab from "@/components/Tab";
 import Codeblock from "@/components/Codeblock";
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
-import LogCard from "@/components/project/LogCard";
+import LogCard from "@/components/Views/project/LogCard";
 import WithAuth from "@/hocs/withAuth";
 import useProject from "@/hooks/useProject";
-import BatchHeader from "@/components/project/BatchHeader";
+import BatchHeader from "@/components/Views/project/BatchHeader";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { useProjectStore } from "@/stores/projectStore";
 import useBatch from "@/hooks/useBatch";
@@ -68,7 +68,7 @@ export default function BatchPage(props: NexysComponentProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navbar />
-        <div className="flex z-40 w-full flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+        <div className="flex z-40 w-full flex-row gap-2 items-end py-4 border-b-[1px] border-neutral-200 dark:border-dark-border">
           <BatchHeader />
         </div>
         <View
@@ -97,13 +97,13 @@ export default function BatchPage(props: NexysComponentProps) {
                       {Array.from(Array(6)).map((_, index) => (
                         <div
                           key={index}
-                          className="bg-neutral-100 dark:bg-neutral-900 p-3 px-10"
+                          className="bg-neutral-100 dark:bg-darker p-3 px-10"
                         ></div>
                       ))}
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
-                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-neutral-900"></div>
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-darker"></div>
+                      <div className="flex w-full h-[400px] bg-neutral-100 dark:bg-darker"></div>
                     </div>
                   </div>
                 </View.If>
@@ -351,7 +351,7 @@ export default function BatchPage(props: NexysComponentProps) {
                             </div>
                           </View.If>
                         </div>
-                        <div className="flex flex-col gap-2 w-full border-[1px] p-4 rounded-lg border-neutral-200 dark:border-neutral-900">
+                        <div className="flex flex-col gap-2 w-full border-[1px] p-4 rounded-lg border-neutral-200 dark:border-dark-border">
                           <h1 className="text-2xl font-semibold">
                             Privacy Warning
                           </h1>

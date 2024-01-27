@@ -9,14 +9,16 @@ import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
 import { FaLightbulb } from "react-icons/fa";
-import AddProjectCard from "@/components/home/AddProjectCard";
-import AdminCard from "@/components/home/AdminCard";
-const ProjectCard = dynamic(() => import("@/components/home/ProjectCard"), {});
+import AddProjectCard from "@/components/Views/home/AddProjectCard";
+import AdminCard from "@/components/Views/home/AdminCard";
+const ProjectCard = dynamic(
+  () => import("@/components/Views/home/ProjectCard"),
+  {}
+);
 import { ValidateToken } from "@/utils/api/validateToken";
 import WithAuth from "@/hocs/withAuth";
 import useProjects from "@/hooks/useProjects";
 import View from "@/components/View";
-import { nexys } from "@/utils/nexys";
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { NexysComponentProps, ProjectTypes } from "@/types";
 import type { GetServerSidePropsContext } from "next";
@@ -51,7 +53,7 @@ export default function HomePage(props: NexysComponentProps) {
                       {Array.from(Array(6)).map((_, index) => (
                         <div
                           key={index}
-                          className="animate-pulse relative group flex items-center justify-center dark:bg-neutral-900 bg-neutral-100 rounded-lg p-4 h-32"
+                          className="animate-pulse relative group flex items-center justify-center dark:bg-darker bg-neutral-100 rounded-lg p-4 h-32"
                         ></div>
                       ))}
                     </div>
@@ -63,7 +65,7 @@ export default function HomePage(props: NexysComponentProps) {
                   <Container>
                     <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
                       {projects?.data?.data && !projects?.data?.data.length && (
-                        <div className="flex flex-row gap-1 overflow-hidden group items-center justify-center relative dark:bg-black bg-white rounded-lg p-4 h-32 border-[1px] border-neutral-200 dark:border-neutral-900">
+                        <div className="flex flex-row gap-1 overflow-hidden group items-center justify-center relative dark:bg-black bg-white rounded-lg p-4 h-32 border-[1px] border-neutral-200 dark:border-dark-border">
                           <FaLightbulb
                             size={180}
                             className="absolute -left-[20px] -bottom-[20px] text-neutral-200/70 dark:text-neutral-900/50 z-10 dark:group-hover:text-neutral-800 group-hover:text-neutral-400 transition-colors duration-200"
@@ -110,30 +112,30 @@ export default function HomePage(props: NexysComponentProps) {
               </View.Else>
             </View>
           </div>
-          <div className="flex w-full h-[30vh] min-h-[400px] border-t-[1px] dark:border-neutral-900 border-neutral-200 py-10">
+          <div className="flex w-full h-[30vh] min-h-[400px] border-t-[1px] dark:border-dark-border border-neutral-200 py-10">
             <Container className="flex flex-col gap-10">
               <h1 className="text-4xl font-semibold">
                 Discover Potential of Nexys
               </h1>
-              <div className="grid flex-row w-full gap-4 h-full grid-cols-4 items-start">
-                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg p-4">
+              <div className="grid flex-row w-full gap-4 h-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-start">
+                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-dark-border rounded-lg p-4">
                   <h2 className="text-2xl">AI Insight</h2>
                   <span>
                     Discover error reasons better within click of a button.
                   </span>
                 </div>
-                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg p-4">
+                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-dark-border rounded-lg p-4">
                   <h2 className="text-2xl">Session Replay</h2>
                   <span>
                     All exceptions have their own sessions. You can watch a
                     session in details.
                   </span>
                 </div>
-                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg p-4">
+                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-dark-border rounded-lg p-4">
                   <h2 className="text-2xl">Click Track</h2>
                   <span>View a log before it even happens.</span>
                 </div>
-                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-neutral-900 rounded-lg p-4">
+                <div className="flex flex-col h-full border-[1px] border-neutral-200 dark:border-dark-border rounded-lg p-4">
                   <h2 className="text-2xl">Advanced report</h2>
                   <span>
                     View a report of most occuring errors in your application.

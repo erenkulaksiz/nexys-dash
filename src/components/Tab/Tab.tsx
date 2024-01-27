@@ -77,13 +77,13 @@ function Tab({
                   onChange={() => handleTabChange({ index, id: props.id })}
                   disabled={props?.disabled}
                 />
-                <div className="break-keep z-20 peer-checked:text-black dark:peer-checked:text-white dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-neutral-800 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400">
+                <div className="break-keep z-20 peer-checked:text-black dark:peer-checked:text-dark-text dark:text-neutral-500 peer-disabled:text-neutral-200 dark:peer-disabled:text-dark-accent/20 dark:hover:text-neutral-400 hover:text-neutral-500 text-neutral-400">
                   <View viewIf={activeTab == index}>
                     <View.If>{props.activeTitle}</View.If>
                     <View.Else>{props.nonActiveTitle}</View.Else>
                   </View>
                 </div>
-                <div className="absolute -bottom-1 left-0 right-0 peer-checked:h-[2px] h-[1px] dark:bg-white bg-black transition-all duration-300 ease-in-out peer-checked:opacity-100 opacity-10" />
+                <div className="absolute -bottom-1 left-0 right-0 peer-checked:h-[2px] h-[1px] dark:bg-dark-border bg-neutral-200 transition-all duration-300 ease-in-out dark:peer-checked:bg-dark-text peer-checked:bg-black" />
               </label>
             );
           })}
