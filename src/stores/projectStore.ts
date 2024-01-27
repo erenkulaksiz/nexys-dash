@@ -14,6 +14,10 @@ interface ProjectState {
   loading: boolean;
   notFound: boolean;
   batchLoading: boolean;
+  aiInsightModal: {
+    isOpen: boolean;
+    logId: string;
+  };
   actions: {
     setCurrentProject: (user: any) => void;
     setCurrentBatch: (batch: any) => void;
@@ -26,6 +30,13 @@ interface ProjectState {
     setBatches: (batches: any) => void;
     setBatchesLoading: (batchesLoading: boolean) => void;
     setBatchLoading: (batchLoading: boolean) => void;
+    setAIInsightModal: ({
+      isOpen,
+      logId,
+    }: {
+      isOpen: boolean;
+      logId: string;
+    }) => void;
   };
 }
 
@@ -41,6 +52,10 @@ export const useProjectStore = create<ProjectState>((set) => ({
   loading: true,
   notFound: false,
   batchLoading: true,
+  aiInsightModal: {
+    isOpen: false,
+    logId: "",
+  },
   actions: {
     setCurrentProject: function (currentProject: ProjectTypes | null) {
       set({ currentProject });
@@ -76,6 +91,21 @@ export const useProjectStore = create<ProjectState>((set) => ({
     setBatchLoading: function (batchLoading: boolean) {
       set({ batchLoading });
     },
+    setAIInsightModal: function ({
+      isOpen,
+      logId,
+    }: {
+      isOpen: boolean;
+      logId: string;
+    }) {
+      set((state) => ({
+        aiInsightModal: {
+          ...state.aiInsightModal,
+          isOpen,
+          logId,
+        },
+      }));
+    },
   },
 }));
 
@@ -96,3 +126,5 @@ export const setBatchLoading =
   useProjectStore.getState().actions.setBatchLoading;
 export const setCurrentBatch =
   useProjectStore.getState().actions.setCurrentBatch;
+export const setAIInsightModal =
+  useProjectStore.getState().actions.setAIInsightModal;

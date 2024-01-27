@@ -96,6 +96,7 @@ export function Email({ onBack }: { onBack?: () => void }) {
                 type="email"
                 placeholder="E-mail"
                 value={email}
+                className="pl-[28px]"
                 onChange={(e) => setEmail(e.target.value)}
                 icon={<MdOutlineEmail size={18} />}
                 maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
@@ -120,6 +121,7 @@ export function Email({ onBack }: { onBack?: () => void }) {
                 password
                 passwordVisibility
                 value={password}
+                className="pl-[28px]"
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 icon={<RiLockPasswordLine size={18} />}

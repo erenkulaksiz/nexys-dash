@@ -108,10 +108,12 @@ export default function FeedbackPage(props: NexysComponentProps) {
                   <div className="text-sm text-red-600 mt-1">{error}</div>
                 )}
                 <div className="flex flex-row justify-between mt-2">
-                  <span className="text-sm dark:text-neutral-400 text-neutral-500">
-                    We will make a response to email{" "}
-                    {props.validate?.data.email}
-                  </span>
+                  <View.If visible={!!props.validate?.data?.email}>
+                    <span className="text-sm dark:text-neutral-400 text-neutral-500">
+                      We will make a response to email{" "}
+                      {props.validate?.data?.email}
+                    </span>
+                  </View.If>
                   <div className="flex flex-row gap-2 items-center">
                     <div className="flex flex-row text-sm dark:text-neutral-400 text-neutral-500">
                       <div

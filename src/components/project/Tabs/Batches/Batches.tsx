@@ -76,7 +76,7 @@ export default function Batches() {
               {batches?.data?.data?.batches
                 ?.sort((a: any, b: any) => b.ts - a.ts)
                 .map((batch: any) => {
-                  return <BatchCard key={batch._id} batch={batch} />;
+                  return <BatchCard key={batch?._id?.$oid} batch={batch} />;
                 })}
             </View.If>
           </div>

@@ -165,6 +165,7 @@ export function Signup() {
                 }
                 maxLength={LIMITS.MAX.USERNAME_CHARACTER_LENGTH}
                 icon={<AiOutlineUser size={18} />}
+                className="pl-[28px]"
               />
               <View.If
                 visible={
@@ -190,6 +191,7 @@ export function Signup() {
                 onChange={(e) => setEmail(e.target.value)}
                 maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
                 icon={<MdOutlineEmail size={18} />}
+                className="pl-[28px]"
               />
               <View.If
                 visible={errors?.email != null && errors?.email.length > 0}
@@ -214,6 +216,7 @@ export function Signup() {
                 onChange={(e) => setPassword(e.target.value)}
                 maxLength={LIMITS.MAX.PASSWORD_CHARACTER_LENGTH}
                 icon={<RiLockPasswordLine />}
+                className="pl-[28px]"
               />
               {errors.password && (
                 <label className="text-red-600 font-semibold text-xs">
@@ -235,6 +238,7 @@ export function Signup() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 maxLength={LIMITS.MAX.PASSWORD_CHARACTER_LENGTH}
                 icon={<RiLockPasswordLine />}
+                className="pl-[28px]"
               />
             </div>
             <Button

@@ -1,7 +1,9 @@
 import { createElement } from "react";
 
-import { BuildComponent, allClass, conditionalClass } from "@/utils/style";
+import { twMerge } from "tailwind-merge";
+import View from "@/components/View";
 import Loading from "@/components/Loading";
+import { BuildComponent, conditionalClass } from "@/utils/style";
 import type { ButtonProps } from "./Button.types";
 
 export default function Button({
@@ -31,10 +33,7 @@ export default function Button({
     selected: size,
   });
 
-  const iconClasses = allClass({
-    defaultClasses: "absolute left-0",
-    conditions: [iconSpace],
-  });
+  const iconClasses = twMerge("absolute left-0", iconSpace);
 
   const BuildButton = BuildComponent({
     name: "Button",
@@ -90,13 +89,15 @@ export default function Button({
       disabled={disabled}
       {...props}
     >
-      {icon && <div className={iconClasses}>{icon}</div>}
+      <View.If hidden={!icon}>
+        <div className={iconClasses}>{icon}</div>
+      </View.If>
       <div className="mx-auto flex flex-row items-center">{children}</div>
-      {loading && (
+      <View.If visible={!!loading}>
         <div className="absolute left-0 right-0 bottom-0 top-0 dark:bg-neutral-900/90 bg-neutral-200/50 flex items-center justify-center">
           <Loading />
         </div>
-      )}
+      </View.If>
     </ButtonEl>
   );
 }

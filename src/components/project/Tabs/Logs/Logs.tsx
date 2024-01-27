@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { VscDebugBreakpointLog } from "react-icons/vsc";
 import { useProjectStore } from "@/stores/projectStore";
@@ -22,6 +22,10 @@ export default function Logs() {
   });
   const logsLoading = useProjectStore((state) => state.logsLoading);
   const totalPages = Math.ceil(logs.data?.data?.logsLength / 10);
+
+  useEffect(() => {
+    setPage(0);
+  }, [filters]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">

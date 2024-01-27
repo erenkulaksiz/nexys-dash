@@ -59,10 +59,10 @@ export default function NewProjectPage(props: NexysComponentProps) {
     }
   }, [totals.isValidating]);
 
-  console.log("totals", totals);
+  console.log("totals", totals?.data?.data);
 
   return (
-    <Layout withoutLayout {...props}>
+    <Layout {...props}>
       <WithAuth {...props}>
         <Head>
           <title>Nex · New Project</title>
@@ -70,7 +70,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
         </Head>
         <Navbar />
         <Container>
-          <div className="flex flex-col py-2 sm:py-8 justify-center">
+          <div className="flex flex-col py-2 sm:py-4 justify-center">
             <h1 className="text-2xl sm:text-4xl font-semibold">
               {"Let's get you started."}
             </h1>
@@ -80,7 +80,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
           </div>
         </Container>
         <Container>
-          <div className="w-full grid sm:grid-cols-2 grid-cols-1 items-start gap-2">
+          <div className="w-full grid sm:grid-cols-2 grid-cols-1 items-start gap-2 pb-2">
             <AddProject />
             <div className="dark:shadow-neutral-900 flex flex-col gap-2 justify-between dark:bg-black bg-white rounded-lg p-4 border-[1px] border-neutral-200 dark:border-neutral-900">
               <div className="text-2xl">total of</div>
@@ -93,7 +93,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
                     <div className="flex flex-row text-4xl items-end font-semibold dark:text-red-800 text-red-600">
                       <MdError size={18} />
                       <CountUp
-                        end={totals.data?.data?.totalErrorCount ?? 0}
+                        end={totals.data?.data?.totalErrors ?? 0}
                         duration={0.8}
                       />
                     </div>
@@ -110,7 +110,7 @@ export default function NewProjectPage(props: NexysComponentProps) {
                     <div className="flex flex-row text-4xl items-end font-semibold text-neutral-600 dark:text-neutral-500">
                       <MdInfo size={18} />
                       <CountUp
-                        end={totals.data?.data?.totalLogCount ?? 0}
+                        end={totals?.data?.data?.totalLogs ?? 0}
                         duration={0.8}
                       />
                     </div>

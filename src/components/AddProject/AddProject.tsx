@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 import { MdClose, MdAdd } from "react-icons/md";
 
 import { reducer } from "./reducer";
-import Button from "../Button";
-import Input from "../Input";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import View from "@/components/View";
 import { AddProjectActionType } from "./AddProject.types";
 import { formatString, Log } from "@/utils";
 import { LIMITS } from "@/constants";
 import { useAuthStore } from "@/stores/authStore";
 import isValidURL from "@/utils/isValidUrl";
-import View from "@/components/View";
 import { createProject } from "@/utils/service/project/create";
 import { nexys } from "@/utils/nexys";
 import type { ProjectTypes } from "@/types";
@@ -148,13 +148,11 @@ export default function AddProject() {
   return (
     <div className="order-last sm:order-first flex flex-col justify-between dark:bg-black bg-white pb-4 rounded-lg border-[1px] border-neutral-200 dark:border-neutral-900">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <h1 className="text-xl p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
+        <h1 className="text-xl font-semibold p-4 border-b-[1px] border-neutral-200 dark:border-neutral-900">
           New Project
         </h1>
         <div className="flex flex-col gap-2 px-4">
-          <label htmlFor="projectName" className="font-semibold">
-            Project Name
-          </label>
+          <label htmlFor="projectName">Project Name</label>
           <Input
             type="text"
             value={state.name}
@@ -173,20 +171,18 @@ export default function AddProject() {
             This name acts as app name for your project. It must be unique and
             can only contain letters.
           </span>
-          {state.errors.name && (
+          <View.If visible={!!state.errors.name}>
             <label className="text-red-600 font-semibold text-xs">
               {state.errors.name}
             </label>
-          )}
-          <label htmlFor="domain" className="font-semibold">
-            Domain
-          </label>
+          </View.If>
+          <label htmlFor="domain">Domain</label>
           <Input
             type="text"
             value={state.domain}
-            className="pl-[54px]"
             height="h-10"
             id="domain"
+            className="pl-[56px] pb-[1px]"
             icon={<span className="text-neutral-500">https://</span>}
             onChange={(e) =>
               dispatch({
@@ -201,7 +197,7 @@ export default function AddProject() {
             Domain is used to identify your project. It must be unique and can
             only contain letters.
           </span>
-          <View.If visible={!!state.errors.domain?.length}>
+          <View.If visible={!!state.errors.domain}>
             <label className="text-red-600 font-semibold text-xs">
               {state.errors.domain}
             </label>

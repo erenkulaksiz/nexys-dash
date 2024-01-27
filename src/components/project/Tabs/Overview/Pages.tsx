@@ -21,14 +21,12 @@ export default function Pages() {
                 key={path._id}
               >
                 <div className="flex" title={path._id}>
-                  {path._id?.length > 36 ? `${path._id?.substring(0, 36)}...` : path._id}
+                  {path._id?.length > 36
+                    ? `${path._id?.substring(0, 36)}...`
+                    : path._id}
                 </div>
                 <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-neutral-900 px-2 rounded">
-                  <CountUp
-                    end={path.count}
-                    duration={1}
-                    separator=""
-                  />
+                  <CountUp end={path.count} duration={1} separator="" />
                 </div>
                 <View.If visible={errors > 0}>
                   <Tooltip
@@ -64,11 +62,7 @@ export default function Pages() {
                   >
                     <div className="flex flex-row items-center gap-1 text-sm whitespace-pre-wrap break-all dark:text-white text-white bg-red-500 dark:bg-red-900 px-1 pr-2 rounded">
                       <MdInfoOutline size={14} />
-                      <CountUp
-                        end={errors}
-                        duration={1}
-                        separator=""
-                      />
+                      <CountUp end={errors} duration={1} separator="" />
                     </div>
                   </Tooltip>
                 </View.If>
@@ -88,7 +82,7 @@ export default function Pages() {
           </View.If>
         </View.If>
         <View.Else>
-          <span className="text-sm text-neutral-500">No paths yet.</span>
+          <span className="text-sm text-neutral-500">No pages yet.</span>
         </View.Else>
       </View>
     </div>

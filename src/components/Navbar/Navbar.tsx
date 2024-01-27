@@ -53,7 +53,7 @@ export default function Navbar({ hideAuth = false }: { hideAuth?: boolean }) {
                   style={{ imageRendering: "crisp-edges" }}
                 />
                 <span className="flex px-[6px] rounded-lg items-center justify-center text-xs text-neutral-400 dark:text-neutral-600 dark:bg-neutral-900 bg-neutral-100 transition-colors ease-in-out duration-400">
-                  ALPHA
+                  WIP
                 </span>
               </div>
             </View.If>

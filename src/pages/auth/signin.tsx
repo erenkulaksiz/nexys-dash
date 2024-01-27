@@ -41,9 +41,23 @@ export default function SigninPage() {
                     <div className="text-2xl font-semibold text-white">
                       {"We're public testing Nexys."}
                     </div>
-                    <div className="text-neutral-400">
+                    <div className="text-neutral-400 text-sm">
                       Please use feedback button if you encounter any bugs or
                       have any suggestions. (on top right when you sign in)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="absolute left-[calc(100%+30px)] bottom-0 top-0 hidden md:hidden sm:hidden lg:flex items-center">
+              <div className="flex flex-col p-4">
+                <div className="w-[300px] relative h-[200px] dark:bg-neutral-800 bg-neutral-200 rounded-lg overflow-hidden">
+                  <div className="absolute bottom-0 left-0 right-0 from-black via-black/80 to-transparent bg-gradient-to-t h-full flex flex-col justify-end p-4">
+                    <div className="text-2xl font-semibold text-white">
+                      {"Celebrating 1st birthday of Nexys."}
+                    </div>
+                    <div className="text-neutral-400 text-sm">
+                      Thank you for your support.
                     </div>
                   </div>
                 </div>

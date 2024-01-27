@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useProjectStore } from "@/stores/projectStore";
 import { MdError } from "react-icons/md";
@@ -22,6 +22,10 @@ export default function Exceptions() {
   });
   const exceptionsLoading = useProjectStore((state) => state.exceptionsLoading);
   const totalPages = Math.ceil(exceptions.data?.data?.exceptionsLength / 10);
+
+  useEffect(() => {
+    setPage(0);
+  }, [filters]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-2 py-2 items-start">

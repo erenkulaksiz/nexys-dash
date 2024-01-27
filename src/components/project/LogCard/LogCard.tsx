@@ -7,7 +7,7 @@ import { HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
 import Tooltip from "@/components/Tooltip";
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";
-import { Log, formatDateToHuman } from "@/utils";
+import { formatDateToHuman } from "@/utils";
 import { BuildComponent } from "@/utils/style";
 import View from "@/components/View";
 import { MdOutlineAutoAwesome } from "react-icons/md";
@@ -19,6 +19,7 @@ export default function LogCard({
   log,
   viewingBatch,
   logSelected = false,
+  onAIInsightClick,
 }: LogCardProps) {
   const project = useProjectStore((state) => state.currentProject);
 
@@ -37,14 +38,7 @@ export default function LogCard({
       className={
         BuildComponent({
           defaultClasses:
-            "relative flex flex-col border-[1px] rounded-lg p-3 align-start",
-          conditionalClasses: [
-            {
-              true: "border-red-400 dark:border-red-700",
-              false: "border-neutral-200 dark:border-neutral-900",
-            },
-          ],
-          selectedClasses: [isTypeError],
+            "relative flex flex-col border-[1px] rounded-lg p-3 align-start border-neutral-200 dark:border-neutral-900",
         }).classes
       }
     >
@@ -86,6 +80,10 @@ export default function LogCard({
                 <Button
                   light="dark:bg-white bg-black dark:text-black"
                   className="px-4 text-white"
+                  onClick={() => {
+                    typeof onAIInsightClick == "function" &&
+                      onAIInsightClick({ logId: log?._id?.$oid ?? "" });
+                  }}
                 >
                   <MdOutlineAutoAwesome />
                   <span className="ml-1">AI</span>
@@ -158,9 +156,6 @@ export default function LogCard({
           </View.If>
           <View.If hidden={!log?.batch?.env?.type}>
             <LogCardEntry title="Environment" value={log?.batch?.env?.type} />
-          </View.If>
-          <View.If hidden={!log?.batchConfig?.ip}>
-            <LogCardEntry title="IP" value={log?.batchConfig?.ip} />
           </View.If>
           <View.If
             visible={!!log?.guid && !!log?._id?.$oid && !!log?.batchId?.$oid}

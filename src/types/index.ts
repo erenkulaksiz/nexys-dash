@@ -20,9 +20,7 @@ export interface LogMetricTypes {
 }
 
 export interface ProjectTypes {
-  _id?: {
-    $oid: string;
-  };
+  _id?: string;
   publicKey?: string;
   name: string;
   domain: string;

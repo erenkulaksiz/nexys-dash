@@ -1,4 +1,5 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { MdOutlineArrowBack } from "react-icons/md";
@@ -13,9 +14,12 @@ import Tabs from "@/components/project/Tabs";
 import WithAuth from "@/hocs/withAuth";
 import View from "@/components/View";
 import { ValidateToken } from "@/utils/api/validateToken";
-import { useProjectStore } from "@/stores/projectStore";
+import { setAIInsightModal, useProjectStore } from "@/stores/projectStore";
 import { useAuthStore } from "@/stores/authStore";
 import useProject from "@/hooks/useProject";
+const AIInsightModal = dynamic(() => import("@/components/Modals/AIInsight"), {
+  ssr: false,
+});
 import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 import type { GetServerSidePropsContext } from "next";
 import type { NexysComponentProps } from "@/types";
@@ -26,6 +30,7 @@ export default function ProjectPage(props: NexysComponentProps) {
   const authUser = useAuthStore((state) => state.user);
   const uid = props?.validate?.data?.uid || authUser?.uid;
   const project = useProject({ uid: uid ?? "" });
+  const AIInsightModalState = useProjectStore((state) => state.aiInsightModal);
 
   const router = useRouter();
   const query = router.query.id?.toString() || "";
@@ -118,6 +123,15 @@ export default function ProjectPage(props: NexysComponentProps) {
             </Container>
           </View.Else>
         </View>
+        <AIInsightModal
+          isOpen={AIInsightModalState.isOpen}
+          onClose={() => {
+            setAIInsightModal({
+              isOpen: false,
+              logId: "",
+            });
+          }}
+        />
       </WithAuth>
     </Layout>
   );

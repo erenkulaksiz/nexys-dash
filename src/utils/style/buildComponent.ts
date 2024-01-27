@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 interface BuildComponentTypes {
   name?: string;
   defaultClasses?: string;
@@ -17,26 +19,29 @@ export function BuildComponent({
 }: BuildComponentTypes) {
   let allClasses = ""; // set initial data. eg: 'bg-white'
   if (defaultClasses) allClasses += defaultClasses;
-  if (extraClasses)
-    allClasses += defaultClasses ? ` ${extraClasses}` : extraClasses; // add extra classes to the default classes
+  if (extraClasses) {
+    allClasses = twMerge(allClasses, extraClasses);
+  }
   if (conditionalClasses) {
-    // if we have conditional classes, we will have selected classes too.
     if (selectedClasses) {
       selectedClasses.forEach(
         (selectedClass: string | boolean | undefined, index: number) => {
           if (typeof conditionalClasses[index] != "undefined") {
-            // if the selected class is in the conditional classes
             const selectedObj = conditionalClasses[index];
             if (typeof selectedClass != "undefined") {
               if (selectedObj[selectedClass.toString()]) {
-                // if the selected class has a value, add it to the all classes
-                allClasses += ` ${
+                allClasses = twMerge(
+                  allClasses,
+                  // @ts-ignore
                   conditionalClasses[index][selectedClass.toString()]
-                }`;
+                );
               } else {
                 if (conditionalClasses[index]["default"]) {
-                  // if the selected class has no value, add the default value to the all classes
-                  allClasses += ` ${conditionalClasses[index]["default"]}`;
+                  allClasses = twMerge(
+                    allClasses,
+                    // @ts-ignore
+                    conditionalClasses[index]["default"]
+                  );
                 }
               }
             }

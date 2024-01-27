@@ -80,6 +80,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       icon={<MdOutlineEmail size={18} />}
                       maxLength={LIMITS.MAX.EMAIL_CHARACTER_LENGTH}
+                      className="pl-[28px]"
                     />
                     <Button
                       fullWidth

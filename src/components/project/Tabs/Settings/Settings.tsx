@@ -15,7 +15,7 @@ import { formatDateToHuman } from "@/utils";
 import { useProjectStore } from "@/stores/projectStore";
 import Project from "./Project";
 import API from "./API";
-import Telegram from "./Telegram";
+import Webhooks from "./Webhooks";
 
 export default function Settings() {
   const project = useProjectStore((state) => state.currentProject);
@@ -111,20 +111,18 @@ export default function Settings() {
             <Tab.TabView
               activeTitle={
                 <div className="flex flex-row items-center gap-1">
-                  <RiTelegramFill />
-                  <span>Telegram</span>
+                  <span>Webhooks</span>
                 </div>
               }
               nonActiveTitle={
                 <div className="flex flex-row items-center gap-1">
-                  <RiTelegramLine />
-                  <span>Telegram</span>
+                  <span>Webhooks</span>
                 </div>
               }
-              id="telegram"
+              id="webhooks"
               disabled={true}
             >
-              <Telegram />
+              <Webhooks />
             </Tab.TabView>
           </Tab>
         </div>

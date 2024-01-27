@@ -8,13 +8,11 @@ import Tooltip from "@/components/Tooltip";
 import View from "@/components/View";
 import Button from "@/components/Button";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { version } from "@/utils";
 import { signout } from "@/stores/authStore";
 import { useAuthStore } from "@/stores/authStore";
 import { nexys } from "@/utils/nexys";
-import { RiVipDiamondLine } from "react-icons/ri";
 
 export default function Dropdown() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -61,7 +59,7 @@ export default function Dropdown() {
           </div>
         </summary>
         <div
-          className="flex flex-col gap-1 w-36 items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 shadow-neutral-200/50 dark:shadow-neutral-900/20"
+          className="flex flex-col gap-1 w-[160px] items-start p-2 absolute top-full rounded-xl right-0 dark:bg-black bg-white border-[1px] border-neutral-200 dark:border-neutral-900 shadow-neutral-200/50 dark:shadow-neutral-900/20"
           style={{ zIndex: 999 }}
         >
           {/*<div className="w-full flex justify-end items-center gap-1">
@@ -74,19 +72,28 @@ export default function Dropdown() {
               </Button>
             </Link>
             </div>*/}
-
-          <div className="flex justify-end w-full">
-            <Link href="/feedback">
-              <Button
-                light="dark:bg-white bg-black dark:text-black"
-                className="px-2 text-white"
-              >
-                <span className="ml-1">Feedback</span>
-              </Button>
-            </Link>
-          </div>
-          <div className="text-xs font-semibold w-full flex justify-end">
+          <div className="text-sm font-semibold w-full flex justify-end">
             {`@${validatedUser?.username}`}
+          </div>
+          <div className="flex flex-row gap-1 w-full">
+            <div className="flex justify-end w-full">
+              <Link
+                href="https://docs.nexys.app"
+                className="w-full"
+                target="_blank"
+              >
+                <Button className="px-2" fullWidth>
+                  <span className="ml-1">Docs</span>
+                </Button>
+              </Link>
+            </div>
+            <div className="flex justify-end w-full">
+              <Link href="/feedback" className="w-full">
+                <Button className="px-2">
+                  <span className="ml-1">Feedback</span>
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="flex flex-row w-full justify-end gap-1 items-center">
             <span
@@ -94,13 +101,6 @@ export default function Dropdown() {
               onClick={() => setEasterEggClicks(easterEggClicks + 1)}
               title="Dashboard Version"
             >{`v${version}`}</span>
-            <Tooltip content="Nexys Docs" direction="left" outline>
-              <Link href="https://docs.nexys.app" target="_blank">
-                <Button className="w-8" title="Nexys Docs">
-                  <IoDocumentText />
-                </Button>
-              </Link>
-            </Tooltip>
             <Tooltip
               content={`${
                 resolvedTheme == "dark" ? "Light Theme" : "Dark Theme"
@@ -128,9 +128,9 @@ export default function Dropdown() {
             <RiVipDiamondLine />
             <span className="ml-1">plans</span>
             </Button>*/}
-          <Button title="log out" fullWidth onClick={signout}>
+          <Button title="sign out" fullWidth onClick={signout}>
             <MdLogout />
-            <span className="ml-1">log out</span>
+            <span className="ml-1">sign out</span>
           </Button>
         </div>
       </details>

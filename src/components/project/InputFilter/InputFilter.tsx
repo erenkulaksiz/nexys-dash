@@ -14,7 +14,7 @@ import type {
   currentAvailableFiltersTypes,
 } from "./InputFilter.types";
 
-const possibleFilters = ["from:", "path:"];
+const possibleFilters = ["from:", "path:", "action:"];
 
 export default function InputFilter({
   filters,
@@ -57,61 +57,43 @@ export default function InputFilter({
         },
       ]);
       if (filterText == "from:") {
-        setInputPlaceholder("");
-        setCurrentAvailableFilters({
-          loading: true,
-          items: [],
-          type: "user",
-        });
-        getAvailableSelectionOption("users").then((users) => {
-          if (users.length == 0)
-            return setCurrentAvailableFilters({
-              loading: false,
-              items: [],
-              type: "user",
-            });
-          setCurrentAvailableFilters({
-            loading: false,
-            items: users.map((user) => {
-              return {
-                id: user._id,
-                text: `${user._id} (${user?.count})`,
-              };
-            }),
-            type: "user",
-          });
-          setInputPlaceholder("Enter user...");
-        });
+        filterByType("user");
       } else if (filterText == "path:") {
-        setInputPlaceholder("");
-        setCurrentAvailableFilters({
-          loading: true,
-          items: [],
-          type: "path",
-        });
-        getAvailableSelectionOption("paths").then((paths) => {
-          if (paths.length == 0)
-            return setCurrentAvailableFilters({
-              loading: false,
-              items: [],
-              type: "path",
-            });
-          setCurrentAvailableFilters({
-            loading: false,
-            items: paths.map((path: any) => {
-              return {
-                id: path._id,
-                text: `${path._id} (${path?.count})`,
-              };
-            }),
-            type: "path",
-          });
-          setInputPlaceholder("Enter path...");
-        });
+        filterByType("path");
+      } else if (filterText == "action:") {
+        filterByType("action");
       }
       setFilterText("");
     }
   }, [filterText]);
+
+  function filterByType(type: "user" | "path" | "action") {
+    setInputPlaceholder("");
+    setCurrentAvailableFilters({
+      loading: true,
+      items: [],
+      type: type,
+    });
+    getAvailableSelectionOption(`${type}s`).then((selectionOptions) => {
+      if (selectionOptions.length == 0)
+        return setCurrentAvailableFilters({
+          loading: false,
+          items: [],
+          type: type,
+        });
+      setCurrentAvailableFilters({
+        loading: false,
+        items: selectionOptions.map((option: any) => {
+          return {
+            id: option._id,
+            text: `${option._id} (${option?.count})`,
+          };
+        }),
+        type,
+      });
+      setInputPlaceholder(`Enter ${type}...`);
+    });
+  }
 
   async function getAvailableSelectionOption(
     optionType: string
@@ -160,6 +142,17 @@ export default function InputFilter({
                     const newFilters = [...filters];
                     newFilters.splice(index, 1);
                     setFilters(newFilters);
+                    setCurrentAvailableFilters({
+                      loading: false,
+                      items: possibleFilters.map((filter) => {
+                        return {
+                          id: filter,
+                          text: filter,
+                        };
+                      }),
+                      type: "filter",
+                    });
+                    setInputPlaceholder("Enter filter type...");
                   }}
                 >
                   <MdClose />
@@ -211,7 +204,8 @@ export default function InputFilter({
                     setTimeout(() => inputRef.current?.focus(), 0);
                   } else if (
                     currentAvailableFilters.type == "user" ||
-                    currentAvailableFilters.type == "path"
+                    currentAvailableFilters.type == "path" ||
+                    currentAvailableFilters.type == "action"
                   ) {
                     const newFilters = [...filters];
                     const selectionText = currentAvailableFilters.items.filter(
@@ -271,7 +265,8 @@ export default function InputFilter({
                             setTimeout(() => inputRef.current?.focus(), 0);
                           } else if (
                             currentAvailableFilters.type == "user" ||
-                            currentAvailableFilters.type == "path"
+                            currentAvailableFilters.type == "path" ||
+                            currentAvailableFilters.type == "action"
                           ) {
                             const newFilters = [...filters];
                             newFilters[newFilters.length - 1].selection =

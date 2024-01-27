@@ -48,11 +48,7 @@ export default function Input({
         false: rounded,
       },
     ],
-    selectedClasses: [
-      fullWidth,
-      height == "h-11" && true,
-      rounded == true ? true : false,
-    ],
+    selectedClasses: [fullWidth, height == "h-11" ? true : false, !!rounded],
   });
 
   const BuildInput = BuildComponent({
@@ -71,15 +67,11 @@ export default function Input({
       {
         true: "pr-8",
       },
-      {
-        true: "pl-[26px]",
-      },
     ],
     selectedClasses: [
       rounded == true ? true : false,
       textarea,
       passwordVisibility,
-      icon ? true : false,
     ],
   });
 

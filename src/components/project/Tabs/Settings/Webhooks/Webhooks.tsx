@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useProjectStore } from "@/stores/projectStore";
 
-export default function Telegram() {
+export default function Webhooks() {
   const project = useProjectStore((state) => state.currentProject);
   const [editingBotId, setEditingBotId] = useState(false);
   const [editingTargetId, setEditingTargetId] = useState(false);

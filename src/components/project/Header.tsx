@@ -76,14 +76,16 @@ export default function Header() {
                   className="px-4 text-white"
                 >
                   <CiShare1 className="mr-1" />
-                  <span>Getting Started</span>
+                  <span>Documentation</span>
                 </Button>
               </Link>
               <div className="flex flex-col">
                 <div className="text-2xl font-semibold">
-                  Next level error handling.
+                  {"Let's get you started with Nexys."}
                 </div>
-                <div>{"Let's get you started with Nexys."}</div>
+                <div>
+                  {"Read documents, push your first log to get started."}
+                </div>
               </div>
             </div>
           </Container>

@@ -39,24 +39,21 @@ export default [
     id: "overview",
     children: <Overview />,
   },
-  /*
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
-        <HiDocument />
-        <span>Pages</span>
+        <span>Report</span>
       </div>
     ),
     nonActiveTitle: (
       <div className="flex flex-row items-center gap-1">
-        <HiOutlineDocument />
-        <span>Pages</span>
+        <span>Report</span>
       </div>
     ),
-    id: "pages",
-    children: <Pages />,
+    id: "report",
+    children: <div>asd</div>,
+    disabled: true,
   },
-  */
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">

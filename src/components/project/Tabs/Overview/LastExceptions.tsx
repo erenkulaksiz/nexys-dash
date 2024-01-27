@@ -4,7 +4,7 @@ import LogCard from "@/components/project/LogCard";
 import useLogs from "@/hooks/useLogs";
 import Pager from "@/components/Pager";
 import View from "@/components/View";
-import { useProjectStore } from "@/stores/projectStore";
+import { useProjectStore, setAIInsightModal } from "@/stores/projectStore";
 
 export default function LastExceptions() {
   const [page, setPage] = useState<number>(0);
@@ -48,7 +48,13 @@ export default function LastExceptions() {
       </View>
       <View.If hidden={exceptionsLoading}>
         {lastExceptions.data?.data?.exceptions?.map((exception: any) => (
-          <LogCard log={exception} key={exception._id.$oid} />
+          <LogCard
+            log={exception}
+            key={exception._id.$oid}
+            onAIInsightClick={({ logId }) => {
+              setAIInsightModal({ isOpen: true, logId });
+            }}
+          />
         ))}
       </View.If>
     </div>

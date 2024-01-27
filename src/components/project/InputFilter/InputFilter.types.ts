@@ -3,7 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 export interface currentAvailableFiltersTypes {
   loading: boolean;
   items: { id: string; text: string }[];
-  type: "filter" | "user" | "path";
+  type: "filter" | "user" | "path" | "action";
 }
 
 export interface filtersTypes {

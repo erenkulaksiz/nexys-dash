@@ -1,7 +1,12 @@
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { MdPerson, MdPersonOutline } from "react-icons/md";
+import {
+  MdPerson,
+  MdPersonOutline,
+  MdOutlineArrowForward,
+} from "react-icons/md";
 import {
   RiFilePaperLine,
   RiFilePaperFill,
@@ -163,7 +168,7 @@ export default function BatchPage(props: NexysComponentProps) {
                                   <LogCard
                                     log={log}
                                     key={log._id}
-                                    logSelected={log?._id?.$oid == logId}
+                                    logSelected={log?._id == logId}
                                     viewingBatch
                                   />
                                 );
@@ -251,7 +256,7 @@ export default function BatchPage(props: NexysComponentProps) {
                       }
                       id="device"
                     >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 pb-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 pb-2 items-start">
                         <div className="flex flex-col gap-2">
                           <View.If
                             hidden={!batch?.data?.data?.deviceData?.userAgent}
@@ -341,6 +346,38 @@ export default function BatchPage(props: NexysComponentProps) {
                               </Codeblock>
                             </div>
                           </View.If>
+                        </div>
+                        <div className="flex flex-col gap-2 w-full border-[1px] p-4 rounded-lg border-neutral-200 dark:border-neutral-900">
+                          <h1 className="text-2xl font-semibold">
+                            Privacy Warning
+                          </h1>
+                          <div>
+                            We care about your privacy and only collect data
+                            that is necessary to debug your application.
+                          </div>
+                          <ul className="pl-4 list-disc">
+                            <li>
+                              Collection of user data is 100% optional and can
+                              be disabled via Nexys library configuration.
+                            </li>
+                            <li>
+                              {`If you don't configure any users, this data will
+                              be anonymous.`}
+                            </li>
+                            <li>
+                              This data is not shared with any third party.
+                            </li>
+                          </ul>
+                          <div className="w-full justify-end flex">
+                            <Link
+                              href="https://docs.nexys.app/configuration/allow-device-data"
+                              target="_blank"
+                              className="flex flex-row items-center gap-1 text-blue-600 font-semibold"
+                            >
+                              <span>Learn More</span>
+                              <MdOutlineArrowForward />
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </Tab.TabView>

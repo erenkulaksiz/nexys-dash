@@ -9,15 +9,24 @@ import {
   setLoading,
   refreshToken,
 } from "@/stores/authStore";
+import { BuildComponent } from "@/utils/style";
 import type { NexysComponentProps } from "@/types";
 
 interface LayoutProps extends NexysComponentProps {
   withoutLayout?: boolean;
+  className?: string;
 }
 
 export default function Layout(props: LayoutProps) {
   const auth = getAuth();
   const router = useRouter();
+
+  const BuildLayout = BuildComponent({
+    name: "Layout",
+    defaultClasses:
+      "mx-auto transition-colors ease-in-out duration-400 overflow-x-hidden overflow-auto dark:bg-black/50 bg-white h-full items-center w-full flex flex-col dark:text-white relative text-black",
+    extraClasses: props?.className,
+  });
 
   useEffect(() => {
     if (props.validate && Cookies.get("auth")) {
@@ -75,9 +84,5 @@ export default function Layout(props: LayoutProps) {
 
   if (props.withoutLayout) return <>{props.children}</>;
 
-  return (
-    <main className="mx-auto transition-colors ease-in-out duration-400 overflow-x-hidden overflow-auto dark:bg-black/50 bg-white h-full items-center w-full flex flex-col dark:text-white relative text-black">
-      {props.children}
-    </main>
-  );
+  return <main className={BuildLayout.classes}>{props.children}</main>;
 }
