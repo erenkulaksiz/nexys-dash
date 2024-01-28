@@ -47,7 +47,7 @@ export default function LogCard({
       </View.If>
       <div className="flex flex-col gap-2">
         <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center sm:gap-0 gap-2">
-          <div className="flex flex-row gap-2 items-center text-neutral-500 text-sm">
+          <div className="flex flex-row gap-2 items-center text-neutral-500 dark:text-dark-accent text-sm">
             <div className="text-sm">LOG</div>
             <div>
               <MdOutlineAccessTime />
