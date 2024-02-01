@@ -1,17 +1,14 @@
 import Tooltip from "@/components/Tooltip";
 import View from "@/components/View";
-import { ReactNode, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MdContentCopy, MdCheck } from "react-icons/md";
+import type { CodeblockProps } from "./Codeblock.types";
 
 export default function Codeblock({
   children,
   data,
   disableCopy = false,
-}: {
-  children?: ReactNode;
-  data?: string;
-  disableCopy?: boolean;
-}) {
+}: CodeblockProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
   function onCopy() {

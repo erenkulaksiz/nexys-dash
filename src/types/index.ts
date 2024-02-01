@@ -19,6 +19,35 @@ export interface LogMetricTypes {
   OTHER: number;
 }
 
+export interface ReportType {
+  count: number;
+  dailyCount: Array<{
+    date: string;
+    count: number;
+  }>;
+  firstOccurrence: string;
+  lastOccurrence: string;
+  logIds: {
+    $oid: string;
+  }[];
+  batchIds: {
+    $oid: string;
+  }[];
+  platformCount: {
+    platform: string[];
+    count: number;
+  }[];
+  versionCount: {
+    version: string;
+    count: number;
+  }[];
+  affectedUsers: {
+    user: string[];
+    count: number;
+  }[];
+  _id: string;
+}
+
 export interface ProjectTypes {
   _id?: string;
   publicKey?: string;
@@ -66,6 +95,7 @@ export interface ProjectTypes {
     botId: string;
     targetId: string;
   };
+  report?: ReportType[];
 }
 
 export interface NexysComponentProps extends PropsWithChildren {

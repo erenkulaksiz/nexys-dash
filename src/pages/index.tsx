@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
@@ -8,13 +7,11 @@ import ConfettiExplosion from "react-confetti-explosion";
 import Navbar from "@/components/Navbar";
 import Layout from "@/components/Layout";
 import Container from "@/components/Container";
+import MagicBorder from "@/components/MagicBorder";
 import { FaLightbulb } from "react-icons/fa";
 import AddProjectCard from "@/components/Views/home/AddProjectCard";
 import AdminCard from "@/components/Views/home/AdminCard";
-const ProjectCard = dynamic(
-  () => import("@/components/Views/home/ProjectCard"),
-  {}
-);
+import ProjectCard from "@/components/Views/home/ProjectCard";
 import { ValidateToken } from "@/utils/api/validateToken";
 import WithAuth from "@/hocs/withAuth";
 import useProjects from "@/hooks/useProjects";
@@ -100,7 +97,9 @@ export default function HomePage(props: NexysComponentProps) {
                                   width={1920}
                                 />
                               </View.If>
-                              <ProjectCard project={project} />
+                              <MagicBorder>
+                                <ProjectCard project={project} />
+                              </MagicBorder>
                             </Link>
                           )
                         )}
@@ -112,8 +111,8 @@ export default function HomePage(props: NexysComponentProps) {
               </View.Else>
             </View>
           </div>
-          <div className="flex w-full h-[30vh] min-h-[400px] border-t-[1px] dark:border-dark-border border-neutral-200 py-10">
-            <Container className="flex flex-col gap-10">
+          <div className="flex w-full h-[30vh] min-h-[400px] border-t-[1px] dark:border-dark-border border-neutral-200">
+            <Container className="flex flex-col gap-10 py-10">
               <h1 className="text-4xl font-semibold">
                 Discover Potential of Nexys
               </h1>

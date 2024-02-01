@@ -15,7 +15,6 @@ import {
   useProjectStore,
 } from "@/stores/projectStore";
 import { Log } from "@/utils";
-import { nexys } from "@/utils/nexys";
 import type { filtersTypes } from "@/components/Views/project/InputFilter/InputFilter.types";
 
 interface useLogsParams {
@@ -69,7 +68,6 @@ export default function useLogs({
       logs?.data?.error == "auth/no-auth"
     ) {
       Log.error("Loading of logs failed", logs?.data?.error);
-      nexys.error({ message: `useLogs - ${logs?.data?.error}` });
       (async () => {
         await refreshToken(true);
         setTimeout(async () => {
@@ -81,7 +79,6 @@ export default function useLogs({
       return;
     } else if (logs?.data?.success == false) {
       Log.error("Loading of logs failed", logs?.data?.error);
-      nexys.error({ message: `useLogs - ${logs?.data?.error}` });
       setLoading(true);
       return;
     }

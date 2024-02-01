@@ -11,7 +11,6 @@ import {
   setProjectLoading,
 } from "@/stores/projectStore";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
-import { nexys } from "@/utils/nexys";
 
 interface useProjectParams {
   uid?: string;
@@ -42,7 +41,6 @@ export default function useProject({ uid }: useProjectParams) {
   useEffect(() => {
     if (project?.data?.error == "project/not-found") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setNotFound(true);
       setProjectLoading(false);
       return;
@@ -54,7 +52,6 @@ export default function useProject({ uid }: useProjectParams) {
       project?.data?.error == "auth/no-auth"
     ) {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: `useProject - ${project?.data?.error}` });
       (async () => {
         await refreshToken(true);
         setTimeout(async () => {
@@ -68,7 +65,6 @@ export default function useProject({ uid }: useProjectParams) {
     }
     if (project?.data?.error == "project/invalid-params") {
       Log.error("Loading of project failed", project?.data?.error);
-      nexys.error({ message: `useProject - ${project?.data?.error}` });
       setProjectLoading(false);
       setNotFound(true);
       return;

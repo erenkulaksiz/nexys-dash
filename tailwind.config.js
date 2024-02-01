@@ -17,6 +17,10 @@ module.exports = {
         "dark-error": "#7f1d1e",
         light: "#ffffff",
       },
+      backgroundImage: {
+        "dark-magical-radial": "radial-gradient(var(--circle-size) circle at var(--x) var(--y), rgba(255,255,255,.5), transparent 40%)",
+        "magical-radial": "radial-gradient(var(--circle-size) circle at var(--x) var(--y), rgba(0,0,0,.2), transparent 40%)",
+      }
     },
   },
   plugins: [],

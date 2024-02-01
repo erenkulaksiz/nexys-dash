@@ -2,8 +2,8 @@ import Link from "next/link";
 import { MdOutlineError, MdOutlineAccessTime } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import JSONPretty from "react-json-pretty";
-import { HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
 
+import { HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
 import Tooltip from "@/components/Tooltip";
 import Button from "@/components/Button";
 import Codeblock from "@/components/Codeblock";

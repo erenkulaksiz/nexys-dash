@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 
 import hookRequest from "@/utils/api/hookRequest";
 import { Log, server } from "@/utils";
-import { nexys } from "@/utils/nexys";
 import { refreshToken, useAuthStore } from "@/stores/authStore";
 
 interface useProjectsParams {
@@ -34,7 +33,6 @@ export default function useProjects({ uid }: useProjectsParams) {
       projects?.data?.error == "auth/no-auth"
     ) {
       Log.error("Loading of projects failed", projects?.data?.error);
-      nexys.error({ message: `useProjects - ${projects?.data?.error}` });
       setLoading(true);
       (async () => {
         await refreshToken(true);
@@ -48,13 +46,13 @@ export default function useProjects({ uid }: useProjectsParams) {
   }, [projects]);
 
   useEffect(() => {
-    if (projects.isValidating) {
+    if (projects.isValidating && projects.isLoading) {
       setLoading(true);
     } else {
       if (projects?.data?.success == false) return;
       setLoading(false);
     }
-  }, [projects.isValidating]);
+  }, [projects.isValidating, projects.isLoading]);
 
   return { projects, loading };
 }

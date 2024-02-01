@@ -10,7 +10,7 @@ import type { ProjectCardProps } from "./ProjectCard.types";
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="relative group flex flex-row gap-2 rounded-lg p-4 h-32 cursor-pointer border-[1px] border-neutral-200 dark:border-dark-border hover:dark:border-dark-accent hover:border-neutral-400">
+    <div className="dark:bg-dark bg-white relative group flex flex-row gap-2 rounded-lg p-4 h-32 cursor-pointer">
       <div className="flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <Avatar size="2xl" src="/images/avatar.png" />

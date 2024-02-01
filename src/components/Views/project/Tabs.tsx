@@ -1,10 +1,23 @@
-import Settings from "./Tabs/Settings";
-import Logs from "./Tabs/Logs";
-import Overview from "./Tabs/Overview";
-import Batches from "./Tabs/Batches";
-import Exceptions from "./Tabs/Exceptions";
-import Metrics from "./Tabs/Metrics";
-import { MdOutlineErrorOutline, MdOutlineError } from "react-icons/md";
+import dynamic from "next/dynamic";
+
+import Settings from "@/components/Views/project/Tabs/Settings";
+import Logs from "@/components/Views/project/Tabs/Logs";
+import Overview from "@/components/Views/project/Tabs/Overview";
+import Batches from "@/components/Views/project/Tabs/Batches";
+import Exceptions from "@/components/Views/project/Tabs/Exceptions";
+import Metrics from "@/components/Views/project/Tabs/Metrics";
+const Reports = dynamic(
+  () => import("@/components/Views/project/Tabs/Reports"),
+  {
+    ssr: false,
+  }
+);
+import {
+  MdOutlineErrorOutline,
+  MdOutlineError,
+  MdOutlineBugReport,
+  MdBugReport,
+} from "react-icons/md";
 import {
   VscDebugBreakpointLogUnverified,
   VscDebugBreakpointLog,
@@ -42,17 +55,18 @@ export default [
   {
     activeTitle: (
       <div className="flex flex-row items-center gap-1">
+        <MdBugReport />
         <span>Reports</span>
       </div>
     ),
     nonActiveTitle: (
       <div className="flex flex-row items-center gap-1">
+        <MdOutlineBugReport />
         <span>Reports</span>
       </div>
     ),
     id: "reports",
-    children: <div>asd</div>,
-    disabled: true,
+    children: <Reports />,
   },
   {
     activeTitle: (

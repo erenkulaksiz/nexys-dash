@@ -21,11 +21,12 @@ export default function Pages() {
                 key={path._id}
               >
                 <div className="flex" title={path._id}>
-                  {path._id?.length > 36
-                    ? `${path._id?.substring(0, 36)}...`
-                    : path._id}
+                  <View viewIf={path._id?.length > 36}>
+                    <View.If>{`${path._id?.substring(0, 36)}...`}</View.If>
+                    <View.Else>{path._id}</View.Else>
+                  </View>
                 </div>
-                <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-dark px-2 rounded">
+                <div className="text-sm dark:text-neutral-400 text-neutral-600 bg-neutral-200 dark:bg-transparent dark:border-[1px] dark:border-dark-border px-2 rounded">
                   <CountUp end={path.count} duration={1} separator="" />
                 </div>
                 <View.If visible={errors > 0}>

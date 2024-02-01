@@ -10,12 +10,7 @@ import {
   refreshToken,
 } from "@/stores/authStore";
 import { BuildComponent } from "@/utils/style";
-import type { NexysComponentProps } from "@/types";
-
-interface LayoutProps extends NexysComponentProps {
-  withoutLayout?: boolean;
-  className?: string;
-}
+import { LayoutProps } from "./Layout.types";
 
 export default function Layout(props: LayoutProps) {
   const auth = getAuth();
