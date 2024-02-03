@@ -89,7 +89,10 @@ export default function VerifyPage(props: NexysComponentProps) {
                   <span className="ml-1">Send again</span>
                 </Button>
               </View.If>
-              <Button className="px-2" onClick={signout}>
+              <Button
+                className="px-2 opacity-0 hover:opacity-0"
+                onClick={signout}
+              >
                 <MdLogout />
                 <span className="ml-1">Sign out</span>
               </Button>

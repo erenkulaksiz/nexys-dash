@@ -3,8 +3,7 @@ import { Html, Head, Main, NextScript } from "next/document";
 export default function Document() {
   return (
     <Html lang="en">
-      <Head />
-      <head>
+      <Head>
         <meta name="application-name" content="Nexys" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -33,7 +32,7 @@ export default function Document() {
         <meta property="og:description" content="Log. Track. Improve." />
         <meta property="og:site_name" content="Nexys" />
         <meta property="og:url" content="https://dash.nexys.app" />
-      </head>
+      </Head>
       <body>
         <noscript>Please update your browser.</noscript>
         <Main />

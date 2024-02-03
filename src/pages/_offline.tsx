@@ -11,7 +11,7 @@ export default function OfflinePage() {
         gap: 2,
       }}
     >
-      <h1 style={{ fontSize: 24 }}>Offline</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 700 }}>Offline</h1>
       <p>Sorry, you are offline.</p>
     </div>
   );

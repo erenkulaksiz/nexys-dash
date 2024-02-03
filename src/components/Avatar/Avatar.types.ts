@@ -1,5 +1,3 @@
-import { StaticImageData } from "next/image";
-
 export interface AvatarProps {
   src: string;
   size:

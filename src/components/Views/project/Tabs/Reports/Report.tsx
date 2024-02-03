@@ -20,7 +20,7 @@ import {
   BarElement,
   ArcElement,
 } from "chart.js";
-import { Line, Bar, Doughnut } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -75,7 +75,9 @@ export default function Report({ report }: { report: ReportType }) {
             <HiOutlineMinus className="hidden group-open:block" />
           </div>
           <div className="flex flex-row gap-2 items-center">
-            <span className="text-sm max-w-[600px]">{report?._id}</span>
+            <Tooltip content="Error Message">
+              <span className="text-sm max-w-[600px]">{report?._id}</span>
+            </Tooltip>
             <Tooltip content={"Occurrence"}>
               <span className="text-xs dark:border-dark-border border-[1px] p-1 px-2 rounded-xl">
                 {report?.count}
@@ -83,16 +85,18 @@ export default function Report({ report }: { report: ReportType }) {
             </Tooltip>
           </div>
         </div>
-        <Link
-          href={`/project/${project?.name}/report/${encodeURIComponent(
-            report?._id.toLowerCase()
-          )}`}
-          className="items-center flex"
-        >
-          <Button className="px-2">
-            <MdOutlineArrowForward />
-          </Button>
-        </Link>
+        <Tooltip content="Report Details">
+          <Link
+            href={`/project/${project?.name}/report/${encodeURIComponent(
+              report?._id.toLowerCase()
+            )}`}
+            className="items-center flex"
+          >
+            <Button className="px-2">
+              <MdOutlineArrowForward />
+            </Button>
+          </Link>
+        </Tooltip>
       </summary>
       <div className="flex flex-col mt-4 border-t-[1px] dark:border-dark-border">
         <div className="grid sm:grid-cols-2 grid-cols-1 mt-4">
@@ -134,26 +138,17 @@ export default function Report({ report }: { report: ReportType }) {
               }}
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 items-start">
             <div className="dark:text-dark-text text-2xl">Affected Users</div>
             <View viewIf={affectedUsers?.length == 0}>
               <View.If>
                 <div className="dark:text-dark-accent">
-                  No affected users found or no user information was provided.
+                  No configured users found.
                 </div>
               </View.If>
               <View.Else>
-                <div className="flex flex-col w-full gap-1">
-                  {affectedUsers?.map((user) => {
-                    return (
-                      <div
-                        key={user}
-                        className="flex flex-row rounded-lg items-center gap-2 dark:border-dark-border border-[1px] p-1 px-2"
-                      >
-                        <span>{user}</span>
-                      </div>
-                    );
-                  })}
+                <div className="text-xs dark:border-dark-border border-[1px] p-1 px-2 rounded-xl">
+                  {affectedUsers.length}
                 </div>
               </View.Else>
             </View>

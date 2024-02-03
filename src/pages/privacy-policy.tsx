@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
               Privacy Policy
             </h1>
             <h1 className="text-sm text-neutral-400">
-              Last Updated: 11 March, 2022
+              Last Updated: 1 February 2024
             </h1>
           </div>
         </div>
@@ -118,7 +118,9 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
             Collecting and Using Your Personal Data
           </h1>
           <h1 className="text-lg pb-2">Types of Data Collected</h1>
-          <h1 className="text-lg pb-2">Personal Data</h1>
+          <h1 className="pb-2 text-xl dark:text-white text-black">
+            Personal Data
+          </h1>
           <p
             className="text-neutral-700 dark:text-neutral-300"
             suppressHydrationWarning
@@ -167,6 +169,7 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
           <ul className="list-disc grid grid-cols-1 gap-4 text-sm pl-4">
             <li>Google</li>
             <li>GitHub</li>
+            <li>Email (Firebase)</li>
           </ul>
           <div>
             {
@@ -177,6 +180,16 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
             {
               "You may also have the option of sharing additional information with the Company through Your Third-Party Social Media Service's account. If You choose to provide such information and Personal Data, during registration or otherwise, You are giving the Company permission to use, share, and store it in a manner consistent with this Privacy Policy."
             }
+          </div>
+          <div>
+            {
+              "However, please remember that the manner in which Third-Party Social Media Services use, store and disclose your information is governed solely by the policies of such third parties, and the Company shall have no liability or responsibility for the privacy practices or other actions of any third-party site or service that may be enabled within the Service."
+            }
+          </div>
+          <div>
+            {`We do not store any passwords of your third-party social media or
+            Your email account's password. Everything is done via Firebase and
+            please refer to their privacy policy for more information.`}
           </div>
           <h1 className="text-xl dark:text-white text-black">
             Tracking Technologies and Cookies
@@ -405,13 +418,13 @@ export default function PrivacyPolicyPage(props: NexysComponentProps) {
             If you have any questions about this Privacy Policy, You can contact
             us:
           </div>
-          <div className="text-blue-700 flex flex-col">
+          <div className="text-blue-700 dark:text-blue-500 flex flex-col">
             <a href="mailto:erenkulaksz@gmail.com">erenkulaksz@gmail.com</a>
             <a
               href="https://twitter.com/nexysapp"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-700"
+              className="text-blue-700 dark:text-blue-500 "
             >
               twitter.com/nexysapp
             </a>
