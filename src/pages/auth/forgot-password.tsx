@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
             <h1 className="font-semibold text-2xl">Forgot Password</h1>
             <View viewIf={sent}>
               <View.If>
-                <div className="flex flex-col">
+                <div className="flex flex-row gap-2">
                   <MdCheckCircleOutline size={48} className="text-green-500" />
                   <div>We have sent you an email to reset your password.</div>
                 </div>

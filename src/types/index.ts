@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from "react";
+import type { ValidateTokenReturnType } from "@/utils/api/validateToken";
 
 export interface LogTypes {
   API_KEY: string;
@@ -99,11 +100,7 @@ export interface ProjectTypes {
 }
 
 export interface NexysComponentProps extends PropsWithChildren {
-  validate?: {
-    success: boolean;
-    data: UserTypes;
-    error?: string | object;
-  };
+  validate?: ValidateTokenReturnType;
   query?: {
     page: string;
   };

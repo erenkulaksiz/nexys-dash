@@ -103,7 +103,7 @@ export default function Button({
       </View.If>
       <div className={centerButton}>{children}</div>
       <View.If visible={!!loading}>
-        <div className="absolute left-0 right-0 bottom-0 top-0 dark:bg-neutral-900/90 bg-neutral-200/50 flex items-center justify-center">
+        <div className="absolute left-0 right-0 bottom-0 top-0 dark:bg-darker/90 bg-neutral-200/50 flex items-center justify-center">
           <Loading />
         </div>
       </View.If>

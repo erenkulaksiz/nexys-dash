@@ -3,6 +3,9 @@ export interface ValidateTokenReturnType {
   success: boolean;
   error?: string;
   data?: any; // #TODO: define data type
+  email?: string;
+  key?: string;
+  reset?: boolean;
 }
 
 export async function ValidateToken({
