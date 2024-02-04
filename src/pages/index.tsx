@@ -62,10 +62,10 @@ export default function HomePage(props: NexysComponentProps) {
                   <Container>
                     <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-2 flex-row items-start">
                       {projects?.data?.data && !projects?.data?.data.length && (
-                        <div className="flex flex-row gap-1 overflow-hidden group items-center justify-center relative dark:bg-darker bg-white rounded-lg p-4 h-32 border-[1px] border-neutral-200 dark:border-dark-border">
+                        <div className="flex flex-row gap-1 overflow-hidden group items-center justify-center relative bg-transparent rounded-lg p-4 h-32 border-[1px] border-neutral-200 dark:border-dark-border">
                           <FaLightbulb
                             size={180}
-                            className="absolute -left-[20px] -bottom-[20px] text-neutral-200/70 dark:text-neutral-900/50 z-10 dark:group-hover:text-neutral-800 group-hover:text-neutral-400 transition-colors duration-200"
+                            className="absolute -left-[20px] -bottom-[20px] text-neutral-200/70 dark:text-dark-border z-10"
                           />
                           <div className="text-center z-20">
                             Create a new project to get started.

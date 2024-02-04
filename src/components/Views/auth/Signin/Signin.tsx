@@ -34,6 +34,10 @@ export function Signin({ onEmailLogin }: { onEmailLogin?: () => void }) {
           setError("This account is already registered with another platform.");
         } else if (error.code === "auth/popup-blocked") {
           setError("Please enable popups to continue.");
+        } else if (error.code == "auth/cancelled-popup-request") {
+          setError("Popup was cancelled.");
+        } else if (error.code == "auth/popup-closed-by-user") {
+          setError("Popup was closed by user.");
         } else {
           setError(error.message);
         }

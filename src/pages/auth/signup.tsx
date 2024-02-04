@@ -11,7 +11,7 @@ export default function SignupPage() {
     <Layout>
       <WithoutAuth>
         <Head>
-          <title>Nex · Sign up</title>
+          <title>Nex · Sign Up</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <Navbar hideAuth />

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import { FormEvent, useState, useEffect } from "react";
 import {
   getAuth,
@@ -95,16 +96,19 @@ export default function ResetPasswordPage(props: NexysComponentProps) {
               <View.Else>
                 <View viewIf={isReset}>
                   <View.If>
-                    <div className="flex flex-row gap-2">
-                      <MdCheckCircleOutline
-                        size={48}
-                        className="text-green-500"
-                      />
-                      <div>
-                        We have changed your password, you may login with your
-                        new password.
-                      </div>
+                    <MdCheckCircleOutline
+                      size={48}
+                      className="text-green-500 flex"
+                    />
+                    <div>
+                      We have changed your password, you may sign in with your
+                      new password.
                     </div>
+                    <Link href="/">
+                      <Button className="px-2" size="md">
+                        <span>Sign In</span>
+                      </Button>
+                    </Link>
                   </View.If>
                   <View.Else>
                     <form

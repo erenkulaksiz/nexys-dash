@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuth, sendEmailVerification, applyActionCode } from "firebase/auth";
 
 import Container from "@/components/Container";
@@ -9,7 +9,12 @@ import Button from "@/components/Button";
 import View from "@/components/View";
 import Navbar from "@/components/Navbar";
 import WithAuth from "@/hocs/withAuth";
-import { MdLogout, MdRefresh, MdHome } from "react-icons/md";
+import {
+  MdLogout,
+  MdRefresh,
+  MdHome,
+  MdCheckCircleOutline,
+} from "react-icons/md";
 import { ValidateToken } from "@/utils/api/validateToken";
 import { useAuthStore, signout } from "@/stores/authStore";
 import type { GetServerSidePropsContext } from "next";
@@ -19,13 +24,15 @@ import type { NexysComponentProps } from "@/types";
 export default function VerifyPage(props: NexysComponentProps) {
   const authUser = useAuthStore((state) => state.user);
 
-  console.log("authuseer", authUser);
-
   const [sending, setSending] = useState<boolean>(false);
   const [sent, setSent] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  console.log("proppps", props);
+  useEffect(() => {
+    if (props.validate?.reset) {
+      signout();
+    }
+  }, [props.validate]);
 
   async function onSendAgain() {
     if (sending) return;
@@ -61,13 +68,11 @@ export default function VerifyPage(props: NexysComponentProps) {
               }
             >
               <View.If>
-                <p className="text-neutral-500 dark:text-dark-accent text-sm">
-                  Your email has been verified.
-                </p>
+                <MdCheckCircleOutline size={48} className="text-green-500" />
+                <div>Your email has been verified. You may log in now.</div>
                 <Link href="/">
-                  <Button className="px-4" size="h-10">
-                    <MdHome size={24} />
-                    <span className="ml-1">Home</span>
+                  <Button className="px-2" size="md">
+                    <span>Sign In</span>
                   </Button>
                 </Link>
               </View.If>
@@ -137,11 +142,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       try {
         await applyActionCode(auth, actionCode);
 
-        console.log("user has been verified");
-
         validate = { success: true, reset: true };
+        return { props: { validate } };
       } catch (error) {
-        console.log("error verifying email");
+        console.log("error verifying email", error);
       }
     }
 
