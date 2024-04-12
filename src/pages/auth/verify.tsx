@@ -87,7 +87,9 @@ export default function VerifyPage(props: NexysComponentProps) {
                   }
                 </p>
                 <p className="text-neutral-500 dark:text-dark-accent text-sm">
-                  After clicking the link we sent you, just refresh this page.
+                  {
+                    "After clicking the link we sent you, you'll be able to sign in."
+                  }
                 </p>
                 <div className="flex flex-row gap-2">
                   <View.If hidden={sent}>

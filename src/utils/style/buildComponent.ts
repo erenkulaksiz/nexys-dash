@@ -17,7 +17,7 @@ export function BuildComponent({
   conditionalClasses, // The classes that component potentially recieve - array[object]
   selectedClasses, // The selected classes that component has - array[string]
 }: BuildComponentTypes) {
-  let allClasses = ""; // set initial data. eg: 'bg-white'
+  let allClasses = "";
   if (defaultClasses) allClasses += defaultClasses;
   if (extraClasses) {
     allClasses = twMerge(allClasses, extraClasses);

@@ -369,7 +369,9 @@ export default function BatchPage(props: NexysComponentProps) {
                               be anonymous.`}
                             </li>
                             <li>
-                              This data is not shared with any third party.
+                              This data is not shared with any third party and
+                              will not be used for any other purpose than
+                              debugging your application.
                             </li>
                           </ul>
                           <div className="w-full justify-end flex">
@@ -420,7 +422,7 @@ export default function BatchPage(props: NexysComponentProps) {
                           </View.If>
                           <View.If hidden={!batch?.data?.data?.env?.isClient}>
                             <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="isClient">Is Client</label>
+                              <label htmlFor="isClient">Client</label>
                               <Codeblock
                                 data={batch?.data?.data?.env?.isClient}
                               >
@@ -428,22 +430,6 @@ export default function BatchPage(props: NexysComponentProps) {
                                   ? "true"
                                   : "false"}
                               </Codeblock>
-                            </div>
-                          </View.If>
-                          <View.If hidden={!batch?.data?.data?.env?.el}>
-                            <div className="flex flex-col gap-2 w-full">
-                              <label htmlFor="isClient">
-                                Body Element Count
-                              </label>
-                              <div>
-                                <Codeblock data={batch?.data?.data?.env?.el}>
-                                  {batch?.data?.data?.env?.el}
-                                </Codeblock>
-                                <span className="text-sm text-neutral-400">
-                                  Body Element Count tracks the number of body
-                                  elements in the DOM.
-                                </span>
-                              </div>
                             </div>
                           </View.If>
                         </div>

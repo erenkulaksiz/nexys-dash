@@ -59,11 +59,11 @@ export default function API() {
               value={project?.localhostAccess}
               onChange={onLocalhostAccessChange}
             />
-            <span className="dark:text-dark-text">Allow Localhost Access </span>
+            <span className="dark:text-dark-text">Allow Anywhere Access </span>
           </div>
           <span className="text-neutral-500 dark:text-dark-accent text-sm">
-            Enables localhost access. This is useful for testing your API, also
-            dangerous since anyone can access your API key from localhost. Make
+            Enables any IP access. This is useful for testing your API, also
+            dangerous since anyone can access your API key from any IP. Make
             sure to create new project for your testing purposes.
           </span>
         </div>
